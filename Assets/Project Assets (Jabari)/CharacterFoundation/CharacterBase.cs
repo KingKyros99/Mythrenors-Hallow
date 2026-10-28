@@ -151,9 +151,20 @@ public class CharacterBase : MonoBehaviour
     [SerializeField] private float critMult = 1.1f;
     [SerializeField] private int dodgeChance = 2; /*thinking of this being just a passive chance for attacks to 'graze'*/
 
+    // Combat Stat Access
+    public int Attack => attack;
+    public int Defense => defense;
+    public int CritChance => critChance;
+    public float CritMultiplier => critMult;
+    public int DodgeChance => dodgeChance;
+
     [Header("Resistances")]
     [SerializeField] private int mStatusResistance = 0; /*Optional shit for this week if Shawn gets to it*/
     [SerializeField] private int mCritResistance = 0;
+
+    // Resistance Access
+    public int StatusResistance => mStatusResistance;
+    public int CritResistance => mCritResistance;
 
     private void Update()
     {
