@@ -1,16 +1,28 @@
+using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.Progress;
 
-public class Player : MonoBehaviour
+public class Player : CharacterBase
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [Header("Player Inventory")]
+    [SerializeField] private List<Item> inventory = new List<Item>();
+
+    public IReadOnlyList<Item> Inventory => inventory;
+
+    public bool AddItem(Item item)
     {
-        
+        if (item == null)
+            return false;
+
+        inventory.Add(item);
+        return true;
     }
 
-    // Update is called once per frame
-    void Update()
+    public bool RemoveItem(Item item)
     {
-        
+        if (item == null)
+            return false;
+
+        return inventory.Remove(item);
     }
 }
