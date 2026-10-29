@@ -8,7 +8,7 @@ public class CharacterBase : MonoBehaviour
 
     private CoreFunctions coreFunctions;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         health = maxHealth;
         mana = maxMana;
@@ -88,7 +88,7 @@ public class CharacterBase : MonoBehaviour
     public float CurrentStamina => stamina;
     public float MaxStamina => maxStamina;
 
-    public bool SpendStamina(int amount)
+    public bool SpendStamina(float amount)
     {
         if (amount <= 0 || stamina < amount)
             return false;
