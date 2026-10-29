@@ -89,13 +89,16 @@ public class MovementController : MonoBehaviour
         
 
         //vertical and horizontal
-        Vector3 vert;
-        Vector3 hori;
+        Vector3 vert = transform.forward;
+        Vector3 hori = transform.right;
 
         //temp without camera
-        vert = Vector3.forward;
-        hori = Vector3.right;
-        moveDir = vert * currInput.y + hori * currInput.x;
+        vert.y = 0;
+        hori.y = 0;
+        vert.Normalize();
+        hori.Normalize();
+
+        moveDir = (vert * currInput.y) + hori * currInput.x;
 
 
         Vector3 horizontalDir = moveDir * baseSpeed;
