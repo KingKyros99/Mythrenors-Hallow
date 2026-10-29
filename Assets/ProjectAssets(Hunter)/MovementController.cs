@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 public class MovementController : MonoBehaviour
 {
     public CharacterController controller;
-    
+    private CharacterBase character;
 
     //Movement/Sprint Var.
     [Header("sprint")]
