@@ -82,6 +82,7 @@ public class MovementController : MonoBehaviour
         jump();
         movement();
     }
+
     void movement()
     {
         //get curr input and make sure that diagonal move is not accelerated

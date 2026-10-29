@@ -1,6 +1,3 @@
-using System.Xml.Serialization;
-using Unity.Mathematics;
-using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -35,7 +32,7 @@ public class PlayerCamera : MonoBehaviour
 
 
 
-    [SerializeField] float colisionZone;
+    [SerializeField] float collisionZone;
 
     [SerializeField] float minDist;
 
@@ -48,7 +45,7 @@ public class PlayerCamera : MonoBehaviour
 
     InputAction lookAct;
 
-
+    [SerializeField] LayerMask collisionLayer = -0;
 
 
     private void Awake()
@@ -96,23 +93,37 @@ public class PlayerCamera : MonoBehaviour
             Vector2 moveCam = lookAct.ReadValue<Vector2>() * camSensitivity;
             
             horizontalRot += moveCam.x;
-
             verticalRot -= moveCam.y;
             verticalRot = Mathf.Clamp(verticalRot, camRotMin, camRotMax);
         }
 
-        Quaternion rotation = Quaternion.Euler(verticalRot, horizontalRot, 0f);
-        Vector3 playerPivot = player.position + playerOffset;
+        player.rotation = Quaternion.Euler(0f, horizontalRot, 0f);
+        
+        
+        Quaternion completeRot = Quaternion.Euler(verticalRot, horizontalRot, 0f);
+        Quaternion horizontalRotation = Quaternion.Euler(0f, horizontalRot, 0f);
 
-        Vector3 rightOffset = rotation * Vector3.right * shoulderDist;
+        Vector3 playerPos = player.position;
+        Vector3 playerPivot = playerPos + horizontalRotation * playerOffset;
+
+        Vector3 rightOffset = horizontalRotation * Vector3.right * shoulderDist;
         Vector3 finalPivot = playerPivot + rightOffset;
 
-        Vector3 finalCamPos = finalPivot + (rotation * Vector3.back * currDist);
+        Vector3 camDirection = (completeRot * Vector3.back).normalized;
+
+        //Colision
+        float targetDistance = distance;
+        if (Physics.SphereCast(finalPivot, collisionZone, camDirection, out RaycastHit hit, distance, collisionLayer))
+        {
+            targetDistance = Mathf.Clamp(hit.distance - 0.1f, minDist, distance);
+        }
+        currDist = Mathf.MoveTowards(currDist, targetDistance, camSpeed * Time.deltaTime);
 
         //final camPos and rotation
+        Vector3 finalCamPos = finalPivot + (camDirection * currDist);
         transform.position = finalCamPos;
-        transform.rotation = rotation;
-        player.rotation = Quaternion.Euler(0f, horizontalRot, 0f);
+        transform.rotation = completeRot;
+        
     }
 
 }
