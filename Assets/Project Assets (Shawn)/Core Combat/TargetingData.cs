@@ -32,6 +32,9 @@ public class TargetingData : ScriptableObject
     [Min(0f)]
     public float radius = 3f;
 
+    [Range(0f, 360f)]
+    public float attackAngle = 120f;
+
     // Detection Settings
     public LayerMask targetLayers = ~0;
 

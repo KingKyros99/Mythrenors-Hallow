@@ -111,8 +111,13 @@ public class SpellManager : MonoBehaviour
 
         if (!successful)
         {
-            // TODO (JABARI INTEGRATION):
-            // Refund mana if a projectile fails to spawn.
+            // PURPOSE:
+            // Return mana if projectile creation fails
+            // CharacterBase remains responsible for mana.
+            caster.RefundMana(spellData.manaCost);
+
+            Debug.LogWarning($"{caster.CombatTransform.name} failed to cast {spellData.spellName}. Mana refunded.");
+
             return false;
         }
 

@@ -117,4 +117,20 @@ public class CombatEntityAdapter : MonoBehaviour, ICombatEntity
 
         return successful;
     }
+
+    // PURPOSE:
+    // Restores mana through Jabari's CharacterBase
+    // when a spell fails after spending resources.
+    public void RefundMana(float amount)
+    {
+        if (characterBase == null || amount <= 0f)
+        {
+            return;
+        }
+
+        int manaAmount = Mathf.CeilToInt(amount);
+
+        characterBase.RestoreMana(manaAmount);
+    }
+
 }

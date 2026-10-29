@@ -163,6 +163,80 @@ public static class TargetingSystem
     }
 
     // PURPOSE:
+    // Checks whether a target is inside the
+    // attacker's forward-facing melee arc.
+    public static bool IsTargetInMeleeArc(ICombatEntity user, ICombatEntity target, TargetingData data)
+    {
+        if (!IsValidTarget(user, target, data))
+        {
+            return false;
+        }
+
+        Vector3 direction = target.CombatTransform.position - user.CombatTransform.position;
+
+        Vector3 forward = user.CombatTransform.forward;
+
+        // Ignore vertical differences for melee direction.
+        direction.y = 0f;
+
+        forward.y = 0f;
+
+        if (direction.sqrMagnitude <= 0f || forward.sqrMagnitude <= 0f)
+        {
+            return false;
+        }
+
+        float angle = Vector3.Angle(forward, direction);
+
+        return angle <= data.attackAngle * 0.5f;
+    }
+
+    // PURPOSE:
+    // Finds the nearest valid enemy within
+    // a forward-facing melee attack arc.
+    public static ICombatEntity FindEnemyInMeleeArc(ICombatEntity user, TargetingData data)
+    {
+        if (user == null || data == null || !user.IsAlive || user.CombatTransform == null)
+        {
+            return null;
+        }
+
+        Transform origin = user.CombatTransform;
+
+        // Find potential targets within attack range.
+        Collider[] hits = Physics.OverlapSphere(origin.position, data.maxRange, data.targetLayers, QueryTriggerInteraction.Collide);
+
+        ICombatEntity nearest = null;
+
+        float closestDistance = float.MaxValue;
+
+        foreach (Collider hit in hits)
+        {
+            ICombatEntity candidate = FindCombatEntity(hit);
+
+            // Verify range, team, line of sight
+            // and thr forward-facing attack arc.
+            if (!IsTargetInMeleeArc(user, candidate, data))
+            {
+                continue;
+            }
+
+            // Calculate distance to the valid target.
+            float distance = Vector3.Distance(origin.position, candidate.CombatTransform.position);
+
+            // Keep the nearest valid enemy
+            if (distance < closestDistance)
+            {
+                closestDistance = distance;
+
+                nearest = candidate;
+            }
+        }
+
+        return nearest;
+    }
+
+    // PURPOSE:
     // Finds all valid combat Entities within an area.
     //
     // TODO (DESIGN):

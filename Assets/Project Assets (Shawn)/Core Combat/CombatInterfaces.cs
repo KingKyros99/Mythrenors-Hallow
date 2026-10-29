@@ -63,4 +63,9 @@ public interface ICombatEntity
     // TODO (JABARI INTEGRATION):
     // Confirm mana storage and spending logic.
     bool TrySpendMana(float amount);
+
+    // PURPOSE:
+    // Returns mana when a combat action fails
+    // after resources have been consumed
+    void RefundMana(float amount);
 }
