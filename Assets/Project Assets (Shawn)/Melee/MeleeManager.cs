@@ -66,23 +66,46 @@ public class MeleeManager : MonoBehaviour
             return false;
         }
 
-        // Validate the target before attacking.
-        if (target == null || !TargetingSystem.IsValidTarget(attacker, target, attackData.targetingData))
+        TargetingData targeting = attackData.targetingData;
+
+        ICombatEntity validTarget = null;
+
+        // Use an explicitly selected target when valid.
+        if (target != null)
+        {
+            if (TargetingSystem.IsTargetInMeleeArc(attacker, target, targeting)) ;
+            {
+                validTarget = target;
+            }
+        }
+
+        else
+        {
+            validTarget = TargetingSystem.FindEnemyInMeleeArc(attacker, targeting);
+        }
+
+        // Attacks requiring a target cannot execute on a miss.
+        if (attackData.requiresTarget && validTarget == null)
         {
             return false;
         }
 
-        // A valid swing consumes its cooldown even if
-        // the defender later blocks or dodges the hit
+        // A valid swing starts cooldown even if it misses.
         nextAttackTimes[attackData] = Time.time + Mathf.Max(0f, attackData.cooldown);
 
-        // CombatManager handles whether damage is applied
-        bool damageApplied = CombatManager.TryDealDamage(attacker, target, attackData.damage);
+        if (validTarget == null)
+        {
+            Debug.Log($"{attacker.CombatTransform.name} swung but missed.");
+
+            return true;
+        }
+
+        // Damage remains the CombatManager's responsibility.
+        CombatManager.TryDealDamage(attacker, validTarget, attackData.damage);
 
         // TODO (CORE FUNCTIONS INTEGRATION):
-        // Differentiate successful hits, blocks and dodges
-
-        return damageApplied;
+        // Distinguish hit, block and dodge outcomes
+        return true;
     }
 
     // PURPOSE:

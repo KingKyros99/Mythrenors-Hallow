@@ -20,5 +20,5 @@ MonoBehaviour:
     CanCrit: 1
     IgnoreDefense: 0
   targetingData: {fileID: 11400000, guid: 2006c0d9173f17647b972c4b15eb132d, type: 2}
-  cooldown: 0.8
-  requiresTarget: 1
+  cooldown: 2
+  requiresTarget: 0
