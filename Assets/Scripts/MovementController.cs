@@ -5,14 +5,19 @@ using UnityEngine.InputSystem;
 public class MovementController : MonoBehaviour
 {
     public CharacterController controller;
-    
+    private CharacterBase character;
+
     //Movement/Sprint Var.
+    [Header("sprint")]
+
     [SerializeField] public float baseSpeed;
 
     [SerializeField] public float sprintSpeed;
 
     [SerializeField] public float moveResistance;
 
+    [SerializeField] private float sprintStaminaCost = 2f;
+    
     Vector3 moveDir;
     Vector3 velocity;
 
@@ -42,6 +47,8 @@ public class MovementController : MonoBehaviour
 
     private void Awake()
     {
+        character = GetComponent<CharacterBase>();
+
         if (controller == null)
         {
             controller = GetComponent<CharacterController>();
@@ -77,6 +84,7 @@ public class MovementController : MonoBehaviour
     void Update()
     {
         movement();
+        SprintStamina();
     }
     void movement()
     {
@@ -93,8 +101,20 @@ public class MovementController : MonoBehaviour
         hori = Vector3.right;
         moveDir = vert * currInput.y + hori * currInput.x;
 
+        // Check whether the player is trying to sprint.
+        bool trySprinting = sprintAct.IsPressed() && currInput.sqrMagnitude > 0f;
 
-        Vector3 horizontalDir = moveDir * baseSpeed;
+        // Sprinting requires enough stamina.
+        bool hasStamina =
+            character != null &&
+            character.CurrentStamina > 0f;
+
+        isSprinting = trySprinting && hasStamina;
+
+        // Decides which movement speed.
+        float currentSpeed = isSprinting ? sprintSpeed : baseSpeed;
+
+        Vector3 horizontalDir = moveDir * currentSpeed;
         Vector3 horizontal = new Vector3(velocity.x, 0, velocity.z);
         
         if (moveResistance <= 0)
@@ -109,7 +129,22 @@ public class MovementController : MonoBehaviour
         velocity.z = horizontal.z;
 
         controller.Move(velocity * Time.deltaTime);
-       
+    }
 
+    private void SprintStamina()
+    {
+        if (character == null)
+            return;
+
+        if (isSprinting)
+        {
+            float sprintTime = sprintStaminaCost * Time.deltaTime;
+           
+            // Stop sprinting when stamina runs out.
+            if (!character.SpendStamina(sprintStaminaCost))
+            {
+                isSprinting = false;
+            }
+        }
     }
 }
