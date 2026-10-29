@@ -1,4 +1,3 @@
-
 using UnityEngine;
 
 // MYTHRENOR'S HALLOW - MOCK COMBAT ENTITY
@@ -29,6 +28,7 @@ public class MockCombatEntity : MonoBehaviour, ICombatEntity
     public float criticalChance = 0f;
     public float criticalMultiplier = 2f;
 
+    public float maxMana = 50f;
     public float mana = 50f;
 
     // Provide test data to the combat managers.
@@ -47,29 +47,42 @@ public class MockCombatEntity : MonoBehaviour, ICombatEntity
     private void Awake()
     {
         currentHealth = maxHealth;
+
+        mana = Mathf.Clamp(mana, 0f, maxMana);
     }
 
     // PURPOSE:
-    // Simulates Jabari's damage handling.
+    // Applies valid damage without allowing
+    // health to drop below zero.
     public void ReceiveDamage(float amount)
     {
+        if (!IsAlive || float.IsNaN(amount) || float.IsInfinity(amount) || amount <= 0f)
+        {
+            return;
+        }
+
         currentHealth = Mathf.Max(0f, currentHealth - amount);
 
         Debug.Log($"{name} HP: {currentHealth}/{maxHealth}");
     }
 
     // PURPOSE:
-    // Simulates Jabari's healing handling.
+    // Restores health without exceeding maximum health.
     public void ReceiveHealing(float amount)
     {
+        if (!IsAlive || float.IsNaN(amount) || float.IsInfinity(amount) || amount <= 0f)
+        {
+            return;
+        }
+
         currentHealth = Mathf.Min(maxHealth, currentHealth + amount);
     }
 
     // PURPOSE:
-    // Simulates spending mana for future spell tests.
+    // Validates and consumes mana for test spells.
     public bool TrySpendMana(float amount)
     {
-        if (amount < 0f || mana < amount)
+        if (!IsAlive || float.IsNaN(amount) || float.IsInfinity(amount) || amount < 0f || mana < amount)
         {
             return false;
         }
@@ -77,5 +90,17 @@ public class MockCombatEntity : MonoBehaviour, ICombatEntity
         mana -= amount;
 
         return true;
+    }
+
+    // PURPOSE:
+    // Restores spent mana without exceeding maximum.
+    public void RefundMana(float amount)
+    {
+        if (float.IsNaN(amount) || float.IsInfinity(amount) || amount <= 0f)
+        {
+            return;
+        }
+
+        mana = Mathf.Min(maxMana, mana + amount);
     }
 }

@@ -1,4 +1,3 @@
-
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -24,7 +23,6 @@ public class CombatInputController : MonoBehaviour
 {
     // Combat Entity
     [SerializeField] private MonoBehaviour entityComponent;
-    [SerializeField] private MonoBehaviour targetComponent;
 
     // Combat Managers
     [SerializeField] private MeleeManager meleeManager;
@@ -45,7 +43,6 @@ public class CombatInputController : MonoBehaviour
     [SerializeField] private Transform firePoint;
 
     private ICombatEntity combatEntity;
-    private ICombatEntity targetEntity;
 
     // PURPOSE:
     // Retrieves compatible combat Entities from
@@ -53,29 +50,36 @@ public class CombatInputController : MonoBehaviour
     private void Awake()
     {
         combatEntity = entityComponent as ICombatEntity;
-        targetEntity = targetComponent as ICombatEntity;
+
+        if (combatEntity == null)
+        {
+            Debug.LogWarning($"{name} has no valid combat Entity assigned.");
+        }
+
+        if (firePoint == null)
+        {
+            Debug.LogWarning($"{name}: FirePoint is missing. Ranged attacks and spells will be unavailable.", this);
+        }
     }
 
     // PURPOSE:
     // Registers combat input callbacks.
+    // Input Actions are enabled by PlayerInput.
     private void OnEnable()
     {
         if (meleeInput != null)
         {
             meleeInput.action.performed += OnMelee;
-            meleeInput.action.Enable();
         }
 
         if (rangedInput != null)
         {
             rangedInput.action.performed += OnRanged;
-            rangedInput.action.Enable();
         }
 
         if (spellInput != null)
         {
             spellInput.action.performed += OnSpell;
-            spellInput.action.Enable();
         }
     }
 
@@ -108,36 +112,75 @@ public class CombatInputController : MonoBehaviour
     // Requests a melee attack when its input fires.
     private void OnMelee(InputAction.CallbackContext context)
     {
-        if (combatEntity == null || targetEntity == null || meleeManager == null || meleeAttack == null)
+        if (combatEntity == null || meleeManager == null || meleeAttack == null)
         {
             return;
         }
 
-        meleeManager.TryAttack(combatEntity, targetEntity, meleeAttack);
+        // MeleeManager handles its own target selection
+        meleeManager.TryAttack(combatEntity, null, meleeAttack);
     }
 
     // PURPOSE:
     // Requests a ranged projectile attack.
     private void OnRanged(InputAction.CallbackContext context)
     {
-        if (combatEntity == null || targetEntity == null || rangedManager == null || rangedAttack == null)
+        if (combatEntity == null || rangedManager == null || rangedAttack == null)
         {
             return;
         }
 
-        rangedManager.TryFire(combatEntity, targetEntity, rangedAttack, GetFirePosition());
+        if (!combatEntity.IsAlive || firePoint == null)
+        {
+            return;
+        }
+
+        if (rangedAttack.targetingData == null)
+        {
+            return;
+        }
+
+        ICombatEntity target = TargetingSystem.FindNearestEnemy(combatEntity, rangedAttack.targetingData);
+
+        if (target == null)
+        {
+            Debug.Log("No valid ranged target found.");
+
+            return;
+        }
+
+        rangedManager.TryFire(combatEntity, target, rangedAttack, firePoint.position);
     }
 
     // PURPOSE:
     // Requests a spell using the Entity's mana.
     private void OnSpell(InputAction.CallbackContext context)
     {
-        if (combatEntity == null || targetEntity == null || spellManager == null || spell == null)
+        if (combatEntity == null || spellManager == null || spell == null)
         {
             return;
         }
 
-        spellManager.TryCast(combatEntity, targetEntity, spell, GetFirePosition());
+        if (!combatEntity.IsAlive || firePoint == null)
+        {
+            return;
+        }
+
+        if (spell.targetingData == null)
+        {
+            return;
+        }
+
+        ICombatEntity target = TargetingSystem.FindNearestEnemy(combatEntity, spell.targetingData);
+
+        if (target == null)
+        {
+            Debug.Log("No valid spell target found.");
+
+            return;
+        }
+
+        spellManager.TryCast(combatEntity, target, spell, firePoint.position);
     }
 
     // PURPOSE:

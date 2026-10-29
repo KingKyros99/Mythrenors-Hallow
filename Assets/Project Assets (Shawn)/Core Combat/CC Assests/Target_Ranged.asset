@@ -12,12 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a92fa2bc359a6574ca75f1562a42444f, type: 3}
   m_Name: Target_Ranged
   m_EditorClassIdentifier: Assembly-CSharp::TargetingData
-  targetType: 1
+  targetType: 3
   maxRange: 25
   radius: 0
+  attackAngle: 120
   targetLayers:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 8
   requireLineOfSight: 0
   obstructionLayers:
     serializedVersion: 2

@@ -27,6 +27,35 @@ public class Projectile : MonoBehaviour
     private bool initialized;
     private bool hasHit;
 
+
+    // PURPOSE:
+    // Detects objects already overlapping the
+    // projectile when it first spawns.
+    private bool CheckInitialOverlap()
+    {
+        if (!initialized || hasHit || projectileData == null)
+        {
+            return false;
+        }
+
+        Collider[] overlaps = Physics.OverlapSphere(transform.position, projectileData.collisionRadius, projectileData.collisionLayers, QueryTriggerInteraction.Collide);
+
+        foreach (Collider hit in overlaps)
+        {
+            if (ShouldIgnoreCollision(hit))
+            {
+                continue;
+            }
+
+            // Process the first valid collision.
+            HandleImpact(hit);
+
+            return true;
+        }
+
+        return false;
+    }
+
     // PURPOSE:
     // Configures a projectile after spawning.
     public void Initialize(ICombatEntity attacker, ProjectileData data, DamageData damage, Vector3 travelDirection)
@@ -38,10 +67,13 @@ public class Projectile : MonoBehaviour
         }
 
         owner = attacker;
+
         projectileData = data;
+
         damageData = damage;
 
         direction = travelDirection.normalized;
+
         remainingLifetime = data.lifetime;
 
         initialized = true;
@@ -57,11 +89,19 @@ public class Projectile : MonoBehaviour
             return;
         }
 
+        // Detect enemies already overlapping
+        // the projectile's current position.
+        if (CheckInitialOverlap())
+        {
+            return;
+        }
+
         remainingLifetime -= Time.fixedDeltaTime;
 
         if (remainingLifetime <= 0f)
         {
             Destroy(gameObject);
+
             return;
         }
 
@@ -70,6 +110,7 @@ public class Projectile : MonoBehaviour
         if (remainingRange <= 0f)
         {
             Destroy(gameObject);
+
             return;
         }
 
@@ -77,14 +118,7 @@ public class Projectile : MonoBehaviour
 
         // Check the path before moving so fast
         // projectiles can detect nearby colliders.
-        RaycastHit[] hits = Physics.SphereCastAll(
-            transform.position,
-            projectileData.collisionRadius,
-            direction,
-            movementDistance,
-            projectileData.collisionLayers,
-            QueryTriggerInteraction.Collide
-        );
+        RaycastHit[] hits = Physics.SphereCastAll(transform.position, projectileData.collisionRadius, direction, movementDistance, projectileData.collisionLayers, QueryTriggerInteraction.Collide);
 
         System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
 
@@ -96,12 +130,14 @@ public class Projectile : MonoBehaviour
             }
 
             transform.position += direction * hit.distance;
+
             HandleImpact(hit.collider);
 
             return;
         }
 
         transform.position += direction * movementDistance;
+
         distanceTraveled += movementDistance;
 
         if (distanceTraveled >= projectileData.maxRange)
