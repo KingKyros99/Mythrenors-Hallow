@@ -75,15 +75,21 @@ public class StatusEffectManager : MonoBehaviour
 
             effect.tickTimer += elapsed;
 
-            float interval = Mathf.Max(0.1f, effect.data.tickInterval);
-
-            while (effect.tickTimer + 0.0001f >= interval && combatEntity.IsAlive)
+            // Stun does not apply periodic damage or healing.
+            if (effect.data.effectType != StatusEffectType.Stun && effect.data.effectType != StatusEffectType.AttackBuff
+                && effect.data.effectType != StatusEffectType.DefenseBuff)
             {
-                effect.tickTimer -= interval;
+                float interval = Mathf.Max(0.1f, effect.data.tickInterval);
 
-                ApplyTick(effect);
+                while (effect.tickTimer + 0.0001f >= interval && combatEntity.IsAlive)
+                {
+                    effect.tickTimer -= interval;
+
+                    ApplyTick(effect);
+                }
             }
 
+            // Clear effects if periodic damage kills the Entity
             if (!combatEntity.IsAlive)
             {
                 activeEffects.Clear();
@@ -91,6 +97,7 @@ public class StatusEffectManager : MonoBehaviour
                 return;
             }
 
+            // Remove effects when their duration expires.
             if (effect.remainingDuration <= 0f)
             {
                 Debug.Log($"{name}: {effect.data.effectName} expired.");
@@ -111,7 +118,10 @@ public class StatusEffectManager : MonoBehaviour
         }
 
         // Only implemented effect types can be applied.
-        if (data.effectType != StatusEffectType.Poison && data.effectType != StatusEffectType.Regeneration)
+        if (data.effectType != StatusEffectType.Poison && data.effectType != StatusEffectType.Burn &&
+            data.effectType != StatusEffectType.Bleed && data.effectType != StatusEffectType.Regeneration &&
+            data.effectType != StatusEffectType.Stun && data.effectType != StatusEffectType.AttackBuff &&
+            data.effectType != StatusEffectType.DefenseBuff)
         {
             return false;
         }
@@ -163,6 +173,10 @@ public class StatusEffectManager : MonoBehaviour
         {
             case StatusEffectType.Poison:
 
+            case StatusEffectType.Burn:
+
+            case StatusEffectType.Bleed:
+
                 combatEntity.ReceiveDamage(amount);
 
                 break;
@@ -189,6 +203,80 @@ public class StatusEffectManager : MonoBehaviour
     public bool HasEffect(StatusEffectData data)
     {
         return activeEffects.Exists(effect => effect.data == data);
+    }
+
+    // PURPOSE:
+    // Checks whether this Entity currently
+    // has an active Stun effect.
+    public bool IsStunned()
+    {
+        foreach (ActiveStatusEffect effect in activeEffects)
+        {
+            if (effect.data != null && effect.data.effectType == StatusEffectType.Stun && effect.remainingDuration > 0f)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // PURPOSE:
+    // Provides shared combat action validation
+    // for player and enemy combat managers.
+    public static bool CanEntityAct(ICombatEntity entity)
+    {
+        if (entity == null || !entity.IsAlive || entity.CombatTransform == null)
+        {
+            return false;
+        }
+
+        StatusEffectManager statusManager = entity.CombatTransform.GetComponent<StatusEffectManager>();
+
+        if (statusManager != null && statusManager.isActiveAndEnabled)
+        {
+            return !statusManager.IsStunned();
+        }
+
+        // Characters without a status manager can
+        // still perform normal combat actions.
+        return true;
+    }
+
+    // PURPOSE:
+    // Calculates the total temporary Attack bonus
+    // supplied by active status effects.
+    public float GetAttackBonus()
+    {
+        float bonus = 0f;
+
+        foreach (ActiveStatusEffect effect in activeEffects)
+        {
+            if (effect.data != null && effect.data.effectType == StatusEffectType.AttackBuff && effect.remainingDuration > 0f)
+            {
+                bonus += Mathf.Max(0f, effect.data.effectPower) * effect.stacks;
+            }
+        }
+
+        return bonus;
+    }
+
+    // PURPOSE:
+    // Calculates the total temporary Defense bonus
+    // supplied by active status effects.
+    public float GetDefenseBonus()
+    {
+        float bonus = 0f;
+
+        foreach (ActiveStatusEffect effect in activeEffects)
+        {
+            if (effect.data != null && effect.data.effectType == StatusEffectType.DefenseBuff && effect.remainingDuration > 0f)
+            {
+                bonus += Mathf.Max(0f, effect.data.effectPower) * effect.stacks;
+            }
+        }
+
+        return bonus;
     }
 
     // PURPOSE:

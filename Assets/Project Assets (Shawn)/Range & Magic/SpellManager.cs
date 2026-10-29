@@ -39,7 +39,7 @@ public class SpellManager : MonoBehaviour
             return false;
         }
 
-        if (!caster.IsAlive || caster.CombatTransform == null)
+        if (!StatusEffectManager.CanEntityAct(caster))
         {
             return false;
         }

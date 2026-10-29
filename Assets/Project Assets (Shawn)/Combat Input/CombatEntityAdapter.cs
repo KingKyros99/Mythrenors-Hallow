@@ -20,6 +20,7 @@ public class CombatEntityAdapter : MonoBehaviour, ICombatEntity
 {
     // Character References
     [SerializeField] private CharacterBase characterBase;
+    [SerializeField] private StatusEffectManager statusEffectManager;
 
     // Team Settings
     [SerializeField] private int teamId;
@@ -32,6 +33,11 @@ public class CombatEntityAdapter : MonoBehaviour, ICombatEntity
         if (characterBase == null)
         {
             characterBase = GetComponent<CharacterBase>();
+        }
+
+        if (statusEffectManager == null)
+        {
+            statusEffectManager = GetComponent<StatusEffectManager>();
         }
     }
 
@@ -53,9 +59,34 @@ public class CombatEntityAdapter : MonoBehaviour, ICombatEntity
     // PURPOSE:
     // Reads the actual character statistics
     // from Jabari's CharacterBase.
-    public float Attack => characterBase != null ? characterBase.Attack : 0f;
 
-    public float Defense => characterBase != null ? characterBase.Defense : 0f;
+    // PURPOSE:
+    // Combines base Attack with temporary status bonuses.
+    public float Attack
+    {
+        get
+        {
+            float baseAttack = characterBase != null ? characterBase.Attack : 0f;
+
+            float bonus = statusEffectManager != null ? statusEffectManager.GetAttackBonus() : 0f;
+
+            return baseAttack + bonus;
+        }
+    }
+
+    // PURPOSE:
+    // Combines base Defense with temporary status bonuses.
+    public float Defense
+    {
+        get
+        {
+            float baseDefense = characterBase != null ? characterBase.Defense : 0f;
+
+            float bonus = statusEffectManager != null ? statusEffectManager.GetDefenseBonus() : 0f;
+
+            return baseDefense + bonus;
+        }
+    }
 
     public float CriticalChance => characterBase != null ? characterBase.CritChance : 0f;
 
