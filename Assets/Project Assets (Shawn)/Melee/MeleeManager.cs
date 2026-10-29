@@ -57,11 +57,8 @@ public class MeleeManager : MonoBehaviour
     }
 
     // PURPOSE:
-    // Attempts a melee attack against a target.
-    //
-    // TODO (JABARI INTEGRATION):
-    // Jabari's Entity will provide the attacker
-    // and target references during combat.
+    // Attempts a melee attack and starts its cooldown
+    // once a valid attack has been executed.
     public bool TryAttack(ICombatEntity attacker, ICombatEntity target, MeleeAttackData attackData)
     {
         if (!CanAttack(attacker, attackData))
@@ -75,21 +72,17 @@ public class MeleeManager : MonoBehaviour
             return false;
         }
 
-        // Request damage through the shared
-        // CombatManager instead of changing
-        // Entity health directly.
-        bool attackSuccessful = CombatManager.TryDealDamage(attacker, target, attackData.damage);
-
-        if (!attackSuccessful)
-        {
-            return false;
-        }
-
-        // Begin the cooldown only after a
-        // successful damage request.
+        // A valid swing consumes its cooldown even if
+        // the defender later blocks or dodges the hit
         nextAttackTimes[attackData] = Time.time + Mathf.Max(0f, attackData.cooldown);
 
-        return true;
+        // CombatManager handles whether damage is applied
+        bool damageApplied = CombatManager.TryDealDamage(attacker, target, attackData.damage);
+
+        // TODO (CORE FUNCTIONS INTEGRATION):
+        // Differentiate successful hits, blocks and dodges
+
+        return damageApplied;
     }
 
     // PURPOSE:

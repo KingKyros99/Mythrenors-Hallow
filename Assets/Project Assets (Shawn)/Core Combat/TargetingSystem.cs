@@ -176,24 +176,61 @@ public static class TargetingSystem
     {
         List<ICombatEntity> targets = new List<ICombatEntity>();
 
-        if (user == null || data == null)
+        if (user == null || data == null || !user.IsAlive || user.CombatTransform == null)
         {
             return targets;
         }
 
+        if (data.targetType != TargetType.AllEnemiesInRadius)
+        {
+            return targets;
+        }
+
+        float castDistance = Vector3.Distance(user.CombatTransform.position, center);
+
+        if (castDistance > data.maxRange)
+        {
+            return targets;
+        }
+
+        // Find the colliders inside the area, not around the caster.
         Collider[] hits = Physics.OverlapSphere(center, data.radius, data.targetLayers);
 
         foreach (Collider hit in hits)
         {
             ICombatEntity candidate = FindCombatEntity(hit);
 
-            if (!IsValidTarget(user, candidate, data))
+            if (candidate == null || !candidate.IsAlive || candidate.CombatTransform == null)
             {
                 continue;
             }
 
-            // Prevent duplicate targets from entities
-            // with multiple colliders.
+            // Exclude the caster and friendly characters.
+            if (candidate.CombatTransform == user.CombatTransform || candidate.TeamId == user.TeamId)
+            {
+                continue;
+            }
+
+            // A target must actually be inside the area.
+            float targetDistance = Vector3.Distance(center, candidate.CombatTransform.position);
+
+            if (targetDistance > data.radius)
+            {
+                continue;
+            }
+
+            // Optional obstacle validation from the area center
+            if (data.requireLineOfSight)
+            {
+                Vector3 direction = candidate.CombatTransform.position - center;
+
+                if (direction.sqrMagnitude > 0f && Physics.Raycast(center, direction.normalized, direction.magnitude, data.obstructionLayers, QueryTriggerInteraction.Ignore))
+                {
+                    continue;
+                }
+            }
+
+            // Do not include the same Entity more than once
             if (!targets.Contains(candidate))
             {
                 targets.Add(candidate);

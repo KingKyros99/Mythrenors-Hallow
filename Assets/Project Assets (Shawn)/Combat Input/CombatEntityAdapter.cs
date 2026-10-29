@@ -74,10 +74,10 @@ public class CombatEntityAdapter : MonoBehaviour, ICombatEntity
 
         characterBase.TakeDamage(damage);
 
-        // TODO (JABARI INTEGRATION):
-        // Jabari's TakeDamage currently does not
-        // automatically call Die() at zero HP.
-        // Coordinate death handling with Jabari.
+        // PURPOSE:
+        // Temporarily displays actual health after damage.
+        // TODO (DEBUG): Remove after integration testing.
+        Debug.Log($"{name} Health: {characterBase.CurrentHealth}/{characterBase.MaxHealth}");
     }
 
     // PURPOSE:
@@ -109,6 +109,12 @@ public class CombatEntityAdapter : MonoBehaviour, ICombatEntity
             return true;
         }
 
-        return characterBase.SpendMana(Mathf.CeilToInt(amount));
+        int manaCost = Mathf.CeilToInt(amount);
+
+        bool successful = characterBase.SpendMana(manaCost);
+
+        Debug.Log($"{name} Mana: {characterBase.CurrentMana}/{characterBase.MaxMana} | Cost: {manaCost} | Success: {successful}");
+
+        return successful;
     }
 }
