@@ -1,0 +1,28 @@
+using System.Collections.Generic;
+using UnityEngine;
+using static UnityEditor.Progress;
+
+public class Player : CharacterBase
+{
+    [Header("Player Inventory")]
+    [SerializeField] private List<Item> inventory = new List<Item>();
+
+    public IReadOnlyList<Item> Inventory => inventory;
+
+    public bool AddItem(Item item)
+    {
+        if (item == null)
+            return false;
+
+        inventory.Add(item);
+        return true;
+    }
+
+    public bool RemoveItem(Item item)
+    {
+        if (item == null)
+            return false;
+
+        return inventory.Remove(item);
+    }
+}
