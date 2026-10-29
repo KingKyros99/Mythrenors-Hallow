@@ -25,7 +25,10 @@ public class MovementController : MonoBehaviour
     
     [SerializeField] public float coyoteTime;
 
-    int jumpCount;
+    [SerializeField] public float jumpTimer;
+
+    [SerializeField] public int jumpCount;
+    [SerializeField] public float jumpCountMax;
 
     InputAction moveAct, sprintAct, jumpAct;
 
@@ -76,6 +79,7 @@ public class MovementController : MonoBehaviour
 
     void Update()
     {
+        jump();
         movement();
     }
     void movement()
@@ -109,7 +113,43 @@ public class MovementController : MonoBehaviour
         velocity.z = horizontal.z;
 
         controller.Move(velocity * Time.deltaTime);
-       
-
     }
+
+
+    //vertical jump and gravity
+    void jump()
+    {
+        gravity = -Mathf.Abs(gravity);
+        fallVelocity = -Mathf.Abs(fallVelocity);
+
+        if (isGrounded)
+        {
+            jumpTimer = Time.time;
+            jumpCount = 0;
+
+            //keeps the player grounded while moveing even on slope's
+            if (velocity.y <= 0f)
+            {
+                velocity.y = -1f;
+            }
+        }
+
+        bool inCoyoteTime = Time.time - jumpTimer <= coyoteTime;
+        if (!inCoyoteTime && jumpCount == 0)
+        {
+            jumpCount = 1;
+        }
+
+        if (jumpAct.WasPressedThisFrame() && jumpCount < jumpCountMax)
+        {
+            velocity.y = Mathf.Sqrt(jumpHeight * -2 * gravity);
+            jumpCount++;
+            jumpTimer = 0f;
+
+
+        }
+
+        velocity.y = Mathf.Max(velocity.y + gravity * Time.deltaTime, fallVelocity);
+    }
+
 }
