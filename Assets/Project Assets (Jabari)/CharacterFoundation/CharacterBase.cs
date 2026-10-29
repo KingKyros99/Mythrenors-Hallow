@@ -32,6 +32,11 @@ public class CharacterBase : MonoBehaviour
             return;
 
         health = Mathf.Max(0, health - amount);
+
+        if (health <= 0 && !mIsDead)
+        {
+            Die();
+        }
     }
 
     public void Heal(int amount)
