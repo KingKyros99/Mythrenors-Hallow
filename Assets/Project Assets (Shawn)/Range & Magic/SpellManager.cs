@@ -86,7 +86,10 @@ public class SpellManager : MonoBehaviour
             return false;
         }
 
-        Vector3 direction = target.CombatTransform.position - spawnPosition;
+        // Aim toward the target's collider center.
+        Vector3 aimPoint = ProjectileAimUtility.GetAimPoint(target);
+
+        Vector3 direction = aimPoint - spawnPosition;
 
         if (direction.sqrMagnitude <= 0f)
         {

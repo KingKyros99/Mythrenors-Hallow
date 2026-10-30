@@ -159,11 +159,13 @@ public class Projectile : MonoBehaviour
             return true;
         }
 
+        // Ignore the projectile's own colliders.
         if (hit.transform == transform || hit.transform.IsChildOf(transform))
         {
             return true;
         }
 
+        // Ignore colliders belonging to the attacker
         if (owner != null && owner.CombatTransform != null)
         {
             Transform ownerTransform = owner.CombatTransform;
@@ -174,6 +176,23 @@ public class Projectile : MonoBehaviour
             }
         }
 
+        if (hit.isTrigger)
+        {
+            MonoBehaviour[] components = hit.GetComponentsInParent<MonoBehaviour>();
+
+            foreach (MonoBehaviour component in components)
+            {
+                // Combat Entity triggers may represent hitboxes.
+                if (component is ICombatEntity)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        // All other solid collisions are processed.
         return false;
     }
 

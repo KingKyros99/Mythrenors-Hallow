@@ -87,9 +87,10 @@ public class RangedAttackManager : MonoBehaviour
             return false;
         }
 
-        // Aim toward the target using the requested
-        // spawn position as the firing point.
-        Vector3 direction = target.CombatTransform.position - spawnPosition;
+        // Aim toward the target's collider center
+        Vector3 aimPoint = ProjectileAimUtility.GetAimPoint(target);
+
+        Vector3 direction = aimPoint - spawnPosition;
 
         if (direction.sqrMagnitude <= 0f)
         {
