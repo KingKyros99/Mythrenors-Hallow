@@ -18,5 +18,5 @@ MonoBehaviour:
   duration: 6
   tickInterval: 2
   effectPower: 4
-  canStack: 0
+  canStack: 1
   maxStacks: 3

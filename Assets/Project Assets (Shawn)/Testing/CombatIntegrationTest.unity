@@ -1391,6 +1391,13 @@ MonoBehaviour:
   rangedInput: {fileID: -7804029945888478296, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
   spellInput: {fileID: -4419516839721251445, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
   firePoint: {fileID: 478470394}
+  selfAbilityManager: {fileID: 783117646}
+  regenerationAbility: {fileID: 11400000, guid: f684346f9cd6c2540a8dde77b98f85e4, type: 2}
+  attackBoostAbility: {fileID: 11400000, guid: ca088e952cf9e974585a6f59dabd15ff, type: 2}
+  defenseBoostAbility: {fileID: 11400000, guid: 6dcc55d7d83feb64e804d1d7e225176f, type: 2}
+  regenerationInput: {fileID: 9209060594412772981, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
+  attackBoostInput: {fileID: -361258632511616692, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
+  defenseBoostInput: {fileID: 7493280284744570449, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
 --- !u!114 &783117645
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1421,6 +1428,21 @@ MonoBehaviour:
   m_DefaultActionMap: Combat
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &783117646
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 773796404}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 988812b1c25e2f048b2844264c3fe503, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SelfStatusAbilityManager
+  entityComponent: {fileID: 783117635}
+  statusEffectManager: {fileID: 783117634}
+  debugAbility: {fileID: 11400000, guid: ca088e952cf9e974585a6f59dabd15ff, type: 2}
 --- !u!4 &893082179 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3782853220175355264, guid: 2f95f4a03dc239a49ad31d86c7c8a7a7, type: 3}
@@ -3897,21 +3919,24 @@ PrefabInstance:
       addedObject: {fileID: 783117636}
     - targetCorrespondingSourceObject: {fileID: 7397415882078533871, guid: 24ad4d3f4597f614cbb9877589fd9203, type: 3}
       insertIndex: 5
-      addedObject: {fileID: 783117634}
+      addedObject: {fileID: 783117646}
     - targetCorrespondingSourceObject: {fileID: 7397415882078533871, guid: 24ad4d3f4597f614cbb9877589fd9203, type: 3}
       insertIndex: 6
+      addedObject: {fileID: 783117634}
+    - targetCorrespondingSourceObject: {fileID: 7397415882078533871, guid: 24ad4d3f4597f614cbb9877589fd9203, type: 3}
+      insertIndex: 7
       addedObject: {fileID: 783117645}
     - targetCorrespondingSourceObject: {fileID: 7397415882078533871, guid: 24ad4d3f4597f614cbb9877589fd9203, type: 3}
-      insertIndex: 8
+      insertIndex: 9
       addedObject: {fileID: 783117640}
     - targetCorrespondingSourceObject: {fileID: 7397415882078533871, guid: 24ad4d3f4597f614cbb9877589fd9203, type: 3}
-      insertIndex: 9
+      insertIndex: 10
       addedObject: {fileID: 783117637}
     - targetCorrespondingSourceObject: {fileID: 7397415882078533871, guid: 24ad4d3f4597f614cbb9877589fd9203, type: 3}
-      insertIndex: 10
+      insertIndex: 11
       addedObject: {fileID: 783117638}
     - targetCorrespondingSourceObject: {fileID: 7397415882078533871, guid: 24ad4d3f4597f614cbb9877589fd9203, type: 3}
-      insertIndex: 11
+      insertIndex: 12
       addedObject: {fileID: 783117639}
   m_SourcePrefab: {fileID: 100100000, guid: 24ad4d3f4597f614cbb9877589fd9203, type: 3}
 --- !u!1001 &6346863097327033171

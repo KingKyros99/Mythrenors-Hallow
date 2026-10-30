@@ -42,6 +42,27 @@ public class CombatInputController : MonoBehaviour
     // Projectile Spawn
     [SerializeField] private Transform firePoint;
 
+    // Self Status Abilities
+    [SerializeField] private SelfStatusAbilityManager selfAbilityManager;
+
+    [SerializeField] private SelfStatusAbilityData regenerationAbility;
+    [SerializeField] private SelfStatusAbilityData attackBoostAbility;
+    [SerializeField] private SelfStatusAbilityData defenseBoostAbility;
+
+    // Ability Input Actions
+    [SerializeField] private InputActionReference regenerationInput;
+    [SerializeField] private InputActionReference attackBoostInput;
+    [SerializeField] private InputActionReference defenseBoostInput;
+
+
+    // PURPOSE:
+    // Store PlayerInput's runtime actions for abilities.
+    private PlayerInput playerInput;
+    private InputAction regenerationAction;
+    private InputAction attackBoostAction;
+    private InputAction defenseBoostAction;
+
+
     private ICombatEntity combatEntity;
 
     // PURPOSE:
@@ -81,6 +102,31 @@ public class CombatInputController : MonoBehaviour
         {
             spellInput.action.performed += OnSpell;
         }
+
+        // Find the PlayerInput component on our character.
+        playerInput = GetComponent<PlayerInput>();
+
+        // Find the runtime copies of our ability actions.
+        regenerationAction = GetPlayerAction(regenerationInput);
+        attackBoostAction = GetPlayerAction(attackBoostInput);
+        defenseBoostAction = GetPlayerAction(defenseBoostInput);
+
+        // Subscribe to the correct actions.
+        if (regenerationAction != null)
+        {
+            regenerationAction.performed += OnRegenerationRequested;
+        }
+
+        if (attackBoostAction != null)
+        {
+            attackBoostAction.performed += OnAttackBoostRequested;
+        }
+
+        if (defenseBoostAction != null)
+        {
+            defenseBoostAction.performed += OnDefenseBoostRequested;
+        }
+
     }
 
     // PURPOSE:
@@ -101,6 +147,23 @@ public class CombatInputController : MonoBehaviour
         if (spellInput != null)
         {
             spellInput.action.performed -= OnSpell;
+        }
+
+        // Unsubscribe from the exact runtime actions
+        // that were registered in OnEnable.
+        if (regenerationAction != null)
+        {
+            regenerationAction.performed -= OnRegenerationRequested;
+        }
+
+        if (attackBoostAction != null)
+        {
+            attackBoostAction.performed -= OnAttackBoostRequested;
+        }
+
+        if (defenseBoostAction != null)
+        {
+            defenseBoostAction.performed -= OnDefenseBoostRequested;
         }
 
         // NOTE:
@@ -181,6 +244,48 @@ public class CombatInputController : MonoBehaviour
         }
 
         spellManager.TryCast(combatEntity, target, spell, firePoint.position);
+    }
+
+    // PURPOSE:
+    // Finds the PlayerInput version of an assigned action.
+    private InputAction GetPlayerAction(InputActionReference reference)
+    {
+        if (playerInput == null || playerInput.actions == null || reference == null || reference.action == null)
+        {
+            return null;
+        }
+
+        return playerInput.actions.FindAction(reference.action.id);
+    }
+
+    // PURPOSE:
+    // Requests the Player's Regeneration ability.
+    private void OnRegenerationRequested(InputAction.CallbackContext context)
+    {
+        if (selfAbilityManager != null && regenerationAbility != null)
+        {
+            selfAbilityManager.TryActivate(regenerationAbility);
+        }
+    }
+
+    // PURPOSE:
+    // Requests the Player's Attack Boost ability.
+    private void OnAttackBoostRequested(InputAction.CallbackContext context)
+    {
+        if (selfAbilityManager != null && attackBoostAbility != null)
+        {
+            selfAbilityManager.TryActivate(attackBoostAbility);
+        }
+    }
+
+    // PURPOSE:
+    // Requests the Player's Defense Boost ability.
+    private void OnDefenseBoostRequested(InputAction.CallbackContext context)
+    {
+        if (selfAbilityManager != null && defenseBoostAbility != null)
+        {
+            selfAbilityManager.TryActivate(defenseBoostAbility);
+        }
     }
 
     // PURPOSE:

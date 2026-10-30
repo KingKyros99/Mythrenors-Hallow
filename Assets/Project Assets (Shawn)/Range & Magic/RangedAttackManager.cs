@@ -97,13 +97,8 @@ public class RangedAttackManager : MonoBehaviour
         }
 
         // Spawn the projectile through our shared manager.
-        bool successful = projectileManager.TrySpawnProjectile(
-            attacker,
-            attackData.projectileData,
-            attackData.damage,
-            spawnPosition,
-            direction
-        );
+        bool successful = projectileManager.TrySpawnProjectile(attacker, attackData.projectileData, attackData.damage, spawnPosition,
+            direction, attackData.statusEffect);
 
         if (!successful)
         {

@@ -101,13 +101,8 @@ public class SpellManager : MonoBehaviour
 
         // Use the same projectile system as
         // bows, crossbows, and thrown weapons.
-        bool successful = projectileManager.TrySpawnProjectile(
-            caster,
-            spellData.projectileData,
-            spellData.damage,
-            spawnPosition,
-            direction
-        );
+        bool successful = projectileManager.TrySpawnProjectile(caster, spellData.projectileData, spellData.damage, spawnPosition,
+            direction, spellData.statusEffect);
 
         if (!successful)
         {

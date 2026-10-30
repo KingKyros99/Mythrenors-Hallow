@@ -41,4 +41,7 @@ public class RangedAttackData : ScriptableObject
 
     [Min(0)]
     public int ammoCost = 1;
+
+    // Status Effect
+    public StatusEffectData statusEffect;
 }

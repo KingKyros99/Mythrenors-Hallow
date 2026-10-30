@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82e6a01844e51074bbe4ba07c491e094, type: 3}
+  m_Name: Ability_AttackBoost
+  m_EditorClassIdentifier: Assembly-CSharp::SelfStatusAbilityData
+  abilityName: Attack Boost
+  description: 
+  statusEffect: {fileID: 11400000, guid: b6dddd0364113e648902bbe8afd7830a, type: 2}
+  manaCost: 15
+  cooldown: 10

@@ -19,7 +19,7 @@ public class Projectile : MonoBehaviour
     private ICombatEntity owner;
     private ProjectileData projectileData;
     private DamageData damageData;
-
+    private StatusEffectData statusEffect;
     private Vector3 direction;
     private float distanceTraveled;
     private float remainingLifetime;
@@ -58,11 +58,12 @@ public class Projectile : MonoBehaviour
 
     // PURPOSE:
     // Configures a projectile after spawning.
-    public void Initialize(ICombatEntity attacker, ProjectileData data, DamageData damage, Vector3 travelDirection)
+    public void Initialize(ICombatEntity attacker, ProjectileData data, DamageData damage, Vector3 travelDirection, StatusEffectData newStatusEffect = null)
     {
         if (attacker == null || data == null || travelDirection.sqrMagnitude <= 0f)
         {
             Destroy(gameObject);
+
             return;
         }
 
@@ -71,6 +72,8 @@ public class Projectile : MonoBehaviour
         projectileData = data;
 
         damageData = damage;
+
+        statusEffect = newStatusEffect;
 
         direction = travelDirection.normalized;
 
@@ -192,9 +195,19 @@ public class Projectile : MonoBehaviour
         {
             if (component is ICombatEntity target)
             {
-                // CombatManager handles team checks,
-                // damage calculation, and damage requests.
-                CombatManager.TryDealDamage(owner, target, damageData);
+                // Apply damage through our shared combat system.
+                bool damageApplied = CombatManager.TryDealDamage(owner, target, damageData);
+
+                // Only apply the status effect after accepted damage.
+                if (damageApplied && target.IsAlive && statusEffect != null)
+                {
+                    StatusEffectManager statusManager = target.CombatTransform.GetComponent<StatusEffectManager>();
+
+                    if (statusManager != null)
+                    {
+                        statusManager.ApplyEffect(statusEffect);
+                    }
+                }
 
                 break;
             }
