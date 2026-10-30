@@ -129,6 +129,7 @@ GameObject:
   m_Component:
   - component: {fileID: 299241689}
   - component: {fileID: 299241688}
+  - component: {fileID: 299241690}
   - component: {fileID: 299241687}
   - component: {fileID: 299241686}
   m_Layer: 0
@@ -351,6 +352,33 @@ Transform:
   m_Children: []
   m_Father: {fileID: 497974792}
   m_LocalEulerAnglesHint: {x: 0, y: -1082.267, z: 0}
+--- !u!114 &299241690
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 299241685}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f452f6c47524ab649ba1a6d12eb8b879, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerCamera
+  player: {fileID: 497974792}
+  playerMov: {fileID: 783117630}
+  playerOffset: {x: 0, y: 1, z: 2}
+  distance: 3.1
+  shoulderDist: 0.5
+  horizontalRot: 1
+  verticalRot: 0
+  camSensitivity: 0.1
+  camRotMax: 20
+  camRotMin: -8
+  colisionZone: 0.2
+  minDist: 1
+  camSpeed: 0
+  currDist: 0
+  cam: {fileID: 299241688}
 --- !u!1 &320547073
 GameObject:
   m_ObjectHideFlags: 0
@@ -1177,6 +1205,17 @@ Mesh:
       - serializedVersion: 1
         m_IndexStart: 0
         m_IndexCount: 0
+--- !u!114 &783117630 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5547669967188502495, guid: 24ad4d3f4597f614cbb9877589fd9203, type: 3}
+  m_PrefabInstance: {fileID: 5674625383443876252}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6348cff21ac8aad42864d911ac616ecb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MovementController
 --- !u!4 &893082179 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3782853220175355264, guid: 2f95f4a03dc239a49ad31d86c7c8a7a7, type: 3}
@@ -3326,7 +3365,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5547669967188502495, guid: 24ad4d3f4597f614cbb9877589fd9203, type: 3}
       propertyPath: moveResistance
-      value: 10
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 7397415882078533871, guid: 24ad4d3f4597f614cbb9877589fd9203, type: 3}
       propertyPath: m_Name
