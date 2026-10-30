@@ -1,3 +1,4 @@
+using Unity.Cinemachine;
 using UnityEngine;
 
 // MYTHRENOR'S HALLOW - PROJECTILE
@@ -26,7 +27,6 @@ public class Projectile : MonoBehaviour
 
     private bool initialized;
     private bool hasHit;
-
 
     // PURPOSE:
     // Detects objects already overlapping the
@@ -208,17 +208,40 @@ public class Projectile : MonoBehaviour
 
         hasHit = true;
 
+        // Search for an Entity attached to the hit object.
+        ICombatEntity target = null;
+
         MonoBehaviour[] components = hit.GetComponentsInParent<MonoBehaviour>();
 
         foreach (MonoBehaviour component in components)
         {
-            if (component is ICombatEntity target)
+            if (component is ICombatEntity entity)
             {
-                // Apply damage through our shared combat system.
-                bool damageApplied = CombatManager.TryDealDamage(owner, target, damageData);
+                target = entity;
 
-                // Only apply the status effect after accepted damage.
-                if (damageApplied && target.IsAlive && statusEffect != null)
+                break;
+            }
+        }
+
+        // Handle an environmental impact.
+        if (target == null)
+        {
+            Debug.Log($"{name} hit environment: {hit.name}");
+
+            SpawnImpactVfx(projectileData.environmentImpactVfx, hit);
+        }
+
+        else
+        {
+            // Apply damage through the shared combat system.
+            bool damageApplied = CombatManager.TryDealDamage(owner, target, damageData);
+
+            if (damageApplied)
+            {
+                Debug.Log($"{name} hit combat Entity: {target.CombatTransform.name}");
+
+                // Apply optional status effect
+                if (target.IsAlive && statusEffect != null)
                 {
                     StatusEffectManager statusManager = target.CombatTransform.GetComponent<StatusEffectManager>();
 
@@ -228,13 +251,39 @@ public class Projectile : MonoBehaviour
                     }
                 }
 
-                break;
+                SpawnImpactVfx(projectileData.combatImpactVfx, hit);
+            }
+
+            else
+            {
+                Debug.Log($"{name} hit {hit.name}, but no damage was applied");
+
+                // TODO (CORE FUNCTIONS INTEGRATION):
+                // Distinguish blocked, dodged and invalid hits.
             }
         }
 
-        // TODO (DESIGN):
-        // Add impact VFX, sound, and status effects.
-
+        // Remove the projectile after processing impact.
         Destroy(gameObject);
+    }
+
+    // PURPOSE:
+    // Spawns the configured effect at the collision point.
+    private void SpawnImpactVfx(GameObject effectPrefab, Collider hit)
+    {
+        if (effectPrefab == null || hit == null || projectileData == null)
+        {
+            return;
+        }
+
+        // Find the point on the collider nearest
+        // to the projectile's current position.
+        Vector3 impactPosition = hit.ClosestPoint(transform.position);
+
+        // Spawn the effect independently of the projectile.
+        GameObject effect = Instantiate(effectPrefab, impactPosition, Quaternion.identity);
+
+        // Clean up the effect after its configured lifetime.
+        Destroy(effect, projectileData.impactVfxLifetime);
     }
 }
