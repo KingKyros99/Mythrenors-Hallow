@@ -33,6 +33,7 @@ public class MovementController : MonoBehaviour
     [SerializeField] public float jumpTimer;
 
     [SerializeField] public int jumpCount;
+
     [SerializeField] public float jumpCountMax;
 
     InputAction moveAct, sprintAct, jumpAct;
