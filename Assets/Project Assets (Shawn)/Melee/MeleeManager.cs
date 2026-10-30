@@ -35,7 +35,7 @@ public class MeleeManager : MonoBehaviour
             return false;
         }
 
-        if (!attacker.IsAlive || attacker.CombatTransform == null)
+        if (!StatusEffectManager.CanEntityAct(attacker))
         {
             return false;
         }

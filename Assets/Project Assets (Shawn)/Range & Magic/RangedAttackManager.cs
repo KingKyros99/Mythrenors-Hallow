@@ -39,7 +39,7 @@ public class RangedAttackManager : MonoBehaviour
             return false;
         }
 
-        if (!attacker.IsAlive || attacker.CombatTransform == null)
+        if (!StatusEffectManager.CanEntityAct(attacker))
         {
             return false;
         }
