@@ -73,7 +73,7 @@ public class MeleeManager : MonoBehaviour
         // Use an explicitly selected target when valid.
         if (target != null)
         {
-            if (TargetingSystem.IsTargetInMeleeArc(attacker, target, targeting)) ;
+            if (TargetingSystem.IsTargetInMeleeArc(attacker, target, targeting))
             {
                 validTarget = target;
             }
