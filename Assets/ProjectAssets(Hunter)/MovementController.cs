@@ -5,14 +5,19 @@ using UnityEngine.InputSystem;
 public class MovementController : MonoBehaviour
 {
     public CharacterController controller;
-    
+    private CharacterBase character;
+
     //Movement/Sprint Var.
+    [Header("sprint")]
+
     [SerializeField] public float baseSpeed;
 
     [SerializeField] public float sprintSpeed;
 
     [SerializeField] public float moveResistance;
 
+    [SerializeField] private float sprintStaminaCost = 2f;
+    
     Vector3 moveDir;
     Vector3 velocity;
 
@@ -45,6 +50,8 @@ public class MovementController : MonoBehaviour
 
     private void Awake()
     {
+        character = GetComponent<CharacterBase>();
+
         if (controller == null)
         {
             controller = GetComponent<CharacterController>();
@@ -81,7 +88,9 @@ public class MovementController : MonoBehaviour
     {
         jump();
         movement();
+        SprintStamina();
     }
+
     void movement()
     {
         //get curr input and make sure that diagonal move is not accelerated
@@ -89,16 +98,31 @@ public class MovementController : MonoBehaviour
         
 
         //vertical and horizontal
-        Vector3 vert;
-        Vector3 hori;
+        Vector3 vert = transform.forward;
+        Vector3 hori = transform.right;
 
         //temp without camera
-        vert = Vector3.forward;
-        hori = Vector3.right;
-        moveDir = vert * currInput.y + hori * currInput.x;
+        vert.y = 0;
+        hori.y = 0;
+        vert.Normalize();
+        hori.Normalize();
 
+        moveDir = (vert * currInput.y) + hori * currInput.x;
 
-        Vector3 horizontalDir = moveDir * baseSpeed;
+        // Check whether the player is trying to sprint.
+        bool trySprinting = sprintAct.IsPressed() && currInput.sqrMagnitude > 0f;
+
+        // Sprinting requires enough stamina.
+        bool hasStamina =
+            character != null &&
+            character.CurrentStamina > 0f;
+
+        isSprinting = trySprinting && hasStamina;
+
+        // Decides which movement speed.
+        float currentSpeed = isSprinting ? sprintSpeed : baseSpeed;
+
+        Vector3 horizontalDir = moveDir * currentSpeed;
         Vector3 horizontal = new Vector3(velocity.x, 0, velocity.z);
         
         if (moveResistance <= 0)
@@ -114,6 +138,7 @@ public class MovementController : MonoBehaviour
 
         controller.Move(velocity * Time.deltaTime);
     }
+    
 
 
     //vertical jump and gravity
@@ -151,5 +176,22 @@ public class MovementController : MonoBehaviour
 
         velocity.y = Mathf.Max(velocity.y + gravity * Time.deltaTime, fallVelocity);
     }
+    
+    
+    private void SprintStamina()
+    {
+        if (character == null)
+            return;
 
+        if (isSprinting)
+        {
+            float sprintTime = sprintStaminaCost * Time.deltaTime;
+           
+            // Stop sprinting when stamina runs out.
+            if (!character.SpendStamina(sprintStaminaCost))
+            {
+                isSprinting = false;
+            }
+        }
+    }
 }

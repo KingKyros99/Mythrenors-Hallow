@@ -1044,6 +1044,36 @@
                     "interactions": "",
                     "initialStateCheck": false,
                     "priority": 0
+                },
+                {
+                    "name": "Regeneration",
+                    "type": "Button",
+                    "id": "ab39cf47-6be5-4e29-8ff8-66213562780e",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
+                },
+                {
+                    "name": "Attack Boost",
+                    "type": "Button",
+                    "id": "c737d9c9-ed94-4f32-badb-761096137712",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
+                },
+                {
+                    "name": "Defense Boost",
+                    "type": "Button",
+                    "id": "12cda791-93e0-40e4-99b3-d51362a959c2",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
                 }
             ],
             "bindings": [
@@ -1077,6 +1107,39 @@
                     "processors": "",
                     "groups": "",
                     "action": "Melee Attack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "292c028d-ea6f-4de3-83d7-c82abcc8ffbc",
+                    "path": "<Keyboard>/1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Regeneration",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7060fbca-1a97-4b0c-9bff-7a33e380537f",
+                    "path": "<Keyboard>/2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Attack Boost",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "95b374ce-dc75-46ae-bfd3-cec1263857e5",
+                    "path": "<Keyboard>/3",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Defense Boost",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

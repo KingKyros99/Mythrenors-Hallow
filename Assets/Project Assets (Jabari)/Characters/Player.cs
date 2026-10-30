@@ -9,6 +9,21 @@ public class Player : CharacterBase
 
     public IReadOnlyList<Item> Inventory => inventory;
 
+    [Header("Player Movement")]
+    [SerializeField] private MovementController movementController;
+
+    public MovementController Movement => movementController;
+
+    protected override void Awake()
+    {
+        base.Awake();
+
+        if (movementController == null)
+        {
+            movementController = GetComponent<MovementController>();
+        }
+    }
+
     public bool AddItem(Item item)
     {
         if (item == null)
