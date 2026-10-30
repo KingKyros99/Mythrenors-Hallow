@@ -22,3 +22,4 @@ MonoBehaviour:
   targetingData: {fileID: 11400000, guid: 2006c0d9173f17647b972c4b15eb132d, type: 2}
   cooldown: 2
   requiresTarget: 0
+  statusEffect: {fileID: 11400000, guid: 5514dc6f6bf20254591d207792197a5d, type: 2}

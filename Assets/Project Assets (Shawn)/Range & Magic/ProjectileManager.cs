@@ -19,7 +19,8 @@ public class ProjectileManager : MonoBehaviour
     // PURPOSE:
     // Spawns a projectile using its configuration,
     // attacker information, and travel direction.
-    public bool TrySpawnProjectile(ICombatEntity attacker, ProjectileData projectileData, DamageData damageData, Vector3 spawnPosition, Vector3 direction)
+    public bool TrySpawnProjectile(ICombatEntity attacker, ProjectileData projectileData, DamageData damageData, Vector3 spawnPosition,
+        Vector3 direction, StatusEffectData statusEffect = null)
     {
         if (attacker == null || !attacker.IsAlive || attacker.CombatTransform == null)
         {
@@ -50,7 +51,7 @@ public class ProjectileManager : MonoBehaviour
 
         // Supply the projectile with the data needed
         // to operate independently after spawning.
-        projectile.Initialize(attacker, projectileData, damageData, normalizedDirection);
+        projectile.Initialize(attacker, projectileData, damageData, normalizedDirection, statusEffect);
 
         return true;
     }
