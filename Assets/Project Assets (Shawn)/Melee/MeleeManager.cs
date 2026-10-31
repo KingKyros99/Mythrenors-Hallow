@@ -95,6 +95,9 @@ public class MeleeManager : MonoBehaviour
         // A valid swing starts cooldown even if it misses.
         nextAttackTimes[attackData] = Time.time + Mathf.Max(0f, attackData.cooldown);
 
+        // Play the melee slash once the swing is executed.
+        PlaySwingVfx(attacker, attackData);
+
         if (validTarget == null)
         {
             Debug.Log($"{attacker.CombatTransform.name} swung but missed.");
@@ -105,21 +108,88 @@ public class MeleeManager : MonoBehaviour
         // Apply damage using the shared CombatManager
         bool damageApplied = CombatManager.TryDealDamage(attacker, validTarget, attackData.damage);
 
-        // Apply the configured effect only when
-        // the combat system accepts the damage.
-        if (damageApplied && attackData.statusEffect != null)
+        // Handle the successful melee damage.
+        if (damageApplied)
         {
-            StatusEffectManager statusManager = validTarget.CombatTransform.GetComponent<StatusEffectManager>();
+            // Play the hit VFX whenever damage succeeds.
+            PlayHitVfx(attacker, validTarget, attackData);
 
-            if (statusManager != null)
+            // Apply the configured status effect, if one exists.
+            if (attackData.statusEffect != null)
             {
-                statusManager.ApplyEffect(attackData.statusEffect);
+                StatusEffectManager statusManager = validTarget.CombatTransform.GetComponent<StatusEffectManager>();
+
+                if (statusManager != null)
+                {
+                    statusManager.ApplyEffect(attackData.statusEffect);
+                }
             }
         }
+
+        // TODO:
+        //Add animation synchronization later.
 
         // TODO (CORE FUNCTIONS INTEGRATION)
         // Distinguish hits, block and dodges.
         return true;
+    }
+
+    // PURPOSE:
+    // Spawns a configurable visual effect when
+    // an Entity performs a melee swing.
+    private void PlaySwingVfx(ICombatEntity attacker, MeleeAttackData attackData)
+    {
+        if (attacker == null || attackData == null || attacker.CombatTransform == null || attackData.swingVfxPrefab == null)
+        {
+            return;
+        }
+
+        Transform attackerTransform = attacker.CombatTransform;
+
+        // Position the slash relative to the attacker.
+        Vector3 spawnPosition = attackerTransform.TransformPoint(attackData.swingVfxOffset);
+
+        // Face the same direction as the attacker.
+        Quaternion spawnRotation = attackerTransform.rotation * Quaternion.Euler(attackData.swingVfxRotationOffset);
+
+        // Spawn the effect separately from the character.
+        GameObject effect = Instantiate(attackData.swingVfxPrefab, spawnPosition, spawnRotation);
+
+        // Remove the effect after it finishes.
+        Destroy(effect, Mathf.Max(0.1f, attackData.swingVfxLifetime));
+    }
+
+    // PURPOSE:
+    // Spawns an impact effect on an Entity
+    // when a melee attack successfully deals damage.
+    private void PlayHitVfx(ICombatEntity attacker, ICombatEntity target, MeleeAttackData attackData)
+    {
+        if (attacker == null || target == null || attackData == null || attacker.CombatTransform == null || target.CombatTransform == null ||
+            attackData.hitVfxPrefab == null)
+        {
+            return;
+        }
+
+        // Find the target's collider.
+        Collider targetCollider = target.CombatTransform.GetComponentInChildren<Collider>();
+
+        // Default to approximately chest height.
+        Vector3 hitPosition = target.CombatTransform.position + Vector3.up;
+
+        // Prefer the collider surface facing the attacker.
+        if (targetCollider != null)
+        {
+            Vector3 attackOrigin = attacker.CombatTransform.position + Vector3.up;
+
+            hitPosition = targetCollider.ClosestPoint(attackOrigin);
+        }
+
+        // Face the effect in the attacker's direction.
+        Quaternion hitRotation = attacker.CombatTransform.rotation * Quaternion.Euler(attackData.hitVfxRotationOffset);
+
+        GameObject effect = Instantiate(attackData.hitVfxPrefab, hitPosition, hitRotation);
+
+        Destroy(effect, Mathf.Max(0.1f, attackData.hitVfxLifetime));
     }
 
     // PURPOSE:
