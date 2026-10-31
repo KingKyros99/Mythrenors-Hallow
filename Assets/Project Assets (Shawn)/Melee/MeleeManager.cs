@@ -105,14 +105,38 @@ public class MeleeManager : MonoBehaviour
             return true;
         }
 
-        // Apply damage using the shared CombatManager
-        bool damageApplied = CombatManager.TryDealDamage(attacker, validTarget, attackData.damage);
+        // Resolve the attack and retrieve its actual outcome.
+        AttackOutcome outcome = CombatManager.ResolveAttack(attacker, validTarget, attackData.damage);
 
-        // Handle the successful melee damage.
-        if (damageApplied)
+        // Report the outcome.
+        switch (outcome)
         {
-            // Play the hit VFX whenever damage succeeds.
-            PlayHitVfx(attacker, validTarget, attackData);
+            case AttackOutcome.HIT:
+                Debug.Log($"{attacker.CombatTransform.name} hit " + $"{validTarget.CombatTransform.name}!");
+                break;
+            case AttackOutcome.BLOCKED:
+                Debug.Log($"{validTarget.CombatTransform.name} blocked the attack!");
+                break;
+            case AttackOutcome.DODGED:
+                Debug.Log($"{validTarget.CombatTransform.name} dodged the attack!");
+                break;
+            case AttackOutcome.KILLED:
+                Debug.Log($"{validTarget.CombatTransform.name} was defeated!");
+                break;
+            case AttackOutcome.MISSED:
+                Debug.Log("Attack missed.");
+                break;
+            case AttackOutcome.INVALID:
+                Debug.Log("Attack could not be resolved.");
+                break;
+        }
+
+        // A blocked attack still connects, but a dodge does not.
+        bool appliesStatus = outcome == AttackOutcome.HIT || outcome == AttackOutcome.BLOCKED;
+
+        if (appliesStatus && attackData.statusEffect != null && validTarget.IsAlive)
+        {
+            StatusEffectManager statusManager = validTarget.CombatTransform.GetComponent<StatusEffectManager>();
 
             // Apply the configured status effect, if one exists.
             if (attackData.statusEffect != null)
@@ -125,12 +149,6 @@ public class MeleeManager : MonoBehaviour
                 }
             }
         }
-
-        // TODO:
-        //Add animation synchronization later.
-
-        // TODO (CORE FUNCTIONS INTEGRATION)
-        // Distinguish hits, block and dodges.
         return true;
     }
 

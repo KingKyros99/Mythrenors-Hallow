@@ -33,7 +33,6 @@ public class MovementController : MonoBehaviour
     [SerializeField] public float jumpTimer;
 
     [SerializeField] public int jumpCount;
-
     [SerializeField] public float jumpCountMax;
 
     InputAction moveAct, sprintAct, jumpAct;
@@ -91,7 +90,6 @@ public class MovementController : MonoBehaviour
         movement();
         SprintStamina();
     }
-
     void movement()
     {
         //get curr input and make sure that diagonal move is not accelerated
@@ -99,16 +97,13 @@ public class MovementController : MonoBehaviour
         
 
         //vertical and horizontal
-        Vector3 vert = transform.forward;
-        Vector3 hori = transform.right;
+        Vector3 vert;
+        Vector3 hori;
 
         //temp without camera
-        vert.y = 0;
-        hori.y = 0;
-        vert.Normalize();
-        hori.Normalize();
-
-        moveDir = (vert * currInput.y) + hori * currInput.x;
+        vert = Vector3.forward;
+        hori = Vector3.right;
+        moveDir = vert * currInput.y + hori * currInput.x;
 
         // Check whether the player is trying to sprint.
         bool trySprinting = sprintAct.IsPressed() && currInput.sqrMagnitude > 0f;
@@ -139,8 +134,6 @@ public class MovementController : MonoBehaviour
 
         controller.Move(velocity * Time.deltaTime);
     }
-    
-
 
     //vertical jump and gravity
     void jump()
@@ -178,7 +171,6 @@ public class MovementController : MonoBehaviour
         velocity.y = Mathf.Max(velocity.y + gravity * Time.deltaTime, fallVelocity);
     }
     
-    
     private void SprintStamina()
     {
         if (character == null)
@@ -189,7 +181,7 @@ public class MovementController : MonoBehaviour
             float sprintTime = sprintStaminaCost * Time.deltaTime;
            
             // Stop sprinting when stamina runs out.
-            if (!character.SpendStamina(sprintStaminaCost))
+            if (!character.SpendStamina(sprintTime))
             {
                 isSprinting = false;
             }
