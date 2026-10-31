@@ -37,4 +37,19 @@ public class MeleeAttackData : ScriptableObject
 
     // Status Effect
     public StatusEffectData statusEffect;
+
+    // Melee Visual Effects
+    public GameObject swingVfxPrefab;
+    public Vector3 swingVfxOffset = new Vector3(0f, 1f, 1f);
+    public Vector3 swingVfxRotationOffset = Vector3.zero;
+
+    [Min(0.1f)]
+    public float swingVfxLifetime = 2f;
+
+    // Melee Hit Visual Effects
+    public GameObject hitVfxPrefab;
+    public Vector3 hitVfxRotationOffset = Vector3.zero;
+
+    [Min(0.1f)]
+    public float hitVfxLifetime = 2f;
 }

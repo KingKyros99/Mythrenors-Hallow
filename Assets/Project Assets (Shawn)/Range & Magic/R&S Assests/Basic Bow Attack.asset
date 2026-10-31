@@ -19,7 +19,7 @@ MonoBehaviour:
     DamageType: 0
     CanCrit: 1
     IgnoreDefense: 0
-  projectileData: {fileID: 11400000, guid: 1e628fcc6b21ff544a7d4029e8dd3d1b, type: 2}
+  projectileData: {fileID: 11400000, guid: b0ea848878f4b6745af18fcc48a1d34b, type: 2}
   targetingData: {fileID: 11400000, guid: faa7bf8a7b475f342af094116a3468ea, type: 2}
   cooldown: 1
   usesAmmo: 0
