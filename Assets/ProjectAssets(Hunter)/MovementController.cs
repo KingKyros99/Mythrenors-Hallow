@@ -17,6 +17,8 @@ public class MovementController : MonoBehaviour
     [SerializeField] public float moveResistance;
 
     [SerializeField] private float sprintStaminaCost = 2f;
+
+    [SerializeField] private float minStamina;
     
     Vector3 moveDir;
     Vector3 velocity;
@@ -89,7 +91,6 @@ public class MovementController : MonoBehaviour
     {
         jump();
         movement();
-        SprintStamina();
     }
 
     void movement()
@@ -110,15 +111,16 @@ public class MovementController : MonoBehaviour
 
         moveDir = (vert * currInput.y) + hori * currInput.x;
 
-        // Check whether the player is trying to sprint.
-        bool trySprinting = sprintAct.IsPressed() && currInput.sqrMagnitude > 0f;
+        SprintStamina(currInput);
+        //// Check whether the player is trying to sprint.
+        //bool trySprinting = sprintAct.IsPressed() && currInput.sqrMagnitude > 0f;
 
-        // Sprinting requires enough stamina.
-        bool hasStamina =
-            character != null &&
-            character.CurrentStamina > 0f;
+        //// Sprinting requires enough stamina.
+        //bool hasStamina =
+        //    character != null &&
+        //    character.CurrentStamina > 0f;
 
-        isSprinting = trySprinting && hasStamina;
+        //isSprinting = trySprinting && hasStamina;
 
         // Decides which movement speed.
         float currentSpeed = isSprinting ? sprintSpeed : baseSpeed;
@@ -179,17 +181,28 @@ public class MovementController : MonoBehaviour
     }
     
     
-    private void SprintStamina()
+    private void SprintStamina(Vector2 currInput)
     {
-        if (character == null)
+        if (character == null) {
+            isSprinting = false;
             return;
+        }
+        bool isMoving = currInput.sqrMagnitude > 0.1f;
+
+        bool isSprintDown = sprintAct.IsPressed() && isMoving;
+
+        float sprintTime = sprintStaminaCost * Time.deltaTime;
+
+        float neededStamina = isSprinting ? sprintTime : minStamina;
+
+        isSprinting = isSprintDown && character.CurrentStamina >= neededStamina;
 
         if (isSprinting)
         {
-            float sprintTime = sprintStaminaCost * Time.deltaTime;
+            
            
             // Stop sprinting when stamina runs out.
-            if (!character.SpendStamina(sprintStaminaCost))
+            if (!character.SpendStamina(sprintTime))
             {
                 isSprinting = false;
             }
