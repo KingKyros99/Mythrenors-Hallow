@@ -40,4 +40,7 @@ public class SpellData : ScriptableObject
     // Casting Settings
     [Min(0f)]
     public float cooldown = 2f;
+
+    // Status Effect
+    public StatusEffectData statusEffect;
 }

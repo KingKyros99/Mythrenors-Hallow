@@ -38,4 +38,11 @@ public class ProjectileData : ScriptableObject
     public float collisionRadius = 0.15f;
 
     public LayerMask collisionLayers = ~0;
+
+    // Impact Visual Effects
+    public GameObject combatImpactVfx;
+    public GameObject environmentImpactVfx;
+
+    [Min(0.1f)]
+    public float impactVfxLifetime = 3f;
 }

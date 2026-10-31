@@ -39,7 +39,7 @@ public class SpellManager : MonoBehaviour
             return false;
         }
 
-        if (!caster.IsAlive || caster.CombatTransform == null)
+        if (!StatusEffectManager.CanEntityAct(caster))
         {
             return false;
         }
@@ -86,7 +86,10 @@ public class SpellManager : MonoBehaviour
             return false;
         }
 
-        Vector3 direction = target.CombatTransform.position - spawnPosition;
+        // Aim toward the target's collider center.
+        Vector3 aimPoint = ProjectileAimUtility.GetAimPoint(target);
+
+        Vector3 direction = aimPoint - spawnPosition;
 
         if (direction.sqrMagnitude <= 0f)
         {
@@ -101,13 +104,8 @@ public class SpellManager : MonoBehaviour
 
         // Use the same projectile system as
         // bows, crossbows, and thrown weapons.
-        bool successful = projectileManager.TrySpawnProjectile(
-            caster,
-            spellData.projectileData,
-            spellData.damage,
-            spawnPosition,
-            direction
-        );
+        bool successful = projectileManager.TrySpawnProjectile(caster, spellData.projectileData, spellData.damage, spawnPosition,
+            direction, spellData.statusEffect);
 
         if (!successful)
         {

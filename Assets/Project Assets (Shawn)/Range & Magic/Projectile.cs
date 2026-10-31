@@ -1,3 +1,4 @@
+using Unity.Cinemachine;
 using UnityEngine;
 
 // MYTHRENOR'S HALLOW - PROJECTILE
@@ -19,14 +20,13 @@ public class Projectile : MonoBehaviour
     private ICombatEntity owner;
     private ProjectileData projectileData;
     private DamageData damageData;
-
+    private StatusEffectData statusEffect;
     private Vector3 direction;
     private float distanceTraveled;
     private float remainingLifetime;
 
     private bool initialized;
     private bool hasHit;
-
 
     // PURPOSE:
     // Detects objects already overlapping the
@@ -58,11 +58,12 @@ public class Projectile : MonoBehaviour
 
     // PURPOSE:
     // Configures a projectile after spawning.
-    public void Initialize(ICombatEntity attacker, ProjectileData data, DamageData damage, Vector3 travelDirection)
+    public void Initialize(ICombatEntity attacker, ProjectileData data, DamageData damage, Vector3 travelDirection, StatusEffectData newStatusEffect = null)
     {
         if (attacker == null || data == null || travelDirection.sqrMagnitude <= 0f)
         {
             Destroy(gameObject);
+
             return;
         }
 
@@ -71,6 +72,8 @@ public class Projectile : MonoBehaviour
         projectileData = data;
 
         damageData = damage;
+
+        statusEffect = newStatusEffect;
 
         direction = travelDirection.normalized;
 
@@ -156,11 +159,13 @@ public class Projectile : MonoBehaviour
             return true;
         }
 
+        // Ignore the projectile's own colliders.
         if (hit.transform == transform || hit.transform.IsChildOf(transform))
         {
             return true;
         }
 
+        // Ignore colliders belonging to the attacker
         if (owner != null && owner.CombatTransform != null)
         {
             Transform ownerTransform = owner.CombatTransform;
@@ -171,6 +176,23 @@ public class Projectile : MonoBehaviour
             }
         }
 
+        if (hit.isTrigger)
+        {
+            MonoBehaviour[] components = hit.GetComponentsInParent<MonoBehaviour>();
+
+            foreach (MonoBehaviour component in components)
+            {
+                // Combat Entity triggers may represent hitboxes.
+                if (component is ICombatEntity)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        // All other solid collisions are processed.
         return false;
     }
 
@@ -179,30 +201,85 @@ public class Projectile : MonoBehaviour
     // combat damage through ICombatEntity.
     private void HandleImpact(Collider hit)
     {
-        if (hasHit)
+        if (hasHit || hit == null)
         {
             return;
         }
 
         hasHit = true;
 
+        // Search for an Entity attached to the hit object.
+        ICombatEntity target = null;
+
         MonoBehaviour[] components = hit.GetComponentsInParent<MonoBehaviour>();
 
         foreach (MonoBehaviour component in components)
         {
-            if (component is ICombatEntity target)
+            if (component is ICombatEntity entity)
             {
-                // CombatManager handles team checks,
-                // damage calculation, and damage requests.
-                CombatManager.TryDealDamage(owner, target, damageData);
+                target = entity;
 
                 break;
             }
         }
 
-        // TODO (DESIGN):
-        // Add impact VFX, sound, and status effects.
+        // Handle an environmental impact.
+        if (target == null)
+        {
+            Debug.Log($"{name} hit environment: {hit.name}");
 
+            SpawnImpactVfx(
+                projectileData.environmentImpactVfx,
+                hit);
+        }
+        else
+        {
+            // Resolve the attack exactly once.
+            ResolveProjectileAttack(target, hit);
+        }
+
+        // Remove the projectile after processing impact.
         Destroy(gameObject);
+    }
+
+    // PURPOSE:
+    // Resolves damage and effects against a combat entity.
+    private void ResolveProjectileAttack(ICombatEntity target, Collider hit)
+    {
+        AttackOutcome outcome = CombatManager.ResolveAttack(owner, target, damageData);
+
+        // Apply status effects when the attack connects
+        // and the target survives.
+        bool appliesStatus = outcome == AttackOutcome.HIT || outcome == AttackOutcome.BLOCKED;
+
+        if (appliesStatus && target.IsAlive && statusEffect != null)
+        {
+            StatusEffectManager statusManager = target.CombatTransform.GetComponent<StatusEffectManager>();
+
+            if (statusManager != null)
+                statusManager.ApplyEffect(statusEffect);
+        }
+
+        // Spawn combat impact VFX when damage connects.
+        if (outcome == AttackOutcome.HIT || outcome == AttackOutcome.BLOCKED || outcome == AttackOutcome.KILLED)
+            SpawnImpactVfx(projectileData.combatImpactVfx, hit);
+    }
+
+    private void SpawnImpactVfx(GameObject effectPrefab, Collider hit)
+    {
+        if (effectPrefab == null || hit == null || projectileData == null)
+        {
+            return;
+        }
+
+        // Find the point on the collider nearest
+        // to the projectile's current position.
+        Vector3 impactPosition = hit.ClosestPoint(transform.position);
+
+        // Spawn the effect independently of the projectile.
+        GameObject effect = Instantiate(effectPrefab, impactPosition, Quaternion.identity);
+
+        // Clean up the effect after its configured lifetime.
+        Destroy(effect, projectileData.impactVfxLifetime);
     }
 }

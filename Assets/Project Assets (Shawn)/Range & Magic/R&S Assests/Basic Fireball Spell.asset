@@ -19,7 +19,8 @@ MonoBehaviour:
     DamageType: 1
     CanCrit: 0
     IgnoreDefense: 0
-  projectileData: {fileID: 11400000, guid: 1e628fcc6b21ff544a7d4029e8dd3d1b, type: 2}
+  projectileData: {fileID: 11400000, guid: ebb53643a99af234b8618a27ebd66fcb, type: 2}
   targetingData: {fileID: 11400000, guid: 5befc17e8073b584faa50fd2f25c6bf3, type: 2}
   manaCost: 10
   cooldown: 2
+  statusEffect: {fileID: 11400000, guid: c17fe083381d469409fc09045e4023be, type: 2}
