@@ -108,6 +108,14 @@ public class MeleeManager : MonoBehaviour
         // Resolve the attack and retrieve its actual outcome.
         AttackOutcome outcome = CombatManager.ResolveAttack(attacker, validTarget, attackData.damage);
 
+        // Spawn impact VFX when the attack connects.
+        if (outcome == AttackOutcome.HIT ||
+            outcome == AttackOutcome.BLOCKED ||
+            outcome == AttackOutcome.KILLED)
+        {
+            PlayHitVfx(attacker, validTarget, attackData);
+        }
+
         // Report the outcome.
         switch (outcome)
         {
@@ -129,26 +137,23 @@ public class MeleeManager : MonoBehaviour
             case AttackOutcome.INVALID:
                 Debug.Log("Attack could not be resolved.");
                 break;
+
         }
 
         // A blocked attack still connects, but a dodge does not.
         bool appliesStatus = outcome == AttackOutcome.HIT || outcome == AttackOutcome.BLOCKED;
 
-        if (appliesStatus && attackData.statusEffect != null && validTarget.IsAlive)
+        if (appliesStatus && attackData.statusEffect != null && validTarget.IsAlive && validTarget.CombatTransform != null)
         {
             StatusEffectManager statusManager = validTarget.CombatTransform.GetComponent<StatusEffectManager>();
 
             // Apply the configured status effect, if one exists.
-            if (attackData.statusEffect != null)
+            if (statusManager != null)
             {
-                StatusEffectManager statusManager = validTarget.CombatTransform.GetComponent<StatusEffectManager>();
-
-                if (statusManager != null)
-                {
-                    statusManager.ApplyEffect(attackData.statusEffect);
-                }
+                statusManager.ApplyEffect(attackData.statusEffect);
             }
         }
+
         return true;
     }
 
