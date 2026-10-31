@@ -34,4 +34,7 @@ public class MeleeAttackData : ScriptableObject
 
     // Attack Requirements
     public bool requiresTarget = true;
+
+    // Status Effect
+    public StatusEffectData statusEffect;
 }

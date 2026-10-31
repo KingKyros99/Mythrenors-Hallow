@@ -24,3 +24,4 @@ MonoBehaviour:
   cooldown: 1
   usesAmmo: 0
   ammoCost: 0
+  statusEffect: {fileID: 11400000, guid: 0edc8407bd32ac54d9494d5718ee3426, type: 2}

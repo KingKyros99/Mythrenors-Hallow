@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -35,7 +36,7 @@ public class MeleeManager : MonoBehaviour
             return false;
         }
 
-        if (!attacker.IsAlive || attacker.CombatTransform == null)
+        if (!StatusEffectManager.CanEntityAct(attacker))
         {
             return false;
         }
@@ -73,7 +74,7 @@ public class MeleeManager : MonoBehaviour
         // Use an explicitly selected target when valid.
         if (target != null)
         {
-            if (TargetingSystem.IsTargetInMeleeArc(attacker, target, targeting)) ;
+            if (TargetingSystem.IsTargetInMeleeArc(attacker, target, targeting))
             {
                 validTarget = target;
             }
@@ -81,6 +82,7 @@ public class MeleeManager : MonoBehaviour
 
         else
         {
+            // Automatically find an enemy inside the melee arc.
             validTarget = TargetingSystem.FindEnemyInMeleeArc(attacker, targeting);
         }
 
@@ -100,11 +102,23 @@ public class MeleeManager : MonoBehaviour
             return true;
         }
 
-        // Damage remains the CombatManager's responsibility.
-        CombatManager.TryDealDamage(attacker, validTarget, attackData.damage);
+        // Apply damage using the shared CombatManager
+        bool damageApplied = CombatManager.TryDealDamage(attacker, validTarget, attackData.damage);
 
-        // TODO (CORE FUNCTIONS INTEGRATION):
-        // Distinguish hit, block and dodge outcomes
+        // Apply the configured effect only when
+        // the combat system accepts the damage.
+        if (damageApplied && attackData.statusEffect != null)
+        {
+            StatusEffectManager statusManager = validTarget.CombatTransform.GetComponent<StatusEffectManager>();
+
+            if (statusManager != null)
+            {
+                statusManager.ApplyEffect(attackData.statusEffect);
+            }
+        }
+
+        // TODO (CORE FUNCTIONS INTEGRATION)
+        // Distinguish hits, block and dodges.
         return true;
     }
 
@@ -121,7 +135,7 @@ public class MeleeManager : MonoBehaviour
             return false;
         }
 
-        ICombatEntity target = TargetingSystem.FindNearestEnemy(attacker, attackData.targetingData);
+        ICombatEntity target = TargetingSystem.FindEnemyInMeleeArc(attacker, attackData.targetingData);
 
         if (target == null)
         {
