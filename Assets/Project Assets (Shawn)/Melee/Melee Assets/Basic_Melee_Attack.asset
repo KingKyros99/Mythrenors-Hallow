@@ -23,3 +23,10 @@ MonoBehaviour:
   cooldown: 2
   requiresTarget: 0
   statusEffect: {fileID: 11400000, guid: 5514dc6f6bf20254591d207792197a5d, type: 2}
+  swingVfxPrefab: {fileID: 1872147318604286, guid: 03a4017fdb251414c8cf54ac05770d31, type: 3}
+  swingVfxOffset: {x: 0, y: 1, z: 0.5}
+  swingVfxRotationOffset: {x: 0, y: 0, z: 0}
+  swingVfxLifetime: 2
+  hitVfxPrefab: {fileID: 8616406381557508272, guid: 88afdd47422b56c48a856ca4a768cabf, type: 3}
+  hitVfxRotationOffset: {x: 0, y: 0, z: 0}
+  hitVfxLifetime: 2
