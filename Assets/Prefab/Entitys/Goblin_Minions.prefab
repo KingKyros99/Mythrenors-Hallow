@@ -15,6 +15,9 @@ GameObject:
   - component: {fileID: 5800840826394881774}
   - component: {fileID: 1251944079827777746}
   - component: {fileID: 4166863149605571839}
+  - component: {fileID: 8783428028264927014}
+  - component: {fileID: 5126692357646459197}
+  - component: {fileID: 2342279044125585436}
   m_Layer: 3
   m_Name: Goblin_Minions
   m_TagString: Untagged
@@ -170,3 +173,82 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!143 &8783428028264927014
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3371458300878072808}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Height: 1.9990234
+  m_Radius: 0.29711914
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &5126692357646459197
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3371458300878072808}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6348cff21ac8aad42864d911ac616ecb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MovementController
+  controller: {fileID: 8783428028264927014}
+  baseSpeed: 3
+  sprintSpeed: 5
+  moveResistance: 10
+  sprintStaminaCost: 3
+  minStamina: 10
+  jumpHeight: 1
+  gravity: 20
+  fallVelocity: -20
+  coyoteTime: 0.1
+  jumpTimer: 0
+  jumpCount: 1
+  jumpCountMax: 1
+  aiControlled: 1
+--- !u!114 &2342279044125585436
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3371458300878072808}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a4c4208672761044a10cd0178acbdd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Enemy
+  charName: 
+  maxHealth: 100
+  maxMana: 70
+  maxStamina: 50
+  staminaRecoveryRate: 15
+  staminaRecoveryDelay: 1
+  attack: 2
+  defense: 2
+  critChance: 2
+  critMult: 1.1
+  dodgeChance: 2
+  mStatusResistance: 0
+  mCritResistance: 0
+  detectionRange: 10
+  attackRange: 2
+  targetingData: {fileID: 11400000, guid: 2006c0d9173f17647b972c4b15eb132d, type: 2}
