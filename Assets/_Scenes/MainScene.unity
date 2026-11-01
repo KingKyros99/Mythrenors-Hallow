@@ -1023,6 +1023,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player_Sorcerer
       objectReference: {fileID: 0}
+    - target: {fileID: 8062881480025044463, guid: 9a086d9d50f6f984facd1f600ed73b38, type: 3}
+      propertyPath: firePoint
+      value: 
+      objectReference: {fileID: 781816364}
     m_RemovedComponents:
     - {fileID: 651941506670488403, guid: 9a086d9d50f6f984facd1f600ed73b38, type: 3}
     - {fileID: 6339182510407848631, guid: 9a086d9d50f6f984facd1f600ed73b38, type: 3}
@@ -1033,7 +1037,10 @@ PrefabInstance:
     - {fileID: 4298632799744146063, guid: 9a086d9d50f6f984facd1f600ed73b38, type: 3}
     - {fileID: 6240003705053332638, guid: 9a086d9d50f6f984facd1f600ed73b38, type: 3}
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 1528781858860246099, guid: 9a086d9d50f6f984facd1f600ed73b38, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 781816364}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9a086d9d50f6f984facd1f600ed73b38, type: 3}
 --- !u!4 &565028310 stripped
@@ -1497,11 +1504,46 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 867629238}
+    - target: {fileID: 7676498002143274623, guid: 01f2ec002629b6d4c84b165360c55be3, type: 3}
+      propertyPath: m_VersionIndex
+      value: 3442
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 01f2ec002629b6d4c84b165360c55be3, type: 3}
+--- !u!1 &781816363
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 781816364}
+  m_Layer: 6
+  m_Name: FirePoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &781816364
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 781816363}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.7, z: 0.6}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 565028310}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &866090573
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1538,6 +1580,10 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 492149629}
+    - target: {fileID: 5781123408215330866, guid: be06c3a6fb8057841b3b955d738eee62, type: 3}
+      propertyPath: m_VersionIndex
+      value: 8211
+      objectReference: {fileID: 0}
     - target: {fileID: 5946742535373936199, guid: be06c3a6fb8057841b3b955d738eee62, type: 3}
       propertyPath: m_LocalPosition.x
       value: -47.600002
@@ -1582,6 +1628,10 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 682128875}
+    - target: {fileID: 6362911800395234442, guid: be06c3a6fb8057841b3b955d738eee62, type: 3}
+      propertyPath: m_VersionIndex
+      value: 11023
+      objectReference: {fileID: 0}
     - target: {fileID: 6750349585117460618, guid: be06c3a6fb8057841b3b955d738eee62, type: 3}
       propertyPath: m_Mesh
       value: 
@@ -1590,6 +1640,10 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 2064974722}
+    - target: {fileID: 8207226715038004372, guid: be06c3a6fb8057841b3b955d738eee62, type: 3}
+      propertyPath: m_VersionIndex
+      value: 8005
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1994,6 +2048,10 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 361589585}
+    - target: {fileID: 5781123408215330866, guid: be06c3a6fb8057841b3b955d738eee62, type: 3}
+      propertyPath: m_VersionIndex
+      value: 8211
+      objectReference: {fileID: 0}
     - target: {fileID: 5946742535373936199, guid: be06c3a6fb8057841b3b955d738eee62, type: 3}
       propertyPath: m_LocalPosition.x
       value: 48.7
@@ -2038,6 +2096,10 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 1619856293}
+    - target: {fileID: 6362911800395234442, guid: be06c3a6fb8057841b3b955d738eee62, type: 3}
+      propertyPath: m_VersionIndex
+      value: 11023
+      objectReference: {fileID: 0}
     - target: {fileID: 6750349585117460618, guid: be06c3a6fb8057841b3b955d738eee62, type: 3}
       propertyPath: m_Mesh
       value: 
@@ -2046,6 +2108,10 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 1983496060}
+    - target: {fileID: 8207226715038004372, guid: be06c3a6fb8057841b3b955d738eee62, type: 3}
+      propertyPath: m_VersionIndex
+      value: 8005
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2527,6 +2593,10 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 1284572211}
+    - target: {fileID: 5781123408215330866, guid: be06c3a6fb8057841b3b955d738eee62, type: 3}
+      propertyPath: m_VersionIndex
+      value: 8211
+      objectReference: {fileID: 0}
     - target: {fileID: 5946742535373936199, guid: be06c3a6fb8057841b3b955d738eee62, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.2
@@ -2571,6 +2641,10 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 1188524913}
+    - target: {fileID: 6362911800395234442, guid: be06c3a6fb8057841b3b955d738eee62, type: 3}
+      propertyPath: m_VersionIndex
+      value: 11023
+      objectReference: {fileID: 0}
     - target: {fileID: 6750349585117460618, guid: be06c3a6fb8057841b3b955d738eee62, type: 3}
       propertyPath: m_Mesh
       value: 
@@ -2579,6 +2653,10 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 2108614280}
+    - target: {fileID: 8207226715038004372, guid: be06c3a6fb8057841b3b955d738eee62, type: 3}
+      propertyPath: m_VersionIndex
+      value: 8005
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2659,6 +2737,10 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 513055258}
+    - target: {fileID: 5781123408215330866, guid: be06c3a6fb8057841b3b955d738eee62, type: 3}
+      propertyPath: m_VersionIndex
+      value: 8211
+      objectReference: {fileID: 0}
     - target: {fileID: 5946742535373936199, guid: be06c3a6fb8057841b3b955d738eee62, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.6000001
@@ -2703,6 +2785,10 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 885320197}
+    - target: {fileID: 6362911800395234442, guid: be06c3a6fb8057841b3b955d738eee62, type: 3}
+      propertyPath: m_VersionIndex
+      value: 11023
+      objectReference: {fileID: 0}
     - target: {fileID: 6750349585117460618, guid: be06c3a6fb8057841b3b955d738eee62, type: 3}
       propertyPath: m_Mesh
       value: 
@@ -2711,6 +2797,10 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 641812727}
+    - target: {fileID: 8207226715038004372, guid: be06c3a6fb8057841b3b955d738eee62, type: 3}
+      propertyPath: m_VersionIndex
+      value: 8005
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3917,7 +4007,7 @@ PrefabInstance:
       objectReference: {fileID: 282094801}
     - target: {fileID: 1709373190717165320, guid: 87184f8474aa87f46ba47d58c1fb1f88, type: 3}
       propertyPath: m_VersionIndex
-      value: 3136
+      value: 3139
       objectReference: {fileID: 0}
     - target: {fileID: 5485830192755467072, guid: 87184f8474aa87f46ba47d58c1fb1f88, type: 3}
       propertyPath: m_Name
