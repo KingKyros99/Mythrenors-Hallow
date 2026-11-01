@@ -1,4 +1,3 @@
-using Unity.Cinemachine;
 using UnityEngine;
 
 // MYTHRENOR'S HALLOW - PROJECTILE
@@ -201,7 +200,7 @@ public class Projectile : MonoBehaviour
     // combat damage through ICombatEntity.
     private void HandleImpact(Collider hit)
     {
-        if (hasHit)
+        if (hasHit || hit == null)
         {
             return;
         }
@@ -228,39 +227,14 @@ public class Projectile : MonoBehaviour
         {
             Debug.Log($"{name} hit environment: {hit.name}");
 
-            SpawnImpactVfx(projectileData.environmentImpactVfx, hit);
+            SpawnImpactVfx(
+                projectileData.environmentImpactVfx,
+                hit);
         }
-
         else
         {
-            // Apply damage through the shared combat system.
-            bool damageApplied = CombatManager.TryDealDamage(owner, target, damageData);
-
-            if (damageApplied)
-            {
-                Debug.Log($"{name} hit combat Entity: {target.CombatTransform.name}");
-
-                // Apply optional status effect
-                if (target.IsAlive && statusEffect != null)
-                {
-                    StatusEffectManager statusManager = target.CombatTransform.GetComponent<StatusEffectManager>();
-
-                    if (statusManager != null)
-                    {
-                        statusManager.ApplyEffect(statusEffect);
-                    }
-                }
-
-                SpawnImpactVfx(projectileData.combatImpactVfx, hit);
-            }
-
-            else
-            {
-                Debug.Log($"{name} hit {hit.name}, but no damage was applied");
-
-                // TODO (CORE FUNCTIONS INTEGRATION):
-                // Distinguish blocked, dodged and invalid hits.
-            }
+            // Resolve the attack exactly once.
+            ResolveProjectileAttack(target, hit);
         }
 
         // Remove the projectile after processing impact.
@@ -268,7 +242,28 @@ public class Projectile : MonoBehaviour
     }
 
     // PURPOSE:
-    // Spawns the configured effect at the collision point.
+    // Resolves damage and effects against a combat entity.
+    private void ResolveProjectileAttack(ICombatEntity target, Collider hit)
+    {
+        AttackOutcome outcome = CombatManager.ResolveAttack(owner, target, damageData);
+
+        // Apply status effects when the attack connects
+        // and the target survives.
+        bool appliesStatus = outcome == AttackOutcome.HIT || outcome == AttackOutcome.BLOCKED;
+
+        if (appliesStatus && target.IsAlive && statusEffect != null)
+        {
+            StatusEffectManager statusManager = target.CombatTransform.GetComponent<StatusEffectManager>();
+
+            if (statusManager != null)
+                statusManager.ApplyEffect(statusEffect);
+        }
+
+        // Spawn combat impact VFX when damage connects.
+        if (outcome == AttackOutcome.HIT || outcome == AttackOutcome.BLOCKED || outcome == AttackOutcome.KILLED)
+            SpawnImpactVfx(projectileData.combatImpactVfx, hit);
+    }
+
     private void SpawnImpactVfx(GameObject effectPrefab, Collider hit)
     {
         if (effectPrefab == null || hit == null || projectileData == null)
