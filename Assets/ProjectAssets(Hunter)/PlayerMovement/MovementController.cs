@@ -38,6 +38,10 @@ public class MovementController : MonoBehaviour
 
     InputAction moveAct, sprintAct, jumpAct;
 
+    [Header("AI Movement")]
+    [SerializeField] private bool aiControlled = false;
+
+    private Vector3 aiMoveDirection;
 
     //Bools
 
@@ -92,6 +96,12 @@ public class MovementController : MonoBehaviour
     }
     void movement()
     {
+        if (aiControlled)
+        {
+            moveDir = aiMoveDirection;
+            isSprinting = false;
+        }
+        else { 
         //get curr input and make sure that diagonal move is not accelerated
         Vector2 currInput = Vector2.ClampMagnitude(moveAct.ReadValue<Vector2>(), 1f);
 
@@ -99,8 +109,10 @@ public class MovementController : MonoBehaviour
         //temp without camera
 
         moveDir = transform.forward * currInput.y + transform.right * currInput.x;
+            
+            SprintStamina(currInput);
+        }
 
-        SprintStamina(currInput);
 
         float currentSpeed = isSprinting ? sprintSpeed : baseSpeed;
 
@@ -185,5 +197,11 @@ public class MovementController : MonoBehaviour
                 isSprinting = false;
             }
         }
+    }
+
+    public void SetAIMovement(Vector3 direction)
+    {
+        aiControlled = true;
+        aiMoveDirection = Vector3.ClampMagnitude(direction, 1f);
     }
 }
