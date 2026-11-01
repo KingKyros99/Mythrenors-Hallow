@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.Progress;
+
 
 public class Player : CharacterBase
 {
-    [Header("Player Inventory")]
-    [SerializeField] private List<Item> inventory = new List<Item>();
+    //[Header("Player Inventory")]
+    //[SerializeField] private List<Item> inventory = new List<Item>();
 
-    public IReadOnlyList<Item> Inventory => inventory;
+    //public IReadOnlyList<Item> Inventory => inventory;
 
     [Header("Player Movement")]
     [SerializeField] private MovementController movementController;
@@ -24,20 +24,20 @@ public class Player : CharacterBase
         }
     }
 
-    public bool AddItem(Item item)
-    {
-        if (item == null)
-            return false;
+    //public bool AddItem(Item item)
+    //{
+    //    if (item == null)
+    //        return false;
 
-        inventory.Add(item);
-        return true;
-    }
+    //    inventory.Add(item);
+    //    return true;
+    //}
 
-    public bool RemoveItem(Item item)
-    {
-        if (item == null)
-            return false;
+    //public bool RemoveItem(Item item)
+    //{
+    //    if (item == null)
+    //        return false;
 
-        return inventory.Remove(item);
-    }
+    //    return inventory.Remove(item);
+    //}
 }
