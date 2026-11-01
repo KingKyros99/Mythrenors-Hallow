@@ -1,4 +1,3 @@
-using Unity.Cinemachine;
 using UnityEngine;
 
 // MYTHRENOR'S HALLOW - PROJECTILE
