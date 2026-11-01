@@ -3323,6 +3323,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Goblin_Minions
       objectReference: {fileID: 0}
+    - target: {fileID: 5126692357646459197, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8783428028264927014, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
