@@ -45,13 +45,16 @@ public struct DamageData
     // Determines whether defense is ignored.
     public bool IgnoreDefense;
 
+    // Determines whether attack can be blocked.
+    public bool Unblockable;
+
     // PURPOSE:
     // Creates damage information for an attack.
     //
     // NOTE:
     // These values will eventually come from
     // ScriptableObject weapon/spell configurations.
-    public DamageData(float baseDamage, DamageType damageType, bool canCrit = true, bool ignoreDefense = false)
+    public DamageData(float baseDamage, DamageType damageType, bool canCrit = true, bool ignoreDefense = false, bool unblockable = false)
     {
         BaseDamage = baseDamage;
 
@@ -60,5 +63,7 @@ public struct DamageData
         CanCrit = canCrit;
 
         IgnoreDefense = ignoreDefense;
+
+        Unblockable = unblockable;
     }
 }
