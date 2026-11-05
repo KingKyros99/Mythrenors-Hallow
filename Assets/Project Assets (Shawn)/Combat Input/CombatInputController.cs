@@ -42,6 +42,13 @@ public class CombatInputController : MonoBehaviour
     // Projectile Spawn
     [SerializeField] private Transform firePoint;
 
+    // Manual Aiming
+    [SerializeField] private Camera aimCamera;
+
+    // Determines what the reticle can aim at.
+    // Exclude the Player layer in the Inspector.
+    [SerializeField] private LayerMask aimLayers = ~0;
+
     // Self Status Abilities
     [SerializeField] private SelfStatusAbilityManager selfAbilityManager;
 
@@ -185,65 +192,42 @@ public class CombatInputController : MonoBehaviour
     }
 
     // PURPOSE:
-    // Requests a ranged projectile attack.
+    // Fires a ranged attack using manual
+    // camera-based reticle aiming.
     private void OnRanged(InputAction.CallbackContext context)
     {
-        if (combatEntity == null || rangedManager == null || rangedAttack == null)
+        if (combatEntity == null || rangedManager == null || rangedAttack == null || rangedAttack.projectileData == null)
         {
             return;
         }
 
-        if (!combatEntity.IsAlive || firePoint == null)
-        {
-            return;
-        }
+        // Get the actual projectile spawn position.
+        Vector3 spawnPosition = GetFirePosition();
 
-        if (rangedAttack.targetingData == null)
-        {
-            return;
-        }
+        // Calculate direction using the camera reticle.
+        Vector3 direction = GetManualAimDirection(rangedAttack.projectileData.maxRange);
 
-        ICombatEntity target = TargetingSystem.FindNearestEnemy(combatEntity, rangedAttack.targetingData);
-
-        if (target == null)
-        {
-            Debug.Log("No valid ranged target found.");
-
-            return;
-        }
-
-        rangedManager.TryFire(combatEntity, target, rangedAttack, firePoint.position);
+        // Fire without automatically selecting an enemy.
+        rangedManager.TryFireManual(combatEntity, rangedAttack, spawnPosition, direction);
     }
 
     // PURPOSE:
     // Requests a spell using the Entity's mana.
     private void OnSpell(InputAction.CallbackContext context)
     {
-        if (combatEntity == null || spellManager == null || spell == null)
+        if (combatEntity == null || spellManager == null || spell == null || spell.projectileData == null)
         {
             return;
         }
 
-        if (!combatEntity.IsAlive || firePoint == null)
-        {
-            return;
-        }
+        // Get the projectile's actual spawn position.
+        Vector3 spawnPosition = GetFirePosition();
 
-        if (spell.targetingData == null)
-        {
-            return;
-        }
+        // Calculate aim direction from the camera.
+        Vector3 direction = GetManualAimDirection(spell.projectileData.maxRange);
 
-        ICombatEntity target = TargetingSystem.FindNearestEnemy(combatEntity, spell.targetingData);
-
-        if (target == null)
-        {
-            Debug.Log("No valid spell target found.");
-
-            return;
-        }
-
-        spellManager.TryCast(combatEntity, target, spell, firePoint.position);
+        // Cast the spell without selecting an enemy.
+        spellManager.TryCastManual(combatEntity, spell, spawnPosition, direction);
     }
 
     // PURPOSE:
@@ -303,5 +287,43 @@ public class CombatInputController : MonoBehaviour
         }
 
         return transform.position;
+    }
+
+    // PURPOSE:
+    // Calculates projectile direction using the
+    // center of the player's camera.
+    private Vector3 GetManualAimDirection(float maxRange)
+    {
+        if (aimCamera == null)
+        {
+            Debug.LogWarning("Combat aiming camera is missing.");
+
+            return transform.forward;
+        }
+
+        // Cast a ray through the center of the screen.
+        Ray aimRay = aimCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
+
+        // Default to a point straight ahead.
+        Vector3 aimPoint = aimRay.GetPoint(maxRange);
+
+        // If the camera is pointing at something,
+        // aim toward that object's collision point.
+        if (Physics.Raycast(aimRay, out RaycastHit hit, maxRange, aimLayers, QueryTriggerInteraction.Ignore))
+        {
+            aimPoint = hit.point;
+        }
+
+        // Calculate direction from the actual FirePoint.
+        Vector3 firePosition = GetFirePosition();
+
+        Vector3 direction = aimPoint - firePosition;
+
+        if (direction.sqrMagnitude <= 0.0001f)
+        {
+            return aimCamera.transform.forward;
+        }
+
+        return direction.normalized;
     }
 }
