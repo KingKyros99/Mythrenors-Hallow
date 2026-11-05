@@ -182,12 +182,21 @@ public class CombatInputController : MonoBehaviour
     // Requests a melee attack when its input fires.
     private void OnMelee(InputAction.CallbackContext context)
     {
+        RequestMeleeAttack();
+    }
+
+    // PURPOSE:
+    // Allows keyboard/mouse input and UI buttons
+    // to request the same melee attack.
+    public void RequestMeleeAttack()
+    {
         if (combatEntity == null || meleeManager == null || meleeAttack == null)
         {
             return;
         }
 
-        // MeleeManager handles its own target selection
+        // MeleeManager handles target detection,
+        // cooldowns, damage, and impact feedback.
         meleeManager.TryAttack(combatEntity, null, meleeAttack);
     }
 
