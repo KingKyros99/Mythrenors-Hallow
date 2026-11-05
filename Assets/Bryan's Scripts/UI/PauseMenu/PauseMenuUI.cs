@@ -2,72 +2,68 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public class PauseMenuUI : MonoBehaviour
 {
-    [Header("Panels")]
-    [SerializeField] private GameObject pausePanel;
-    [SerializeField] private SettingsMenuUI settingsMenu;
+    [Header("UI")]
+    public GameObject pausePanel;
+    public SettingsMenuUI settingsMenu;
 
-    [Header("Buttons")]
-    [SerializeField] private Button resumeButton;
-    [SerializeField] private Button settingsButton;
-    [SerializeField] private Button quitToTitleButton;
+    [Header("Scenes")]
+    public string titleSceneName = "TitleScreen";
 
-    [Header("Scene")]
-    [SerializeField] private string titleSceneName = "";
+    [Header("Events (teammates hook these)")]
+    public UnityEvent onPaused;
+    public UnityEvent onResumed;
+    public UnityEvent onBeforeQuitToTitle;
 
-    [Header("Teammate hooks")]
-    public UnityEvent onPaused = new UnityEvent();
-    public UnityEvent onResumed = new UnityEvent();
+    public static bool OpenSettingsOnLoad;
 
-    private InputAction pauseAction = new InputAction("Pause", InputActionType.Button, "<Keyboard>/escape");
+    InputAction pauseAction;
+    bool isPaused;
+    int lastSettingsCloseFrame = -1;
 
-    public bool IsPaused => pausePanel != null && pausePanel.activeSelf;
+    void Awake()
+    {
+        pauseAction = new InputAction("Pause", InputActionType.Button, "<Keyboard>/escape");
+        pauseAction.performed += _ => OnPausePressed();
+    }
 
-    private void Awake()
+    void OnEnable() { pauseAction.Enable(); }
+    void OnDisable() { pauseAction.Disable(); }
+
+    void Start()
     {
         pausePanel.SetActive(false);
-        resumeButton.onClick.AddListener(Resume);
-        settingsButton.onClick.AddListener(OpenSettings);
-        quitToTitleButton.onClick.AddListener(QuitToTitle);
+        isPaused = false;
     }
 
-    private void OnEnable()
+    void OnPausePressed()
     {
-        pauseAction.Enable();
-        pauseAction.performed += OnPauseKey;
-    }
-
-    private void OnDisable()
-    {
-        pauseAction.performed -= OnPauseKey;
-        pauseAction.Disable();
-    }
-
-    private int lastSettingsCloseFrame = -1;
-
-    private void OnPauseKey(InputAction.CallbackContext ctx)
-    {
-        if (settingsMenu != null && settingsMenu.IsOpen) return;
         if (Time.frameCount == lastSettingsCloseFrame) return;
-        if (IsPaused) Resume(); else Pause();
+        if (isPaused) Resume();
+        else Pause();
     }
 
     public void Pause()
     {
+        isPaused = true;
         pausePanel.SetActive(true);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         onPaused.Invoke();
     }
 
     public void Resume()
     {
+        isPaused = false;
         pausePanel.SetActive(false);
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
         onResumed.Invoke();
     }
 
-    private void OpenSettings()
+    public void OpenSettings()
     {
         if (settingsMenu == null) return;
         pausePanel.SetActive(false);
@@ -78,9 +74,23 @@ public class PauseMenuUI : MonoBehaviour
         });
     }
 
-    private void QuitToTitle()
+    public void OpenSettingsViaTitle()
     {
-        if (string.IsNullOrEmpty(titleSceneName)) return;
+        OpenSettingsOnLoad = true;
+        LeaveToTitle();
+    }
+
+    public void QuitToTitle()
+    {
+        LeaveToTitle();
+    }
+
+    void LeaveToTitle()
+    {
+        onBeforeQuitToTitle.Invoke();
+        isPaused = false;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         onResumed.Invoke();
         SceneManager.LoadScene(titleSceneName);
     }
