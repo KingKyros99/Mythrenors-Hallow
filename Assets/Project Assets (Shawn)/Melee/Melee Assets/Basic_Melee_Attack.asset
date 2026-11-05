@@ -21,7 +21,7 @@ MonoBehaviour:
     IgnoreDefense: 0
     Unblockable: 0
   targetingData: {fileID: 11400000, guid: 2006c0d9173f17647b972c4b15eb132d, type: 2}
-  cooldown: 2
+  cooldown: 0.8
   requiresTarget: 0
   statusEffect: {fileID: 11400000, guid: 5514dc6f6bf20254591d207792197a5d, type: 2}
   swingVfxPrefab: {fileID: 1872147318604286, guid: 03a4017fdb251414c8cf54ac05770d31, type: 3}
