@@ -129,6 +129,7 @@ GameObject:
   m_Component:
   - component: {fileID: 83166249}
   - component: {fileID: 83166250}
+  - component: {fileID: 83166251}
   m_Layer: 5
   m_Name: PlayerHUD
   m_TagString: Untagged
@@ -186,6 +187,23 @@ MonoBehaviour:
   pixelsPerPoint: 2
   minWidth: 300
   maxWidth: 700
+--- !u!114 &83166251
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 83166248}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9173775bf822ccf4983b24db9648b8c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StatBarBinder
+  character: {fileID: 0}
+  health: {fileID: 1275899542}
+  mana: {fileID: 1952710414}
+  stamina: {fileID: 169487733}
+  hideWhenDead: {fileID: 0}
 --- !u!1001 &83465615
 PrefabInstance:
   m_ObjectHideFlags: 0
