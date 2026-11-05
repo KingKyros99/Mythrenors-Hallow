@@ -527,6 +527,10 @@ MonoBehaviour:
   rangedInput: {fileID: -7804029945888478296, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
   spellInput: {fileID: -4419516839721251445, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
   firePoint: {fileID: 1528781858860246099}
+  aimCamera: {fileID: 1862694930920728304}
+  aimLayers:
+    serializedVersion: 2
+    m_Bits: 264
   selfAbilityManager: {fileID: 5773064741859545964}
   regenerationAbility: {fileID: 11400000, guid: f684346f9cd6c2540a8dde77b98f85e4, type: 2}
   attackBoostAbility: {fileID: 11400000, guid: ca088e952cf9e974585a6f59dabd15ff, type: 2}
@@ -679,6 +683,7 @@ MonoBehaviour:
   jumpTimer: 0
   jumpCount: 1
   jumpCountMax: 2
+  aiControlled: 0
 --- !u!114 &3462586175536853785
 MonoBehaviour:
   m_ObjectHideFlags: 0
