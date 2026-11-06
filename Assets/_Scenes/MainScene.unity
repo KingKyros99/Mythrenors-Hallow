@@ -7507,6 +7507,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5ef732a09a8f3e4e83d610f12ac2b21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterBase
+--- !u!114 &1564851969 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7641387063016503771, guid: 9a086d9d50f6f984facd1f600ed73b38, type: 3}
+  m_PrefabInstance: {fileID: 565028309}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 460146076}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6348cff21ac8aad42864d911ac616ecb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MovementController
 --- !u!114 &1564851973
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7520,6 +7531,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerLocomotionAnimator
   animator: {fileID: 2048750374}
+  movementController: {fileID: 1564851969}
   walkingSpeed: 5
   sprintingSpeed: 6
   damping: 0.15

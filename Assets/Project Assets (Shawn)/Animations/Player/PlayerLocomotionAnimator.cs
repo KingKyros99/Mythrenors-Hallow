@@ -18,6 +18,9 @@ public class PlayerLocomotionAnimator : MonoBehaviour
     // Animator Reference
     [SerializeField] private Animator animator;
 
+    // Movement Reference
+    [SerializeField] private MovementController movementController;
+
     // Movement Speed Settings
     [SerializeField, Min(0.01f)] private float walkingSpeed = 3f;
     [SerializeField, Min(0.01f)] private float sprintingSpeed = 6f;
@@ -28,6 +31,21 @@ public class PlayerLocomotionAnimator : MonoBehaviour
     private Vector3 previousPosition;
 
     private static readonly int SpeedHash = Animator.StringToHash("Speed");
+
+    private static readonly int IsGroundedHash = Animator.StringToHash("IsGrounded");
+
+    private static readonly int VerticalSpeedHash = Animator.StringToHash("VerticalSpeed");
+
+    // PURPOSE:
+    // Retrieves Hunter's existing movement component.
+    // This script only reads movement information.
+    private void Awake()
+    {
+        if (movementController == null)
+        {
+            movementController = GetComponent<MovementController>();
+        }
+    }
 
     private void OnEnable()
     {
@@ -44,13 +62,29 @@ public class PlayerLocomotionAnimator : MonoBehaviour
             return;
         }
 
+        // PURPOSE:
+        // Measure the player's movement since last frame.
+        // Hunter's MovementController already moves the character
         Vector3 currentPosition = transform.position;
 
         Vector3 displacement = currentPosition - previousPosition;
 
         previousPosition = currentPosition;
 
-        // Ignore vertical movement from jumping or falling.
+        // Calculate whether the character is rising
+        // or falling based on actual vertical movement.
+        float verticalSpeed = displacement.y / Time.deltaTime;
+
+        // Read grounded state from Hunter's controller.
+        bool grounded = movementController != null && movementController.isGrounded;
+
+        // Update the Animator's airborne parameters.
+        animator.SetBool(IsGroundedHash, grounded);
+
+        animator.SetFloat(VerticalSpeedHash, grounded ? 0f : verticalSpeed);
+
+        // Keep vertical movement out of our existing
+        // Idle / Walk / Run speed calculation.
         displacement.y = 0f;
 
         float movementSpeed = displacement.magnitude / Time.deltaTime;
