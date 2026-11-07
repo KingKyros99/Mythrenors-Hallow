@@ -2975,9 +2975,29 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 781816364}
     - target: {fileID: 8062881480025044463, guid: 9a086d9d50f6f984facd1f600ed73b38, type: 3}
+      propertyPath: dodgeInput
+      value: 
+      objectReference: {fileID: 4233016663096029250, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
+    - target: {fileID: 8062881480025044463, guid: 9a086d9d50f6f984facd1f600ed73b38, type: 3}
+      propertyPath: guardInput
+      value: 
+      objectReference: {fileID: -8152988785320364535, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
+    - target: {fileID: 8062881480025044463, guid: 9a086d9d50f6f984facd1f600ed73b38, type: 3}
+      propertyPath: coreFunctions
+      value: 
+      objectReference: {fileID: 1564851990}
+    - target: {fileID: 8062881480025044463, guid: 9a086d9d50f6f984facd1f600ed73b38, type: 3}
+      propertyPath: dodgeMovement
+      value: 
+      objectReference: {fileID: 1564851991}
+    - target: {fileID: 8062881480025044463, guid: 9a086d9d50f6f984facd1f600ed73b38, type: 3}
       propertyPath: playerAnimator
       value: 
       objectReference: {fileID: 2048750374}
+    - target: {fileID: 8062881480025044463, guid: 9a086d9d50f6f984facd1f600ed73b38, type: 3}
+      propertyPath: movementController
+      value: 
+      objectReference: {fileID: 1564851969}
     - target: {fileID: 9011269189401856253, guid: 9a086d9d50f6f984facd1f600ed73b38, type: 3}
       propertyPath: camSpeed
       value: 4
@@ -3023,6 +3043,9 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 6692306801720775169, guid: 9a086d9d50f6f984facd1f600ed73b38, type: 3}
       insertIndex: 12
+      addedObject: {fileID: 1564851991}
+    - targetCorrespondingSourceObject: {fileID: 6692306801720775169, guid: 9a086d9d50f6f984facd1f600ed73b38, type: 3}
+      insertIndex: 13
       addedObject: {fileID: 1564851973}
   m_SourcePrefab: {fileID: 100100000, guid: 9a086d9d50f6f984facd1f600ed73b38, type: 3}
 --- !u!4 &565028310 stripped
@@ -7669,6 +7692,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30f1ba5d4e2f12645963b98158ce9159, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CombatInputController
+--- !u!114 &1564851990 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5052667502017468757, guid: 9a086d9d50f6f984facd1f600ed73b38, type: 3}
+  m_PrefabInstance: {fileID: 565028309}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 460146076}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a23bc9ab45ca4e40b9a25c46a2e381e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CoreFunctions
+--- !u!114 &1564851991
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 460146076}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7e29c8b60902594ebc0d3cd2bcd3351, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DodgeMovement
+  dodgeDistance: 3
+  dodgeDuration: 1.1
 --- !u!1 &1590706139
 GameObject:
   m_ObjectHideFlags: 0

@@ -41,6 +41,16 @@ public class CombatInputController : MonoBehaviour
     private static readonly int StaffCastHash = Animator.StringToHash("StaffCast");
 
     // PURPOSE:
+    // Identifies the guarding Bool in the Animator.
+    private static readonly int IsBlockingHash = Animator.StringToHash("IsBlocking");
+
+    // PURPOSE:
+    // Triggers the Dodge animation when
+    // CoreFunctions accepts a dodge.
+    private static readonly int DodgeTriggerHash = Animator.StringToHash("Dodge");
+
+
+    // PURPOSE:
     // Tracks which staff attack is waiting for
     // the animation's release frame.
     private enum StaffAttackType
@@ -83,6 +93,14 @@ public class CombatInputController : MonoBehaviour
     [SerializeField] private InputActionReference attackBoostInput;
     [SerializeField] private InputActionReference defenseBoostInput;
 
+    // Guarding
+    [SerializeField] private CoreFunctions coreFunctions;
+    [SerializeField] private InputActionReference guardInput;
+
+    // Dodging
+    [SerializeField] private InputActionReference dodgeInput;
+    [SerializeField] private DodgeMovement dodgeMovement;
+    [SerializeField] private MovementController movementController;
 
     // PURPOSE:
     // Store PlayerInput's runtime actions for abilities.
@@ -90,7 +108,8 @@ public class CombatInputController : MonoBehaviour
     private InputAction regenerationAction;
     private InputAction attackBoostAction;
     private InputAction defenseBoostAction;
-
+    private InputAction guardAction;
+    private InputAction dodgeAction;
 
     private ICombatEntity combatEntity;
 
@@ -110,6 +129,23 @@ public class CombatInputController : MonoBehaviour
         {
             Debug.LogWarning($"{name}: FirePoint is missing. Ranged attacks and spells will be unavailable.", this);
         }
+    }
+
+    // PURPOSE:
+    // Keeps the Guard animation synchronized
+    // with Jabari's actual blocking state.
+    //
+    // NOTE:
+    // If stamina runs out during a successful block,
+    // CoreFunctions can automatically stop guarding.
+    private void LateUpdate()
+    {
+        if (coreFunctions == null || playerAnimator == null)
+        {
+            return;
+        }
+
+        playerAnimator.SetBool(IsBlockingHash, coreFunctions.IsBlocking);
     }
 
     // PURPOSE:
@@ -135,6 +171,24 @@ public class CombatInputController : MonoBehaviour
         // Find the PlayerInput component on our character.
         playerInput = GetComponent<PlayerInput>();
 
+        // Find the PlayerInput runtime Guard action.
+        guardAction = GetPlayerAction(guardInput);
+
+        if (guardAction != null)
+        {
+            guardAction.performed += OnGuardStarted;
+
+            guardAction.canceled += OnGuardReleased;
+        }
+
+        // Find the runtime Dodge action.
+        dodgeAction = GetPlayerAction(dodgeInput);
+
+        if (dodgeAction != null)
+        {
+            dodgeAction.performed += OnDodgeRequested;
+        }
+
         // Find the runtime copies of our ability actions.
         regenerationAction = GetPlayerAction(regenerationInput);
 
@@ -157,7 +211,6 @@ public class CombatInputController : MonoBehaviour
         {
             defenseBoostAction.performed += OnDefenseBoostRequested;
         }
-
     }
 
     // PURPOSE:
@@ -197,6 +250,32 @@ public class CombatInputController : MonoBehaviour
             defenseBoostAction.performed -= OnDefenseBoostRequested;
         }
 
+        // Unsubscribe Guard input.
+        if (guardAction != null)
+        {
+            guardAction.performed -= OnGuardStarted;
+
+            guardAction.canceled -= OnGuardReleased;
+        }
+
+        // Unsubscribe Dodge input.
+        if (dodgeAction != null)
+        {
+            dodgeAction.performed -= OnDodgeRequested;
+        }
+
+        // Prevent guarding from remaining active
+        // if this controller becomes disabled.
+        if (coreFunctions != null)
+        {
+            coreFunctions.SetBlocking(false);
+        }
+
+        if (playerAnimator != null)
+        {
+            playerAnimator.SetBool(IsBlockingHash, false);
+        }
+
         // PURPOSE:
         // Clear an unfinished staff attack so it cannot
         // remain pending when this component is re-enabled.
@@ -219,6 +298,11 @@ public class CombatInputController : MonoBehaviour
     // is accepted by MeleeManager.
     public void RequestMeleeAttack()
     {
+        if (IsDefending())
+        {
+            return;
+        }
+
         if (combatEntity == null || meleeManager == null || meleeAttack == null)
         {
             return;
@@ -277,6 +361,11 @@ public class CombatInputController : MonoBehaviour
     // camera-based reticle aiming.
     private void OnRanged(InputAction.CallbackContext context)
     {
+        if (IsDefending())
+        {
+            return;
+        }
+
         if (combatEntity == null || rangedManager == null || rangedAttack == null || rangedAttack.projectileData == null
             || playerAnimator == null)
         {
@@ -379,6 +468,11 @@ public class CombatInputController : MonoBehaviour
     // Requests a spell using the Entity's mana.
     private void OnSpell(InputAction.CallbackContext context)
     {
+        if (IsDefending())
+        {
+            return;
+        }
+
         if (combatEntity == null || spellManager == null || spell == null || spell.projectileData == null
             || playerAnimator == null)
         {
@@ -504,5 +598,111 @@ public class CombatInputController : MonoBehaviour
         }
 
         return direction.normalized;
+    }
+
+    // PURPOSE:
+    // Starts guarding when Left Ctrl is pressed.
+    private void OnGuardStarted(InputAction.CallbackContext context)
+    {
+        if (coreFunctions == null || combatEntity == null || !combatEntity.IsAlive)
+        {
+            return;
+        }
+
+        coreFunctions.SetBlocking(true);
+
+        // Update the animation from the actual guard state.
+        if (playerAnimator != null)
+        {
+            playerAnimator.SetBool(IsBlockingHash, coreFunctions.IsBlocking);
+        }
+
+        Debug.Log($"Guarding: {coreFunctions.IsBlocking}");
+    }
+
+    // PURPOSE:
+    // Stops guarding when Left Ctrl is released.
+    private void OnGuardReleased(InputAction.CallbackContext context)
+    {
+        if (coreFunctions == null)
+        {
+            return;
+        }
+
+        coreFunctions.SetBlocking(false);
+
+        // Return to Locomotion when guarding ends.
+        if (playerAnimator != null)
+        {
+            playerAnimator.SetBool(IsBlockingHash, false);
+        }
+
+        Debug.Log("Guarding: False");
+    }
+
+    // PURPOSE:
+    // Requests a dodge using Jabari's existing
+    // stamina and invulnerability system.
+    private void OnDodgeRequested(InputAction.CallbackContext context)
+    {
+        if (coreFunctions == null || combatEntity == null || !combatEntity.IsAlive)
+        {
+            return;
+        }
+
+        // Prevent dodging while actively guarding.
+        if (coreFunctions.IsBlocking)
+        {
+            Debug.Log("Cannot dodge while guarding.");
+
+            return;
+        }
+
+        // CoreFunctions handles stamina cost,
+        // dodge duration, and invulnerability.
+        bool dodgeStarted = coreFunctions.Dodge();
+
+        if (dodgeStarted)
+        {
+            // Get the intended dodge direction
+            // Defaults to forward if there is no movement input.
+            Vector3 direction = transform.forward;
+
+            if (movementController != null)
+            {
+                direction = movementController.CurrentMoveDirection;
+            }
+
+            if (dodgeMovement != null)
+            {
+                dodgeMovement.BeginDodge(direction);
+            }
+
+            // PLay the roll animation
+            if (playerAnimator != null)
+            {
+                playerAnimator.SetTrigger(DodgeTriggerHash);
+            }
+
+            Debug.Log("Dodge started successfully!");
+        }
+
+        else
+        {
+            Debug.Log("Dodge unavailable or insufficient stamina.");
+        }
+    }
+
+    // PURPOSE:
+    // Prevents attacks while the character
+    // is guarding or performing a dodge.
+    private bool IsDefending()
+    {
+        if (coreFunctions == null)
+        {
+            return false;
+        }
+
+        return coreFunctions.IsBlocking || coreFunctions.IsDodging;
     }
 }
