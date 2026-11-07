@@ -4,15 +4,12 @@ using System.Text;
 using TMPro;
 public class BossDoor : MonoBehaviour
 {
-    //create a list of enemys
-    //check enemy count 
-    //open when enemy count = 0
+    
     [SerializeField] private List<Enemy> minionCount = new List<Enemy>();
     [SerializeField] private Collider doorCollider;
     [SerializeField] private TMP_Text objectiveBoard;
     private bool isDoorOpen;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         foreach (Enemy e in minionCount)
@@ -22,20 +19,32 @@ public class BossDoor : MonoBehaviour
                 e.bossDoor = this;
             }
         }
+        //checks the boss doors open condion and displays it on the objective obj
         ObjectiveBoard();
         CheckObjective();
     }
 
     private void Update()
     {
+
         if (isDoorOpen)
         {
             return;
         }
+        //removes the enemys if they are destroyed
         minionCount.RemoveAll(e => e == null);
+        //checks the boss doors open condion and displays it on the objective obj
         ObjectiveBoard();
         CheckObjective();
     }
+
+
+
+
+
+
+
+
 
     public void addEnemy(Enemy enemy)
     {
