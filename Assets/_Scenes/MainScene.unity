@@ -193,6 +193,7 @@ GameObject:
   m_Component:
   - component: {fileID: 83166249}
   - component: {fileID: 83166250}
+  - component: {fileID: 83166251}
   m_Layer: 5
   m_Name: PlayerHUD
   m_TagString: Untagged
@@ -250,6 +251,23 @@ MonoBehaviour:
   pixelsPerPoint: 2
   minWidth: 300
   maxWidth: 700
+--- !u!114 &83166251
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 83166248}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9173775bf822ccf4983b24db9648b8c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StatBarBinder
+  character: {fileID: 0}
+  health: {fileID: 1275899542}
+  mana: {fileID: 1952710414}
+  stamina: {fileID: 169487733}
+  hideWhenDead: {fileID: 0}
 --- !u!1001 &83465615
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4091,6 +4109,37 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 01f2ec002629b6d4c84b165360c55be3, type: 3}
+--- !u!1 &770255670
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 770255671}
+  m_Layer: 0
+  m_Name: BossDoorSave
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &770255671
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 770255670}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 24.1663, y: 2.03312, z: 21.09217}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &781816363
 GameObject:
   m_ObjectHideFlags: 0
@@ -8032,7 +8081,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
   m_UseReflectionProbes: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
@@ -8050,6 +8099,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 83166249}
+  - {fileID: 1482858190}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -9072,6 +9122,7 @@ GameObject:
   - component: {fileID: 1928923496}
   - component: {fileID: 1928923495}
   - component: {fileID: 1928923494}
+  - component: {fileID: 1928923499}
   m_Layer: 5
   m_Name: PauseCanvas
   m_TagString: Untagged
@@ -9102,7 +9153,19 @@ MonoBehaviour:
       m_Calls: []
   onBeforeQuitToTitle:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1928923499}
+        m_TargetAssemblyTypeName: PauseSaveHook, Assembly-CSharp
+        m_MethodName: SaveNow
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1928923495
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9187,6 +9250,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1928923499
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1928923493}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 148a2068a9cc853498477e451a733f8c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PauseSaveHook
 --- !u!1 &1952710412
 GameObject:
   m_ObjectHideFlags: 0
@@ -10654,3 +10729,4 @@ SceneRoots:
   - {fileID: 1611176111}
   - {fileID: 699377878}
   - {fileID: 83465615}
+  - {fileID: 770255671}
