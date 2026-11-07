@@ -28,6 +28,21 @@ public class MeleeManager : MonoBehaviour
     private Dictionary<MeleeAttackData, float> nextAttackTimes = new Dictionary<MeleeAttackData, float>();
 
     // PURPOSE:
+    // Stores an accepted attack until its animation
+    // reaches the hit frame.
+    private class PendingAnimatedAttack
+    {
+        public ICombatEntity requestedTarget;
+        public MeleeAttackData attackData;
+    }
+
+    // NOTE:
+    // Stored per attacker so this manager remains
+    // reusable for multiple combat entities.
+    private readonly Dictionary<ICombatEntity, PendingAnimatedAttack>
+        pendingAnimatedAttacks = new Dictionary<ICombatEntity, PendingAnimatedAttack>();
+
+    // PURPOSE:
     // Checks whether an attack can currently be used.
     public bool CanAttack(ICombatEntity attacker, MeleeAttackData attackData)
     {
@@ -95,23 +110,35 @@ public class MeleeManager : MonoBehaviour
         // A valid swing starts cooldown even if it misses.
         nextAttackTimes[attackData] = Time.time + Mathf.Max(0f, attackData.cooldown);
 
-        // Play the melee slash once the swing is executed.
+        // Executed the accepted attack.
+        ResolveAcceptedAttack(attacker, validTarget, attackData);
+
+        return true;
+    }
+
+    // PURPOSE:
+    // Handles the actual melee swing, damage,
+    // impact feedback, and status effects.
+    //
+    // NOTE:
+    // We'll reuse this method when the sword
+    // animation reaches its hit frame.
+    private void ResolveAcceptedAttack(ICombatEntity attacker, ICombatEntity validTarget, MeleeAttackData attackData)
+    {
         PlaySwingVfx(attacker, attackData);
 
         if (validTarget == null)
         {
             Debug.Log($"{attacker.CombatTransform.name} swung but missed.");
 
-            return true;
+            return;
         }
 
-        // Resolve the attack and retrieve its actual outcome.
+        // Resolve damage through the existing combat system.
         AttackOutcome outcome = CombatManager.ResolveAttack(attacker, validTarget, attackData.damage);
 
-        // Spawn impact VFX when the attack connects.
-        if (outcome == AttackOutcome.HIT ||
-            outcome == AttackOutcome.BLOCKED ||
-            outcome == AttackOutcome.KILLED)
+        // Show impact feedback when the attack connects.
+        if (outcome == AttackOutcome.HIT || outcome == AttackOutcome.BLOCKED || outcome == AttackOutcome.KILLED)
         {
             PlayHitVfx(attacker, validTarget, attackData);
         }
@@ -120,41 +147,54 @@ public class MeleeManager : MonoBehaviour
         switch (outcome)
         {
             case AttackOutcome.HIT:
+
                 Debug.Log($"{attacker.CombatTransform.name} hit " + $"{validTarget.CombatTransform.name}!");
-                break;
-            case AttackOutcome.BLOCKED:
-                Debug.Log($"{validTarget.CombatTransform.name} blocked the attack!");
-                break;
-            case AttackOutcome.DODGED:
-                Debug.Log($"{validTarget.CombatTransform.name} dodged the attack!");
-                break;
-            case AttackOutcome.KILLED:
-                Debug.Log($"{validTarget.CombatTransform.name} was defeated!");
-                break;
-            case AttackOutcome.MISSED:
-                Debug.Log("Attack missed.");
-                break;
-            case AttackOutcome.INVALID:
-                Debug.Log("Attack could not be resolved.");
+
                 break;
 
+            case AttackOutcome.BLOCKED:
+
+                Debug.Log($"{validTarget.CombatTransform.name} blocked the attack!");
+
+                break;
+
+            case AttackOutcome.DODGED:
+
+                Debug.Log($"{validTarget.CombatTransform.name} dodged the attack!");
+
+                break;
+
+            case AttackOutcome.KILLED:
+
+                Debug.Log($"{validTarget.CombatTransform.name} was defeated!");
+
+                break;
+
+            case AttackOutcome.MISSED:
+
+                Debug.Log("Attack missed.");
+
+                break;
+
+            case AttackOutcome.INVALID:
+
+                Debug.Log("Attack could not be resolved.");
+
+                break;
         }
 
-        // A blocked attack still connects, but a dodge does not.
+        // Preserve the existing status-effect rules.
         bool appliesStatus = outcome == AttackOutcome.HIT || outcome == AttackOutcome.BLOCKED;
 
         if (appliesStatus && attackData.statusEffect != null && validTarget.IsAlive && validTarget.CombatTransform != null)
         {
             StatusEffectManager statusManager = validTarget.CombatTransform.GetComponent<StatusEffectManager>();
 
-            // Apply the configured status effect, if one exists.
             if (statusManager != null)
             {
                 statusManager.ApplyEffect(attackData.statusEffect);
             }
         }
-
-        return true;
     }
 
     // PURPOSE:
@@ -213,6 +253,94 @@ public class MeleeManager : MonoBehaviour
         GameObject effect = Instantiate(attackData.hitVfxPrefab, hitPosition, hitRotation);
 
         Destroy(effect, Mathf.Max(0.1f, attackData.hitVfxLifetime));
+    }
+
+    // PURPOSE:
+    // Starts an animated melee attack and its cooldown
+    // without dealing damage immediately.
+    public bool TryBeginAnimatedAttack(ICombatEntity attacker, ICombatEntity target, MeleeAttackData attackData)
+    {
+        if (!CanAttack(attacker, attackData))
+        {
+            return false;
+        }
+
+        // Prevent another pending swing from replacing
+        // one that has not reached its hit frame.
+        if (pendingAnimatedAttacks.ContainsKey(attacker))
+        {
+            return false;
+        }
+
+        // Preserve the requiresTarget rule.
+        if (attackData.requiresTarget && FindAnimatedAttackTarget(attacker, target, attackData) == null)
+        {
+            return false;
+        }
+
+        pendingAnimatedAttacks.Add(attacker, new PendingAnimatedAttack{requestedTarget = target, attackData = attackData});
+
+        // Reserve the cooldown when the swing begins.
+        nextAttackTimes[attackData] = Time.time + Mathf.Max(0f, attackData.cooldown);
+
+        return true;
+    }
+
+    // PURPOSE:
+    // Resolves damage once when the sword reaches
+    // the hit frame in the animation.
+    public void ResolvePendingAnimatedAttack(ICombatEntity attacker)
+    {
+        if (attacker == null || !pendingAnimatedAttacks.TryGetValue(attacker, out PendingAnimatedAttack pending))
+        {
+            return;
+        }
+
+        // Remove it BEFORE dealing damage so another
+        // event cannot resolve the same swing twice.
+        pendingAnimatedAttacks.Remove(attacker);
+
+        if (!attacker.IsAlive || attacker.CombatTransform == null || !StatusEffectManager.CanEntityAct(attacker))
+        {
+            return;
+        }
+
+        // Recheck targeting at the moment of impact.
+        // An enemy might have moved out of range.
+        ICombatEntity validTarget = FindAnimatedAttackTarget(attacker, pending.requestedTarget, pending.attackData);
+
+        // Reuse all existing damage, status and VFX logic.
+        ResolveAcceptedAttack(attacker, validTarget, pending.attackData);
+    }
+
+    // PURPOSE:
+    // Clears an unfinished animated melee attack.
+    // Does not reset the attack cooldown.
+    public void CancelPendingAnimatedAttack(ICombatEntity attacker)
+    {
+        if (attacker == null)
+        {
+            return;
+        }
+
+        pendingAnimatedAttacks.Remove(attacker);
+    }
+
+    // PURPOSE:
+    // Finds a target using the existing targeting system.
+    private ICombatEntity FindAnimatedAttackTarget(ICombatEntity attacker, ICombatEntity target, MeleeAttackData attackData)
+    {
+        if (target != null)
+        {
+            if (target.IsAlive && target.CombatTransform != null && TargetingSystem.IsTargetInMeleeArc( attacker, target, attackData.targetingData))
+            {
+                return target;
+            }
+
+            return null;
+        }
+
+        return TargetingSystem.FindEnemyInMeleeArc(attacker, attackData.targetingData);
     }
 
     // PURPOSE:
