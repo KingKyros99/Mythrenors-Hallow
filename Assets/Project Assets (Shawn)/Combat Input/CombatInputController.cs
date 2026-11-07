@@ -36,6 +36,21 @@ public class CombatInputController : MonoBehaviour
     [SerializeField] private Animator playerAnimator;
     private static readonly int SwordAttackHash = Animator.StringToHash("SwordAttack");
 
+    // PURPOSE:
+    // Identifies the StaffCast trigger in the Animator.
+    private static readonly int StaffCastHash = Animator.StringToHash("StaffCast");
+
+    // PURPOSE:
+    // Tracks which staff attack is waiting for
+    // the animation's release frame.
+    private enum StaffAttackType
+    {
+        None,
+        MagicalArrow,
+        Fireball
+    }
+    private StaffAttackType pendingStaffAttack = StaffAttackType.None;
+
     // Attack Data
     [SerializeField] private MeleeAttackData meleeAttack;
     [SerializeField] private RangedAttackData rangedAttack;
@@ -182,6 +197,11 @@ public class CombatInputController : MonoBehaviour
             defenseBoostAction.performed -= OnDefenseBoostRequested;
         }
 
+        // PURPOSE:
+        // Clear an unfinished staff attack so it cannot
+        // remain pending when this component is re-enabled.
+        CancelPendingStaffCast();
+
         // NOTE:
         // Input actions may be shared with Hunter's
         // controller, so we do not disable them here.
@@ -257,38 +277,136 @@ public class CombatInputController : MonoBehaviour
     // camera-based reticle aiming.
     private void OnRanged(InputAction.CallbackContext context)
     {
-        if (combatEntity == null || rangedManager == null || rangedAttack == null || rangedAttack.projectileData == null)
+        if (combatEntity == null || rangedManager == null || rangedAttack == null || rangedAttack.projectileData == null
+            || playerAnimator == null)
         {
             return;
         }
 
-        // Get the actual projectile spawn position.
+        // Prevent multiple staff attacks from
+        // being queued at the same time.
+        if (pendingStaffAttack != StaffAttackType.None)
+        {
+            return;
+        }
+
+        // Only begin casting from Locomotion.
+        if (playerAnimator.IsInTransition(0) || !playerAnimator.GetCurrentAnimatorStateInfo(0).IsName("Locomotion"))
+        {
+            return;
+        }
+
+        // Preserve the existing ranged cooldown
+        // and combat restrictions
+        if (!rangedManager.CanAttack(combatEntity, rangedAttack))
+        {
+            return;
+        }
+
+        // Remember which projectile should launch
+        pendingStaffAttack = StaffAttackType.MagicalArrow;
+
+        // Start the staff casting animation.
+        playerAnimator.SetTrigger(StaffCastHash);
+    }
+
+    // PURPOSE:
+    // Releases the pending staff projectile when
+    // StaffReleaseFrame fires during the animation.
+    public void ResolveStaffReleaseFrame()
+    {
+        if (pendingStaffAttack == StaffAttackType.None)
+        {
+            return;
+        }
+
+        // Save which attack was requested.
+        StaffAttackType attackToRelease = pendingStaffAttack;
+
+        // Clear the pending attack first so the same
+        // event cannot fire the projectile twice.
+        pendingStaffAttack = StaffAttackType.None;
+
+        if (combatEntity == null)
+        {
+            return;
+        }
+
+        // Use the staff tip's CURRENT world position.
         Vector3 spawnPosition = GetFirePosition();
 
-        // Calculate direction using the camera reticle.
-        Vector3 direction = GetManualAimDirection(rangedAttack.projectileData.maxRange);
+        if (attackToRelease == StaffAttackType.MagicalArrow)
+        {
+            if (rangedManager == null || rangedAttack == null || rangedAttack.projectileData == null)
+            {
+                return;
+            }
 
-        // Fire without automatically selecting an enemy.
-        rangedManager.TryFireManual(combatEntity, rangedAttack, spawnPosition, direction);
+            Vector3 direction = GetManualAimDirection( rangedAttack.projectileData.maxRange);
+
+            // Magical Arrow: no mana cost.
+            rangedManager.TryFireManual(combatEntity, rangedAttack, spawnPosition, direction);
+        }
+
+        else if (attackToRelease == StaffAttackType.Fireball)
+        {
+            if (spellManager == null || spell == null || spell.projectileData == null)
+            {
+                return;
+            }
+
+            Vector3 direction = GetManualAimDirection(spell.projectileData.maxRange);
+
+            // Fireball: SpellManager handles mana
+            // and cooldown validation.
+            bool castSuccessful = spellManager.TryCastManual(combatEntity, spell, spawnPosition, direction);
+
+            if (!castSuccessful)
+            {
+                Debug.Log("Fireball casting failed.");
+            }
+        }
+    }
+
+    // PURPOSE:
+    // Clears a staff attack that was interrupted.
+    public void CancelPendingStaffCast()
+    {
+        pendingStaffAttack = StaffAttackType.None;
     }
 
     // PURPOSE:
     // Requests a spell using the Entity's mana.
     private void OnSpell(InputAction.CallbackContext context)
     {
-        if (combatEntity == null || spellManager == null || spell == null || spell.projectileData == null)
+        if (combatEntity == null || spellManager == null || spell == null || spell.projectileData == null
+            || playerAnimator == null)
         {
             return;
         }
 
-        // Get the projectile's actual spawn position.
-        Vector3 spawnPosition = GetFirePosition();
+        // Prevent Fireball and Magical Arrow from being queued at the same time.
+        if (pendingStaffAttack != StaffAttackType.None)
+        {
+            return;
+        }
 
-        // Calculate aim direction from the camera.
-        Vector3 direction = GetManualAimDirection(spell.projectileData.maxRange);
+        // Only cast while in Locomotion.
+        if (playerAnimator.IsInTransition(0) || !playerAnimator.GetCurrentAnimatorStateInfo(0).IsName("Locomotion"))
+        {
+            return;
+        }
 
-        // Cast the spell without selecting an enemy.
-        spellManager.TryCastManual(combatEntity, spell, spawnPosition, direction);
+        // Check spell availability and cooldown.
+        if (!spellManager.CanCast(combatEntity, spell))
+        {
+            return;
+        }
+
+        // Remember that this animation will release Fireball.
+        pendingStaffAttack = StaffAttackType.Fireball;
+
+        playerAnimator.SetTrigger(StaffCastHash);
     }
 
     // PURPOSE:

@@ -36,4 +36,15 @@ public class PlayerCombatAnimationEvents : MonoBehaviour
             combatInput.ResolveSwordHitFrame();
         }
     }
+
+    // PURPOSE:
+    // Tells the combat input system to release
+    // the projectile from the Character Staff.
+    public void StaffReleaseFrame()
+    {
+        if (combatInput != null)
+        {
+            combatInput.ResolveStaffReleaseFrame();
+        }
+    }
 }
