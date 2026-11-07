@@ -38,14 +38,6 @@ public class BossDoor : MonoBehaviour
         CheckObjective();
     }
 
-
-
-
-
-
-
-
-
     public void addEnemy(Enemy enemy)
     {
         minionCount.Add(enemy);
@@ -57,10 +49,6 @@ public class BossDoor : MonoBehaviour
         ObjectiveBoard();
         CheckObjective();
     }
-
-
-
-
 
     void ObjectiveBoard()
     {
