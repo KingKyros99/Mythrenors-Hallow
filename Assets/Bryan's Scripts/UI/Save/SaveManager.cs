@@ -36,8 +36,14 @@ public class SaveManager : MonoBehaviour
 
     public void Save(string saveId)
     {
+        Debug.Log("[Save] Save called: " + saveId);
+
         CharacterBase p = FindPlayer();
-        if (p == null) return;
+        if (p == null)
+        {
+            Debug.LogWarning("[Save] No object with tag Player and CharacterBase found.");
+            return;
+        }
 
         SaveData d = new SaveData
         {
@@ -55,6 +61,7 @@ public class SaveManager : MonoBehaviour
         File.WriteAllText(FilePath, JsonUtility.ToJson(d));
         PlayerPrefs.SetInt(KeyHasGame, 1);
         PlayerPrefs.Save();
+        Debug.Log("[Save] Saved to " + FilePath);
         Saved?.Invoke();
     }
 
@@ -87,7 +94,7 @@ public class SaveManager : MonoBehaviour
             Quaternion.Euler(0f, pending.rotY, 0f));
         if (cc != null) cc.enabled = true;
 
-        //I will uncomment the line below once SetStats is put into the CharacterBase class.
+        // I will uncomment the line below once SetStats is put into the CharacterBase
         // p.SetStats(pending.health, pending.mana, pending.stamina);
 
         pending = null;
