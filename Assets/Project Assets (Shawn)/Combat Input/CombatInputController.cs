@@ -29,6 +29,13 @@ public class CombatInputController : MonoBehaviour
     [SerializeField] private RangedAttackManager rangedManager;
     [SerializeField] private SpellManager spellManager;
 
+    // PURPOSE:
+    // Plays the player's combat animations.
+    // The Animator is attached to the character's visual model.
+    // Combat Animation
+    [SerializeField] private Animator playerAnimator;
+    private static readonly int SwordAttackHash = Animator.StringToHash("SwordAttack");
+
     // Attack Data
     [SerializeField] private MeleeAttackData meleeAttack;
     [SerializeField] private RangedAttackData rangedAttack;
@@ -115,7 +122,9 @@ public class CombatInputController : MonoBehaviour
 
         // Find the runtime copies of our ability actions.
         regenerationAction = GetPlayerAction(regenerationInput);
+
         attackBoostAction = GetPlayerAction(attackBoostInput);
+
         defenseBoostAction = GetPlayerAction(defenseBoostInput);
 
         // Subscribe to the correct actions.
@@ -186,8 +195,8 @@ public class CombatInputController : MonoBehaviour
     }
 
     // PURPOSE:
-    // Allows keyboard/mouse input and UI buttons
-    // to request the same melee attack.
+    // Starts the sword animation only when an attack
+    // is accepted by MeleeManager.
     public void RequestMeleeAttack()
     {
         if (combatEntity == null || meleeManager == null || meleeAttack == null)
@@ -195,9 +204,52 @@ public class CombatInputController : MonoBehaviour
             return;
         }
 
-        // MeleeManager handles target detection,
-        // cooldowns, damage, and impact feedback.
-        meleeManager.TryAttack(combatEntity, null, meleeAttack);
+        // Preserve normal combat if no Animator is assigned.
+        if (playerAnimator == null)
+        {
+            meleeManager.TryAttack(combatEntity, null, meleeAttack);
+
+            return;
+        }
+
+        // For now, only begin sword swings from Locomotion.
+        // Prevent starting another attack mid-animation.
+        if (playerAnimator.IsInTransition(0) || !playerAnimator.GetCurrentAnimatorStateInfo(0).IsName("Locomotion"))
+        {
+            return;
+        }
+
+        bool attackStarted = meleeManager.TryBeginAnimatedAttack(combatEntity, null, meleeAttack);
+
+        if (attackStarted)
+        {
+            playerAnimator.SetTrigger(SwordAttackHash);
+        }
+    }
+
+    // PURPOSE:
+    // Called by the sword animation's hit-frame event.
+    public void ResolveSwordHitFrame()
+    {
+        if (combatEntity == null || meleeManager == null)
+        {
+            return;
+        }
+
+        meleeManager.ResolvePendingAnimatedAttack(combatEntity);
+    }
+
+    // PURPOSE:
+    // Clears an unfinished sword attack when
+    // the animation ends or is interrupted.
+    public void CancelPendingSwordAttack()
+    {
+        if (combatEntity == null || meleeManager == null)
+        {
+            return;
+        }
+
+        meleeManager.CancelPendingAnimatedAttack(combatEntity);
     }
 
     // PURPOSE:

@@ -1028,6 +1028,11 @@ Transform:
   - {fileID: 1719558003}
   m_Father: {fileID: 1459502114}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &226739498 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: fc618e7a9cc704d41a48179e5ddb9467, type: 3}
+  m_PrefabInstance: {fileID: 2048750372}
+  m_PrefabAsset: {fileID: 0}
 --- !u!43 &282094801
 Mesh:
   m_ObjectHideFlags: 0
@@ -2969,6 +2974,10 @@ PrefabInstance:
       propertyPath: firePoint
       value: 
       objectReference: {fileID: 781816364}
+    - target: {fileID: 8062881480025044463, guid: 9a086d9d50f6f984facd1f600ed73b38, type: 3}
+      propertyPath: playerAnimator
+      value: 
+      objectReference: {fileID: 2048750374}
     - target: {fileID: 9011269189401856253, guid: 9a086d9d50f6f984facd1f600ed73b38, type: 3}
       propertyPath: camSpeed
       value: 4
@@ -7651,6 +7660,17 @@ MonoBehaviour:
   walkingSpeed: 5
   sprintingSpeed: 6
   damping: 0.15
+--- !u!114 &1564851982 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8062881480025044463, guid: 9a086d9d50f6f984facd1f600ed73b38, type: 3}
+  m_PrefabInstance: {fileID: 565028309}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 460146076}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30f1ba5d4e2f12645963b98158ce9159, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CombatInputController
 --- !u!1 &1590706139
 GameObject:
   m_ObjectHideFlags: 0
@@ -10266,6 +10286,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7738452484502734368, guid: fc618e7a9cc704d41a48179e5ddb9467, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: fc618e7a9cc704d41a48179e5ddb9467, type: 3}
       propertyPath: m_Name
       value: tripo_convert_df84a0dd-11a9-4cb6-99b1-6754915878d8
@@ -10287,7 +10311,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4164213433230802979, guid: fc618e7a9cc704d41a48179e5ddb9467, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1714526765}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: fc618e7a9cc704d41a48179e5ddb9467, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2048750375}
   m_SourcePrefab: {fileID: 100100000, guid: fc618e7a9cc704d41a48179e5ddb9467, type: 3}
 --- !u!4 &2048750373 stripped
 Transform:
@@ -10299,6 +10326,19 @@ Animator:
   m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: fc618e7a9cc704d41a48179e5ddb9467, type: 3}
   m_PrefabInstance: {fileID: 2048750372}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2048750375
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 226739498}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa7e894449f56f8499d43ea440b48ef8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerCombatAnimationEvents
+  combatInput: {fileID: 1564851982}
 --- !u!1 &2055774266
 GameObject:
   m_ObjectHideFlags: 0
