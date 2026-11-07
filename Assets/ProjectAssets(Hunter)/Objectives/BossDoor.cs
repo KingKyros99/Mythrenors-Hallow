@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
-using System.Security.Cryptography;
-
+using System.Text;
+using TMPro;
 public class BossDoor : MonoBehaviour
 {
     //create a list of enemys
@@ -9,6 +9,7 @@ public class BossDoor : MonoBehaviour
     //open when enemy count = 0
     [SerializeField] private List<Enemy> minionCount = new List<Enemy>();
     [SerializeField] private Collider doorCollider;
+    [SerializeField] private TMP_Text objectiveBoard;
     private bool isDoorOpen;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -21,6 +22,7 @@ public class BossDoor : MonoBehaviour
                 e.bossDoor = this;
             }
         }
+        ObjectiveBoard();
         CheckObjective();
     }
 
@@ -31,6 +33,7 @@ public class BossDoor : MonoBehaviour
             return;
         }
         minionCount.RemoveAll(e => e == null);
+        ObjectiveBoard();
         CheckObjective();
     }
 
@@ -42,7 +45,22 @@ public class BossDoor : MonoBehaviour
     public void RemoveEnemy(Enemy enemy)
     {
         minionCount.RemoveAll(e => e == null || e == enemy);
+        ObjectiveBoard();
         CheckObjective();
+    }
+
+
+
+
+
+    void ObjectiveBoard()
+    {
+        if (objectiveBoard == null)
+        {
+            return;
+        }
+        string text = $"Enemies Remaining: {minionCount.Count}";
+        objectiveBoard.text = text;
     }
 
 
@@ -66,6 +84,13 @@ public class BossDoor : MonoBehaviour
         {
             doorCollider.enabled = false;
         }
+
+        if (objectiveBoard != null)
+        {
+            objectiveBoard.text = "Gate was Opened";
+        }
+
     }
 
 }
+
