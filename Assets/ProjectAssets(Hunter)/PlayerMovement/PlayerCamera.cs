@@ -41,9 +41,9 @@ public class PlayerCamera : MonoBehaviour
     [SerializeField] float currDist;
 
     //Utility
-    [SerializeField] Camera cam;
+    [SerializeField] private Camera cam;
 
-    InputAction lookAct;
+    private InputAction lookAct;
 
     [SerializeField] LayerMask collisionLayer = -0;
 
@@ -67,7 +67,7 @@ public class PlayerCamera : MonoBehaviour
     }
 
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -87,6 +87,8 @@ public class PlayerCamera : MonoBehaviour
         {
             return;
         }
+
+
         if(Cursor.lockState == CursorLockMode.Locked)
         {
             
@@ -97,6 +99,8 @@ public class PlayerCamera : MonoBehaviour
             verticalRot = Mathf.Clamp(verticalRot, camRotMin, camRotMax);
         }
 
+
+
         player.rotation = Quaternion.Euler(0f, horizontalRot, 0f);
         
         
@@ -104,18 +108,25 @@ public class PlayerCamera : MonoBehaviour
         Quaternion horizontalRotation = Quaternion.Euler(0f, horizontalRot, 0f);
 
         Vector3 playerPos = player.position;
-        Vector3 playerPivot = playerPos + horizontalRotation * playerOffset;
+        Vector3 playerPivot = playerPos + (horizontalRotation * playerOffset);
 
         Vector3 rightOffset = horizontalRotation * Vector3.right * shoulderDist;
         Vector3 finalPivot = playerPivot + rightOffset;
 
-        Vector3 camDirection = (completeRot * Vector3.back).normalized;
+        Vector3 targetPos = finalPivot + (completeRot * Vector3.back * distance);
+        Vector3 camDirection = (targetPos - finalPivot).normalized;
 
         //Colision
         float targetDistance = distance;
+
+        //check in a spere to determine if the camera is already in or on wall
+        if (Physics.CheckSphere(finalPivot, collisionZone, collisionLayer))
+        {
+            targetDistance = minDist;
+        }
         if (Physics.SphereCast(finalPivot, collisionZone, camDirection, out RaycastHit hit, distance, collisionLayer))
         {
-            targetDistance = Mathf.Clamp(hit.distance - 0.1f, minDist, distance);
+            targetDistance = Mathf.Clamp(hit.distance - 0.2f, minDist, distance);
         }
         currDist = Mathf.MoveTowards(currDist, targetDistance, camSpeed * Time.deltaTime);
 

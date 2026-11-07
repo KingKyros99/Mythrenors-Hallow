@@ -10,6 +10,10 @@ public class Enemy : CharacterBase
     [SerializeField] private MeleeAttackData meleeAttack;
     [SerializeField] private float attackCheckInterval = 0.2f;
 
+
+    public BossDoor bossDoor;
+
+
     private Transform target;
     private bool isChasing;
     private MovementController movementController;
@@ -24,6 +28,10 @@ public class Enemy : CharacterBase
 
     private void Update()
     {
+        if (IsDead)
+        {
+            return;
+        }
         // Find the player if we don't have a target.
         if (target == null)
         {
@@ -125,4 +133,24 @@ public class Enemy : CharacterBase
 
         meleeManager.TryAttack(combatEntity, targetEntity, meleeAttack);
     }
+
+
+
+
+    public override void Die()
+    {
+        if (IsDead)
+        {
+            return;
+        }
+
+        if (bossDoor != null)
+        {
+            bossDoor.RemoveEnemy(this);
+        }
+
+        base.Die();
+    }
+
+
 }
