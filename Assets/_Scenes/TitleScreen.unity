@@ -17823,6 +17823,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be4747a18016c32438eb43e810aeff34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AudioManger
+  combatTrack: {fileID: 8300000, guid: c584e723453d3bc4d9912cdcd89fa056, type: 3}
+  ExitFade: 0
   Tracks:
   - Name: TitleScreen
     clip: {fileID: 8300000, guid: 97cc143d6d98d84458fce4c30ca48240, type: 3}

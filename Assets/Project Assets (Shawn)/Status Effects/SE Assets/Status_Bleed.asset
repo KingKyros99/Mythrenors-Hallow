@@ -20,3 +20,4 @@ MonoBehaviour:
   effectPower: 4
   canStack: 1
   maxStacks: 3
+  vfxPrefab: {fileID: 782961666633586586, guid: f083d083faf9f61468ed33ae33bd48a2, type: 3}

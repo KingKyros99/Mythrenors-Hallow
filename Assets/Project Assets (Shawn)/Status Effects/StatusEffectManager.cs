@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel.Design.Serialization;
 using UnityEngine;
 
 // MYTHRENOR'S HALLOW - STATUS EFFECT MANAGER
@@ -19,6 +20,11 @@ public class StatusEffectManager : MonoBehaviour
     [SerializeField] private MonoBehaviour entityComponent;
 
     private ICombatEntity combatEntity;
+
+    // PURPOSE:
+    // Connects active status effects to their
+    // visual effects on the Entity.
+    [SerializeField] private StatusEffectVFXController vfxController;
 
     // PURPOSE:
     // Tracks the runtime state of a single effect.
@@ -43,6 +49,12 @@ public class StatusEffectManager : MonoBehaviour
 
         combatEntity = entityComponent as ICombatEntity;
 
+        // Find the VFX controller on this Entity.
+        if (vfxController == null)
+        {
+            vfxController = GetComponent<StatusEffectVFXController>();
+        }
+
         if (combatEntity == null)
         {
             Debug.LogWarning($"{name}: No valid combat Entity assigned.", this);
@@ -60,7 +72,7 @@ public class StatusEffectManager : MonoBehaviour
 
         if (!combatEntity.IsAlive)
         {
-            activeEffects.Clear();
+            ClearEffects();
 
             return;
         }
@@ -92,15 +104,22 @@ public class StatusEffectManager : MonoBehaviour
             // Clear effects if periodic damage kills the Entity
             if (!combatEntity.IsAlive)
             {
-                activeEffects.Clear();
+                ClearEffects();
 
                 return;
             }
 
-            // Remove effects when their duration expires.
+            // PURPOSE:
+            // Remove the status and its visual effect
+            // when its duration expires.
             if (effect.remainingDuration <= 0f)
             {
                 Debug.Log($"{name}: {effect.data.effectName} expired.");
+
+                if (vfxController != null)
+                {
+                    vfxController.StopEffect(effect.data);
+                }
 
                 activeEffects.RemoveAt(i);
             }
@@ -143,6 +162,14 @@ public class StatusEffectManager : MonoBehaviour
 
             effect.tickTimer = 0f;
 
+            // PURPOSE:
+            // Ensure the status VFX is active.
+            // PlayEffect prevents duplicate particles.
+            if (vfxController != null)
+            {
+                vfxController.PlayEffect(data);
+            }
+
             return true;
         }
 
@@ -152,6 +179,14 @@ public class StatusEffectManager : MonoBehaviour
         };
 
         activeEffects.Add(newEffect);
+
+        // PURPOSE:
+        // Start the visual effect when a new
+        // status effect is successfully applied.
+        if (vfxController != null)
+        {
+            vfxController.PlayEffect(data);
+        }
 
         Debug.Log($"{name}: {data.effectName} applied.");
 
@@ -196,6 +231,11 @@ public class StatusEffectManager : MonoBehaviour
     public void RemoveEffect(StatusEffectData data)
     {
         activeEffects.RemoveAll(effect => effect.data == data);
+
+        if (vfxController != null)
+        {
+            vfxController.StopEffect(data);
+        }
     }
 
     // PURPOSE:
@@ -284,5 +324,18 @@ public class StatusEffectManager : MonoBehaviour
     public void ClearEffects()
     {
         activeEffects.Clear();
+
+        if (vfxController != null)
+        {
+            vfxController.StopAllEffects();
+        }
+    }
+
+    // PURPOSE:
+    // Cleans up status effects and particles
+    // when this manager is disabled.
+    private void Disable()
+    {
+        ClearEffects();
     }
 }
