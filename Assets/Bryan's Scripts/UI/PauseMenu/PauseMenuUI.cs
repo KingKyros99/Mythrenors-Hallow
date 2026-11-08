@@ -32,6 +32,12 @@ public class PauseMenuUI : MonoBehaviour
     void OnEnable() { pauseAction.Enable(); }
     void OnDisable() { pauseAction.Disable(); }
 
+    void OnDestroy()
+    {
+        pauseAction.Disable();
+        pauseAction.Dispose();
+    }
+
     void Start()
     {
         pausePanel.SetActive(false);
