@@ -42,6 +42,7 @@ public class MovementController : MonoBehaviour
     [SerializeField] private bool aiControlled = false;
 
     private Vector3 aiMoveDirection;
+    private float aiMoveSpeed = -1f;
 
     //Bools
 
@@ -114,7 +115,7 @@ public class MovementController : MonoBehaviour
         }
 
 
-        float currentSpeed = isSprinting ? sprintSpeed : baseSpeed;
+        float currentSpeed = aiControlled && aiMoveSpeed >= 0f ? aiMoveSpeed : isSprinting ? sprintSpeed : baseSpeed;
 
         Vector3 horizontalDir = moveDir * currentSpeed;
         Vector3 horizontal = new Vector3(velocity.x, 0, velocity.z);
@@ -199,9 +200,10 @@ public class MovementController : MonoBehaviour
         }
     }
 
-    public void SetAIMovement(Vector3 direction)
+    public void SetAIMovement(Vector3 direction, float speed = -1f)
     {
         aiControlled = true;
         aiMoveDirection = Vector3.ClampMagnitude(direction, 1f);
+        aiMoveSpeed = speed;
     }
 }
