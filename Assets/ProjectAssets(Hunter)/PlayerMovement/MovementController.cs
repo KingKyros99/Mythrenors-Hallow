@@ -51,8 +51,7 @@ public class MovementController : MonoBehaviour
 
     //check if the player controller is grounded
     public bool isGrounded => controller.isGrounded;
-
-
+    public Vector3 CurrentMoveDirection => moveDir;
 
     private void Awake()
     {
