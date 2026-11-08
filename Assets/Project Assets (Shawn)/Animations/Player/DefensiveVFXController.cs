@@ -3,19 +3,16 @@ using UnityEngine;
 // MYTHRENOR'S HALLOW - DEFENSIVE VFX CONTROLLER
 //
 // PURPOSE:
-// Handles visual effects for defensive combat actions.
-// Supports guarding and directional dodging.
+// Controls visual effects for guarding, dodging,
+// and successfully blocking incoming attacks.
 //
-// TODO (FUTURE):
-// Add impact VFX when an attack is successfully blocked.
-//
-// NOTE:
-// CoreFunctions handles stamina, guarding, and dodging.
-// This script only handles visual effects.
+// TODO (JABARI INTEGRATION):
+// Listen for successful blocks from CoreFunctions.
+// No damage or stamina calculations happen here.
 
 public class DefensiveVFXController : MonoBehaviour
 {
-    // Defensive References
+    // References
     [SerializeField] private CoreFunctions coreFunctions;
 
     // Dodge VFX
@@ -24,45 +21,43 @@ public class DefensiveVFXController : MonoBehaviour
 
     // Guard VFX
     [SerializeField] private ParticleSystem guardVFX;
-
-    // PURPOSE:
-    // Displays a protective shield while guarding.
     [SerializeField] private MeshRenderer guardForceField;
 
-    // Tracks previous defensive states.
+    // Guard Impact VFX
+    [SerializeField] private ParticleSystem guardImpactVFX;
+
     private bool wasDodging;
     private bool wasBlocking;
 
     private void Awake()
     {
-        // Find CoreFunctions if it wasn't assigned.
         if (coreFunctions == null)
         {
             coreFunctions = GetComponent<CoreFunctions>();
         }
 
-        // Ensure defensive particles are initially stopped.
-        if (dodgeVFX != null)
+        // All effects begin disabled.
+        StopDodgeVFX();
+
+        StopGuardVFX();
+
+        if (guardImpactVFX != null)
         {
-            dodgeVFX.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            guardImpactVFX.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        }
+    }
+
+    private void OnEnable()
+    {
+        if (coreFunctions == null)
+        {
+            coreFunctions = GetComponent<CoreFunctions>();
         }
 
-        if (dodgeTrail != null)
+        // Listen for an actual successful block.
+        if (coreFunctions != null)
         {
-            dodgeTrail.emitting = false;
-
-            dodgeTrail.Clear();
-        }
-
-        if (guardVFX != null)
-        {
-            guardVFX.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-        }
-
-        // Show the protective shield.
-        if (guardForceField != null)
-        {
-            guardForceField.enabled = false;
+            coreFunctions.OnSuccessfulBlock += PlayGuardImpactVFX;
         }
     }
 
@@ -73,13 +68,9 @@ public class DefensiveVFXController : MonoBehaviour
             return;
         }
 
-        // Read the actual defensive states.
+        // Detect dodge state changes.
         bool isDodging = coreFunctions.IsDodging;
 
-        bool isBlocking = coreFunctions.IsBlocking;
-
-        // PURPOSE:
-        // Update dodge particles only when dodge state changes.
         if (isDodging != wasDodging)
         {
             if (isDodging)
@@ -95,8 +86,9 @@ public class DefensiveVFXController : MonoBehaviour
             wasDodging = isDodging;
         }
 
-        // PURPOSE:
-        // Update guard particles only when guard state changes.
+        // Detect guard state changes.
+        bool isBlocking = coreFunctions.IsBlocking;
+
         if (isBlocking != wasBlocking)
         {
             if (isBlocking)
@@ -114,7 +106,7 @@ public class DefensiveVFXController : MonoBehaviour
     }
 
     // PURPOSE:
-    // Starts the dodge particle trail.
+    // Starts dodge particles and the movement trail.
     private void PlayDodgeVFX()
     {
         if (dodgeVFX != null)
@@ -131,60 +123,9 @@ public class DefensiveVFXController : MonoBehaviour
     }
 
     // PURPOSE:
-    // Stops dodge emission when dodging ends.
+    // Stops dodge particles and removes the trail.
     private void StopDodgeVFX()
     {
-        if (dodgeVFX != null)
-        {
-            dodgeVFX.Stop(true, ParticleSystemStopBehavior.StopEmitting);
-        }
-
-        if (dodgeTrail != null)
-        {
-            dodgeTrail.emitting = false;
-        }
-    }
-
-    // PURPOSE:
-    // Starts the protective guard aura.
-    private void PlayGuardVFX()
-    {
-        if (guardVFX != null)
-        {
-            guardVFX.Play(true);
-        }
-
-        // Show the protective shield.
-        if (guardForceField != null)
-        {
-            guardForceField.enabled = true;
-        }
-    }
-
-    // PURPOSE:
-    // Stops guard emission when guarding ends.
-    private void StopGuardVFX()
-    {
-        if (guardVFX != null)
-        {
-            guardVFX.Stop(true, ParticleSystemStopBehavior.StopEmitting);
-        }
-
-        // Hide the shield when guarding ends.
-        if (guardForceField != null)
-        {
-            guardForceField.enabled = false;
-        }
-    }
-
-    // PURPOSE:
-    // Clears defensive VFX when this component is disabled.
-    private void OnDisable()
-    {
-        wasDodging = false;
-
-        wasBlocking = false;
-
         if (dodgeVFX != null)
         {
             dodgeVFX.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
@@ -196,16 +137,83 @@ public class DefensiveVFXController : MonoBehaviour
 
             dodgeTrail.Clear();
         }
+    }
 
+    // PURPOSE:
+    // Shows the force field while guarding.
+    private void PlayGuardVFX()
+    {
+        if (guardVFX != null)
+        {
+            guardVFX.Play(true);
+        }
+
+        if (guardForceField != null)
+        {
+            guardForceField.enabled = true;
+        }
+    }
+
+    // PURPOSE:
+    // Hides the force field when guarding ends.
+    private void StopGuardVFX()
+    {
         if (guardVFX != null)
         {
             guardVFX.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         }
 
-        // Ensure the shield disappears if this compenent is disabled.
         if (guardForceField != null)
         {
             guardForceField.enabled = false;
         }
+    }
+
+    // PURPOSE:
+    // Plays one particle burst after a successful block.
+    private void PlayGuardImpactVFX()
+    {
+        if (guardImpactVFX == null)
+        {
+            Debug.LogWarning("Guard Impact VFX is not assigned.");
+
+            return;
+        }
+
+        guardImpactVFX.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+
+        guardImpactVFX.Play(true);
+
+        Debug.Log("Guard Impact VFX triggered!");
+    }
+
+    // PURPOSE:
+    // Allows testing without an attacking enemy.
+    [ContextMenu("Preview Guard Impact")]
+    private void PreviewGuardImpact()
+    {
+        PlayGuardImpactVFX();
+    }
+
+    private void OnDisable()
+    {
+        // Stop listening for block notifications.
+        if (coreFunctions != null)
+        {
+            coreFunctions.OnSuccessfulBlock -= PlayGuardImpactVFX;
+        }
+
+        StopDodgeVFX();
+
+        StopGuardVFX();
+
+        if (guardImpactVFX != null)
+        {
+            guardImpactVFX.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        }
+
+        wasDodging = false;
+
+        wasBlocking = false;
     }
 }
