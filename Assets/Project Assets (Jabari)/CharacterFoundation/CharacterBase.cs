@@ -161,19 +161,27 @@ public class CharacterBase : MonoBehaviour
     public virtual void Die()
     {
         if (mIsDead)
+        {
             return;
-
+        }
         mIsDead = true;
 
         if (gameObject.CompareTag("Player")) 
         {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
             SceneManager.LoadScene("Lose");
+            
         }
         else if (gameObject.CompareTag("Boss"))
         {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
             SceneManager.LoadScene("Win");
         }
-            Destroy(gameObject);
+
+
+        Destroy(gameObject);
         Debug.Log($"{name} has died.");
 
 

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Enemy_Melee
   m_EditorClassIdentifier: Assembly-CSharp::TargetingData
   targetType: 3
-  maxRange: 30
+  maxRange: 15
   radius: 0
   attackAngle: 120
   targetLayers:

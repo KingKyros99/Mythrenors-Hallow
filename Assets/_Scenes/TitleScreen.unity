@@ -17830,6 +17830,10 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: 97cc143d6d98d84458fce4c30ca48240, type: 3}
   - Name: MainScene
     clip: {fileID: 8300000, guid: 1f85445b395ec7643a9fa9ec05068a0a, type: 3}
+  - Name: Win
+    clip: {fileID: 8300000, guid: 3e2520148b61d6f42b4e205c7f30f508, type: 3}
+  - Name: Lose
+    clip: {fileID: 8300000, guid: c140a2ca595272147b089a131b811370, type: 3}
   transitionTime: 3
   volume: 5
 --- !u!4 &1643089045
