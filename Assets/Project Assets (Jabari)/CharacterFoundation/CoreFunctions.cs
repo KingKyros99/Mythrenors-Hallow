@@ -71,6 +71,10 @@ public class CoreFunctions : MonoBehaviour
     }
 
     // ==================== BLOCK ====================
+    // PURPOSE:
+    // Notifies visual systems when an attack
+    // has been successfully blocked.
+    public event System.Action OnSuccessfulBlock;
 
     [Header("Block")]
     [SerializeField, Range(0f, 1f)]
@@ -122,6 +126,9 @@ public class CoreFunctions : MonoBehaviour
         // Apply the block's damage reduction.
         remainingDamage = incomingDamage *
             (1f - blockDamageReduction);
+
+        // Notify the defensive VFX system
+        OnSuccessfulBlock?.Invoke();
 
         return true;
     }
