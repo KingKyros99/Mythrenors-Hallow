@@ -850,9 +850,25 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1920073765}
     - target: {fileID: 2342279044125585436, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
+      propertyPath: meleeAttack
+      value: 
+      objectReference: {fileID: 11400000, guid: 4068cd48883ffca44adec2d21c468dd5, type: 2}
+    - target: {fileID: 2342279044125585436, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
+      propertyPath: returnSpeed
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2342279044125585436, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
       propertyPath: meleeManager
       value: 
       objectReference: {fileID: 1564851961}
+    - target: {fileID: 2342279044125585436, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
+      propertyPath: leashDistance
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 2342279044125585436, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
+      propertyPath: attackCheckInterval
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 3371458300878072808, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
       propertyPath: m_Name
       value: Goblin_Minions 2
@@ -8044,9 +8060,37 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1920073765}
     - target: {fileID: 2342279044125585436, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
+      propertyPath: meleeAttack
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2342279044125585436, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
+      propertyPath: returnSpeed
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2342279044125585436, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
       propertyPath: meleeManager
       value: 
-      objectReference: {fileID: 1564851961}
+      objectReference: {fileID: 0}
+    - target: {fileID: 2342279044125585436, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
+      propertyPath: rangedAttack
+      value: 
+      objectReference: {fileID: 11400000, guid: b2f4c9f65f0760d46be6c1972e0240d7, type: 2}
+    - target: {fileID: 2342279044125585436, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
+      propertyPath: leashDistance
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 2342279044125585436, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
+      propertyPath: targetingData
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2342279044125585436, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
+      propertyPath: rangedAttackManager
+      value: 
+      objectReference: {fileID: 1564851959}
+    - target: {fileID: 2342279044125585436, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
+      propertyPath: projectileSpawnPoint
+      value: 
+      objectReference: {fileID: 1935136901}
     - target: {fileID: 3371458300878072808, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
       propertyPath: m_Name
       value: Goblin_Minions
@@ -8057,7 +8101,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 1296039361487314252, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1935136901}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
 --- !u!4 &1313058524 stripped
@@ -12123,6 +12170,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1932829509}
   m_CullTransparentMesh: 1
+--- !u!1 &1935136900
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1935136901}
+  m_Layer: 3
+  m_Name: ProjectileSpawnTime
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1935136901
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1935136900}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.2, z: 0.6}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1313058524}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!43 &1944910686
 Mesh:
   m_ObjectHideFlags: 0
