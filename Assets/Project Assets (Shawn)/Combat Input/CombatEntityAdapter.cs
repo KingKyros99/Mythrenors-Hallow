@@ -20,6 +20,8 @@ public class CombatEntityAdapter : MonoBehaviour, ICombatEntity
 {
     // Character References
     [SerializeField] private CharacterBase characterBase;
+    // Visual feedback when this Entity receives damage.
+    private DamageFlash damageFlash;
     [SerializeField] private StatusEffectManager statusEffectManager;
 
     // Team Settings
@@ -39,6 +41,9 @@ public class CombatEntityAdapter : MonoBehaviour, ICombatEntity
         {
             statusEffectManager = GetComponent<StatusEffectManager>();
         }
+
+        // Find the optional damage flash component.
+        damageFlash = GetComponent<DamageFlash>();
     }
 
     // PURPOSE:
@@ -101,13 +106,25 @@ public class CombatEntityAdapter : MonoBehaviour, ICombatEntity
             return;
         }
 
+        // Convert incoming damage to an integar.
         int damage = Mathf.Max(1, Mathf.RoundToInt(amount));
 
+        // Record health before applying damage.
+        int healthBefore = characterBase.CurrentHealth;
+
+        // Jabari's CharacterBase handles health.
         characterBase.TakeDamage(damage);
 
-        // PURPOSE:
-        // Temporarily displays actual health after damage.
-        // TODO (DEBUG): Remove after integration testing.
+        // Only flash if health actually decreased.
+        if (characterBase.CurrentHealth < healthBefore)
+        {
+            if (damageFlash != null)
+            {
+                damageFlash.PlayFlash();
+            }
+        }
+
+        // Temporary combat testing feedback.
         Debug.Log($"{name} Health: {characterBase.CurrentHealth}/{characterBase.MaxHealth}");
     }
 

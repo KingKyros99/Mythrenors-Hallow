@@ -2551,6 +2551,51 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!1 &350374205
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 350374207}
+  - component: {fileID: 350374206}
+  m_Layer: 0
+  m_Name: SaveManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &350374206
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 350374205}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71ed99a664686904e800cf14e2bee407, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SaveManager
+  gameplaySceneName: MainScene
+--- !u!4 &350374207
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 350374205}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 21.45683, y: 1.80517, z: 18.72737}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &357266109
 GameObject:
   m_ObjectHideFlags: 0
@@ -5057,6 +5102,7 @@ GameObject:
   - component: {fileID: 582332815}
   - component: {fileID: 582332817}
   - component: {fileID: 582332816}
+  - component: {fileID: 582332818}
   m_Layer: 5
   m_Name: SelectCrystal
   m_TagString: Untagged
@@ -5071,20 +5117,20 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 582332814}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1782788929}
   - {fileID: 1290242715}
-  m_Father: {fileID: 1183680769}
+  m_Father: {fileID: 2045638702}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -900, y: 40}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchoredPosition: {x: -75, y: 0}
   m_SizeDelta: {x: 70, y: 120}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &582332816
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5123,6 +5169,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 582332814}
   m_CullTransparentMesh: 1
+--- !u!114 &582332818
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 582332814}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.LayoutElement
+  m_IgnoreLayout: 1
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
+  m_MaxWidth: -1
+  m_MaxHeight: -1
 --- !u!1 &602680193
 GameObject:
   m_ObjectHideFlags: 0
@@ -11562,6 +11630,8 @@ GameObject:
   - component: {fileID: 1183680772}
   - component: {fileID: 1183680771}
   - component: {fileID: 1183680770}
+  - component: {fileID: 1183680774}
+  - component: {fileID: 1183680775}
   m_Layer: 5
   m_Name: TitleCanvas
   m_TagString: Untagged
@@ -11650,7 +11720,6 @@ RectTransform:
   - {fileID: 2045638702}
   - {fileID: 1172810113}
   - {fileID: 706368229}
-  - {fileID: 582332815}
   - {fileID: 1189533398}
   - {fileID: 1401765224}
   m_Father: {fileID: 0}
@@ -11816,10 +11885,59 @@ MonoBehaviour:
   fadeTime: 1
   onContinue:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1183680775}
+        m_TargetAssemblyTypeName: SaveButtons, Assembly-CSharp
+        m_MethodName: Continue
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onNewGame:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1183680775}
+        m_TargetAssemblyTypeName: SaveButtons, Assembly-CSharp
+        m_MethodName: NewGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &1183680774
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1183680765}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c192ff1f680f3c8489b4eb6626466600, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OpenSettingsOnStart
+  settingsButton: {fileID: 810218888}
+--- !u!114 &1183680775
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1183680765}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 535f4fbea936f3747a6c320d5060f046, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SaveButtons
 --- !u!1 &1189533397
 GameObject:
   m_ObjectHideFlags: 0
@@ -21216,6 +21334,7 @@ RectTransform:
   - {fileID: 447367442}
   - {fileID: 810218886}
   - {fileID: 616238744}
+  - {fileID: 582332815}
   m_Father: {fileID: 1183680769}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
@@ -21856,14 +21975,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PauseMenuUI
   pausePanel: {fileID: 2070201284}
   settingsMenu: {fileID: 1183680772}
-  resumeButton: {fileID: 1782466141}
-  settingsButton: {fileID: 1480746795}
-  quitToTitleButton: {fileID: 321244120}
   titleSceneName: SampleScene
   onPaused:
     m_PersistentCalls:
       m_Calls: []
   onResumed:
+    m_PersistentCalls:
+      m_Calls: []
+  onBeforeQuitToTitle:
     m_PersistentCalls:
       m_Calls: []
 --- !u!1 &2107457435
@@ -22487,4 +22606,5 @@ SceneRoots:
   - {fileID: 442567216}
   - {fileID: 1183680769}
   - {fileID: 2097574386}
+  - {fileID: 350374207}
   - {fileID: 1643089045}

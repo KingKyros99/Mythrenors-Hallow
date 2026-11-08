@@ -29,6 +29,38 @@ public class CombatInputController : MonoBehaviour
     [SerializeField] private RangedAttackManager rangedManager;
     [SerializeField] private SpellManager spellManager;
 
+    // PURPOSE:
+    // Plays the player's combat animations.
+    // The Animator is attached to the character's visual model.
+    // Combat Animation
+    [SerializeField] private Animator playerAnimator;
+    private static readonly int SwordAttackHash = Animator.StringToHash("SwordAttack");
+
+    // PURPOSE:
+    // Identifies the StaffCast trigger in the Animator.
+    private static readonly int StaffCastHash = Animator.StringToHash("StaffCast");
+
+    // PURPOSE:
+    // Identifies the guarding Bool in the Animator.
+    private static readonly int IsBlockingHash = Animator.StringToHash("IsBlocking");
+
+    // PURPOSE:
+    // Triggers the Dodge animation when
+    // CoreFunctions accepts a dodge.
+    private static readonly int DodgeTriggerHash = Animator.StringToHash("Dodge");
+
+
+    // PURPOSE:
+    // Tracks which staff attack is waiting for
+    // the animation's release frame.
+    private enum StaffAttackType
+    {
+        None,
+        MagicalArrow,
+        Fireball
+    }
+    private StaffAttackType pendingStaffAttack = StaffAttackType.None;
+
     // Attack Data
     [SerializeField] private MeleeAttackData meleeAttack;
     [SerializeField] private RangedAttackData rangedAttack;
@@ -42,6 +74,13 @@ public class CombatInputController : MonoBehaviour
     // Projectile Spawn
     [SerializeField] private Transform firePoint;
 
+    // Manual Aiming
+    [SerializeField] private Camera aimCamera;
+
+    // Determines what the reticle can aim at.
+    // Exclude the Player layer in the Inspector.
+    [SerializeField] private LayerMask aimLayers = ~0;
+
     // Self Status Abilities
     [SerializeField] private SelfStatusAbilityManager selfAbilityManager;
 
@@ -54,6 +93,14 @@ public class CombatInputController : MonoBehaviour
     [SerializeField] private InputActionReference attackBoostInput;
     [SerializeField] private InputActionReference defenseBoostInput;
 
+    // Guarding
+    [SerializeField] private CoreFunctions coreFunctions;
+    [SerializeField] private InputActionReference guardInput;
+
+    // Dodging
+    [SerializeField] private InputActionReference dodgeInput;
+    [SerializeField] private DodgeMovement dodgeMovement;
+    [SerializeField] private MovementController movementController;
 
     // PURPOSE:
     // Store PlayerInput's runtime actions for abilities.
@@ -61,7 +108,8 @@ public class CombatInputController : MonoBehaviour
     private InputAction regenerationAction;
     private InputAction attackBoostAction;
     private InputAction defenseBoostAction;
-
+    private InputAction guardAction;
+    private InputAction dodgeAction;
 
     private ICombatEntity combatEntity;
 
@@ -81,6 +129,23 @@ public class CombatInputController : MonoBehaviour
         {
             Debug.LogWarning($"{name}: FirePoint is missing. Ranged attacks and spells will be unavailable.", this);
         }
+    }
+
+    // PURPOSE:
+    // Keeps the Guard animation synchronized
+    // with Jabari's actual blocking state.
+    //
+    // NOTE:
+    // If stamina runs out during a successful block,
+    // CoreFunctions can automatically stop guarding.
+    private void LateUpdate()
+    {
+        if (coreFunctions == null || playerAnimator == null)
+        {
+            return;
+        }
+
+        playerAnimator.SetBool(IsBlockingHash, coreFunctions.IsBlocking);
     }
 
     // PURPOSE:
@@ -106,9 +171,29 @@ public class CombatInputController : MonoBehaviour
         // Find the PlayerInput component on our character.
         playerInput = GetComponent<PlayerInput>();
 
+        // Find the PlayerInput runtime Guard action.
+        guardAction = GetPlayerAction(guardInput);
+
+        if (guardAction != null)
+        {
+            guardAction.performed += OnGuardStarted;
+
+            guardAction.canceled += OnGuardReleased;
+        }
+
+        // Find the runtime Dodge action.
+        dodgeAction = GetPlayerAction(dodgeInput);
+
+        if (dodgeAction != null)
+        {
+            dodgeAction.performed += OnDodgeRequested;
+        }
+
         // Find the runtime copies of our ability actions.
         regenerationAction = GetPlayerAction(regenerationInput);
+
         attackBoostAction = GetPlayerAction(attackBoostInput);
+
         defenseBoostAction = GetPlayerAction(defenseBoostInput);
 
         // Subscribe to the correct actions.
@@ -126,7 +211,6 @@ public class CombatInputController : MonoBehaviour
         {
             defenseBoostAction.performed += OnDefenseBoostRequested;
         }
-
     }
 
     // PURPOSE:
@@ -166,6 +250,37 @@ public class CombatInputController : MonoBehaviour
             defenseBoostAction.performed -= OnDefenseBoostRequested;
         }
 
+        // Unsubscribe Guard input.
+        if (guardAction != null)
+        {
+            guardAction.performed -= OnGuardStarted;
+
+            guardAction.canceled -= OnGuardReleased;
+        }
+
+        // Unsubscribe Dodge input.
+        if (dodgeAction != null)
+        {
+            dodgeAction.performed -= OnDodgeRequested;
+        }
+
+        // Prevent guarding from remaining active
+        // if this controller becomes disabled.
+        if (coreFunctions != null)
+        {
+            coreFunctions.SetBlocking(false);
+        }
+
+        if (playerAnimator != null)
+        {
+            playerAnimator.SetBool(IsBlockingHash, false);
+        }
+
+        // PURPOSE:
+        // Clear an unfinished staff attack so it cannot
+        // remain pending when this component is re-enabled.
+        CancelPendingStaffCast();
+
         // NOTE:
         // Input actions may be shared with Hunter's
         // controller, so we do not disable them here.
@@ -175,75 +290,217 @@ public class CombatInputController : MonoBehaviour
     // Requests a melee attack when its input fires.
     private void OnMelee(InputAction.CallbackContext context)
     {
+        RequestMeleeAttack();
+    }
+
+    // PURPOSE:
+    // Starts the sword animation only when an attack
+    // is accepted by MeleeManager.
+    public void RequestMeleeAttack()
+    {
+        if (IsDefending())
+        {
+            return;
+        }
+
         if (combatEntity == null || meleeManager == null || meleeAttack == null)
         {
             return;
         }
 
-        // MeleeManager handles its own target selection
-        meleeManager.TryAttack(combatEntity, null, meleeAttack);
+        // Preserve normal combat if no Animator is assigned.
+        if (playerAnimator == null)
+        {
+            meleeManager.TryAttack(combatEntity, null, meleeAttack);
+
+            return;
+        }
+
+        // For now, only begin sword swings from Locomotion.
+        // Prevent starting another attack mid-animation.
+        if (playerAnimator.IsInTransition(0) || !playerAnimator.GetCurrentAnimatorStateInfo(0).IsName("Locomotion"))
+        {
+            return;
+        }
+
+        bool attackStarted = meleeManager.TryBeginAnimatedAttack(combatEntity, null, meleeAttack);
+
+        if (attackStarted)
+        {
+            playerAnimator.SetTrigger(SwordAttackHash);
+        }
     }
 
     // PURPOSE:
-    // Requests a ranged projectile attack.
+    // Called by the sword animation's hit-frame event.
+    public void ResolveSwordHitFrame()
+    {
+        if (combatEntity == null || meleeManager == null)
+        {
+            return;
+        }
+
+        meleeManager.ResolvePendingAnimatedAttack(combatEntity);
+    }
+
+    // PURPOSE:
+    // Clears an unfinished sword attack when
+    // the animation ends or is interrupted.
+    public void CancelPendingSwordAttack()
+    {
+        if (combatEntity == null || meleeManager == null)
+        {
+            return;
+        }
+
+        meleeManager.CancelPendingAnimatedAttack(combatEntity);
+    }
+
+    // PURPOSE:
+    // Fires a ranged attack using manual
+    // camera-based reticle aiming.
     private void OnRanged(InputAction.CallbackContext context)
     {
-        if (combatEntity == null || rangedManager == null || rangedAttack == null)
+        if (IsDefending())
         {
             return;
         }
 
-        if (!combatEntity.IsAlive || firePoint == null)
+        if (combatEntity == null || rangedManager == null || rangedAttack == null || rangedAttack.projectileData == null
+            || playerAnimator == null)
         {
             return;
         }
 
-        if (rangedAttack.targetingData == null)
+        // Prevent multiple staff attacks from
+        // being queued at the same time.
+        if (pendingStaffAttack != StaffAttackType.None)
         {
             return;
         }
 
-        ICombatEntity target = TargetingSystem.FindNearestEnemy(combatEntity, rangedAttack.targetingData);
-
-        if (target == null)
+        // Only begin casting from Locomotion.
+        if (playerAnimator.IsInTransition(0) || !playerAnimator.GetCurrentAnimatorStateInfo(0).IsName("Locomotion"))
         {
-            Debug.Log("No valid ranged target found.");
-
             return;
         }
 
-        rangedManager.TryFire(combatEntity, target, rangedAttack, firePoint.position);
+        // Preserve the existing ranged cooldown
+        // and combat restrictions
+        if (!rangedManager.CanAttack(combatEntity, rangedAttack))
+        {
+            return;
+        }
+
+        // Remember which projectile should launch
+        pendingStaffAttack = StaffAttackType.MagicalArrow;
+
+        // Start the staff casting animation.
+        playerAnimator.SetTrigger(StaffCastHash);
+    }
+
+    // PURPOSE:
+    // Releases the pending staff projectile when
+    // StaffReleaseFrame fires during the animation.
+    public void ResolveStaffReleaseFrame()
+    {
+        if (pendingStaffAttack == StaffAttackType.None)
+        {
+            return;
+        }
+
+        // Save which attack was requested.
+        StaffAttackType attackToRelease = pendingStaffAttack;
+
+        // Clear the pending attack first so the same
+        // event cannot fire the projectile twice.
+        pendingStaffAttack = StaffAttackType.None;
+
+        if (combatEntity == null)
+        {
+            return;
+        }
+
+        // Use the staff tip's CURRENT world position.
+        Vector3 spawnPosition = GetFirePosition();
+
+        if (attackToRelease == StaffAttackType.MagicalArrow)
+        {
+            if (rangedManager == null || rangedAttack == null || rangedAttack.projectileData == null)
+            {
+                return;
+            }
+
+            Vector3 direction = GetManualAimDirection( rangedAttack.projectileData.maxRange);
+
+            // Magical Arrow: no mana cost.
+            rangedManager.TryFireManual(combatEntity, rangedAttack, spawnPosition, direction);
+        }
+
+        else if (attackToRelease == StaffAttackType.Fireball)
+        {
+            if (spellManager == null || spell == null || spell.projectileData == null)
+            {
+                return;
+            }
+
+            Vector3 direction = GetManualAimDirection(spell.projectileData.maxRange);
+
+            // Fireball: SpellManager handles mana
+            // and cooldown validation.
+            bool castSuccessful = spellManager.TryCastManual(combatEntity, spell, spawnPosition, direction);
+
+            if (!castSuccessful)
+            {
+                Debug.Log("Fireball casting failed.");
+            }
+        }
+    }
+
+    // PURPOSE:
+    // Clears a staff attack that was interrupted.
+    public void CancelPendingStaffCast()
+    {
+        pendingStaffAttack = StaffAttackType.None;
     }
 
     // PURPOSE:
     // Requests a spell using the Entity's mana.
     private void OnSpell(InputAction.CallbackContext context)
     {
-        if (combatEntity == null || spellManager == null || spell == null)
+        if (IsDefending())
         {
             return;
         }
 
-        if (!combatEntity.IsAlive || firePoint == null)
+        if (combatEntity == null || spellManager == null || spell == null || spell.projectileData == null
+            || playerAnimator == null)
         {
             return;
         }
 
-        if (spell.targetingData == null)
+        // Prevent Fireball and Magical Arrow from being queued at the same time.
+        if (pendingStaffAttack != StaffAttackType.None)
         {
             return;
         }
 
-        ICombatEntity target = TargetingSystem.FindNearestEnemy(combatEntity, spell.targetingData);
-
-        if (target == null)
+        // Only cast while in Locomotion.
+        if (playerAnimator.IsInTransition(0) || !playerAnimator.GetCurrentAnimatorStateInfo(0).IsName("Locomotion"))
         {
-            Debug.Log("No valid spell target found.");
-
             return;
         }
 
-        spellManager.TryCast(combatEntity, target, spell, firePoint.position);
+        // Check spell availability and cooldown.
+        if (!spellManager.CanCast(combatEntity, spell))
+        {
+            return;
+        }
+
+        // Remember that this animation will release Fireball.
+        pendingStaffAttack = StaffAttackType.Fireball;
+
+        playerAnimator.SetTrigger(StaffCastHash);
     }
 
     // PURPOSE:
@@ -303,5 +560,149 @@ public class CombatInputController : MonoBehaviour
         }
 
         return transform.position;
+    }
+
+    // PURPOSE:
+    // Calculates projectile direction using the
+    // center of the player's camera.
+    private Vector3 GetManualAimDirection(float maxRange)
+    {
+        if (aimCamera == null)
+        {
+            Debug.LogWarning("Combat aiming camera is missing.");
+
+            return transform.forward;
+        }
+
+        // Cast a ray through the center of the screen.
+        Ray aimRay = aimCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
+
+        // Default to a point straight ahead.
+        Vector3 aimPoint = aimRay.GetPoint(maxRange);
+
+        // If the camera is pointing at something,
+        // aim toward that object's collision point.
+        if (Physics.Raycast(aimRay, out RaycastHit hit, maxRange, aimLayers, QueryTriggerInteraction.Ignore))
+        {
+            aimPoint = hit.point;
+        }
+
+        // Calculate direction from the actual FirePoint.
+        Vector3 firePosition = GetFirePosition();
+
+        Vector3 direction = aimPoint - firePosition;
+
+        if (direction.sqrMagnitude <= 0.0001f)
+        {
+            return aimCamera.transform.forward;
+        }
+
+        return direction.normalized;
+    }
+
+    // PURPOSE:
+    // Starts guarding when Left Ctrl is pressed.
+    private void OnGuardStarted(InputAction.CallbackContext context)
+    {
+        if (coreFunctions == null || combatEntity == null || !combatEntity.IsAlive)
+        {
+            return;
+        }
+
+        coreFunctions.SetBlocking(true);
+
+        // Update the animation from the actual guard state.
+        if (playerAnimator != null)
+        {
+            playerAnimator.SetBool(IsBlockingHash, coreFunctions.IsBlocking);
+        }
+
+        Debug.Log($"Guarding: {coreFunctions.IsBlocking}");
+    }
+
+    // PURPOSE:
+    // Stops guarding when Left Ctrl is released.
+    private void OnGuardReleased(InputAction.CallbackContext context)
+    {
+        if (coreFunctions == null)
+        {
+            return;
+        }
+
+        coreFunctions.SetBlocking(false);
+
+        // Return to Locomotion when guarding ends.
+        if (playerAnimator != null)
+        {
+            playerAnimator.SetBool(IsBlockingHash, false);
+        }
+
+        Debug.Log("Guarding: False");
+    }
+
+    // PURPOSE:
+    // Requests a dodge using Jabari's existing
+    // stamina and invulnerability system.
+    private void OnDodgeRequested(InputAction.CallbackContext context)
+    {
+        if (coreFunctions == null || combatEntity == null || !combatEntity.IsAlive)
+        {
+            return;
+        }
+
+        // Prevent dodging while actively guarding.
+        if (coreFunctions.IsBlocking)
+        {
+            Debug.Log("Cannot dodge while guarding.");
+
+            return;
+        }
+
+        // CoreFunctions handles stamina cost,
+        // dodge duration, and invulnerability.
+        bool dodgeStarted = coreFunctions.Dodge();
+
+        if (dodgeStarted)
+        {
+            // Get the intended dodge direction
+            // Defaults to forward if there is no movement input.
+            Vector3 direction = transform.forward;
+
+            if (movementController != null)
+            {
+                direction = movementController.CurrentMoveDirection;
+            }
+
+            if (dodgeMovement != null)
+            {
+                dodgeMovement.BeginDodge(direction);
+            }
+
+            // PLay the roll animation
+            if (playerAnimator != null)
+            {
+                playerAnimator.SetTrigger(DodgeTriggerHash);
+            }
+
+            Debug.Log("Dodge started successfully!");
+        }
+
+        else
+        {
+            Debug.Log("Dodge unavailable or insufficient stamina.");
+        }
+    }
+
+    // PURPOSE:
+    // Prevents attacks while the character
+    // is guarding or performing a dodge.
+    private bool IsDefending()
+    {
+        if (coreFunctions == null)
+        {
+            return false;
+        }
+
+        return coreFunctions.IsBlocking || coreFunctions.IsDodging;
     }
 }

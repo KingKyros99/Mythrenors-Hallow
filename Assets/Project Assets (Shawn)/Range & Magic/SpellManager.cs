@@ -126,6 +126,56 @@ public class SpellManager : MonoBehaviour
     }
 
     // PURPOSE:
+    // Casts a projectile spell toward a supplied direction
+    // instead of automatically targeting an enemy.
+    //
+    // NOTE:
+    // Used for player reticle aiming.
+    // The original TryCast method remains available
+    // for targeted abilities and enemy AI.
+
+    public bool TryCastManual(ICombatEntity caster, SpellData spellData, Vector3 spawnPosition, Vector3 direction)
+    {
+        // Verify the spell can be cast.
+        if (!CanCast(caster, spellData))
+        {
+            return false;
+        }
+
+        // Prevent casting in an invalid direction.
+        if (direction.sqrMagnitude <= 0.0001f)
+        {
+            return false;
+        }
+
+        // Spend mana before creating the projectile.
+        if (!caster.TrySpendMana(spellData.manaCost))
+        {
+            return false;
+        }
+
+        // Spawn the projectile using the
+        // direction supplied by the camera.
+        bool successful = projectileManager.TrySpawnProjectile(caster, spellData.projectileData, spellData.damage, spawnPosition,
+            direction.normalized, spellData.statusEffect);
+
+        if (!successful)
+        {
+            // Refund mana if projectile creation fails.
+            caster.RefundMana(spellData.manaCost);
+
+            Debug.LogWarning($"{caster.CombatTransform.name} failed to cast " + $"{spellData.spellName}. Mana refunded.");
+
+            return false;
+        }
+
+        // Begin cooldown after a successful cast.
+        nextCastTimes[spellData] = Time.time + Mathf.Max(0f, spellData.cooldown);
+
+        return true;
+    }
+
+    // PURPOSE:
     // Returns the remaining cooldown for a spell.
     public float GetRemainingCooldown(SpellData spellData)
     {

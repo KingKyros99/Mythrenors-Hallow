@@ -42,6 +42,7 @@ public class MovementController : MonoBehaviour
     [SerializeField] private bool aiControlled = false;
 
     private Vector3 aiMoveDirection;
+    private float aiMoveSpeed = -1f;
 
     //Bools
 
@@ -50,8 +51,7 @@ public class MovementController : MonoBehaviour
 
     //check if the player controller is grounded
     public bool isGrounded => controller.isGrounded;
-
-
+    public Vector3 CurrentMoveDirection => moveDir;
 
     private void Awake()
     {
@@ -101,20 +101,21 @@ public class MovementController : MonoBehaviour
             moveDir = aiMoveDirection;
             isSprinting = false;
         }
-        else { 
-        //get curr input and make sure that diagonal move is not accelerated
-        Vector2 currInput = Vector2.ClampMagnitude(moveAct.ReadValue<Vector2>(), 1f);
+        else
+        {
+            //get curr input and make sure that diagonal move is not accelerated
+            Vector2 currInput = Vector2.ClampMagnitude(moveAct.ReadValue<Vector2>(), 1f);
 
 
-        //temp without camera
+            //temp without camera
 
-        moveDir = transform.forward * currInput.y + transform.right * currInput.x;
-            
+            moveDir = transform.forward * currInput.y + transform.right * currInput.x;
+
             SprintStamina(currInput);
         }
 
 
-        float currentSpeed = isSprinting ? sprintSpeed : baseSpeed;
+        float currentSpeed = aiControlled && aiMoveSpeed >= 0f ? aiMoveSpeed : isSprinting ? sprintSpeed : baseSpeed;
 
         Vector3 horizontalDir = moveDir * currentSpeed;
         Vector3 horizontal = new Vector3(velocity.x, 0, velocity.z);
@@ -199,9 +200,10 @@ public class MovementController : MonoBehaviour
         }
     }
 
-    public void SetAIMovement(Vector3 direction)
+    public void SetAIMovement(Vector3 direction, float speed = -1f)
     {
         aiControlled = true;
         aiMoveDirection = Vector3.ClampMagnitude(direction, 1f);
+        aiMoveSpeed = speed;
     }
 }

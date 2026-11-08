@@ -144,6 +144,7 @@ public class CharacterBase : MonoBehaviour
 
         mIsDead = true;
 
+        Destroy(gameObject);
         Debug.Log($"{name} has died.");
     }
 

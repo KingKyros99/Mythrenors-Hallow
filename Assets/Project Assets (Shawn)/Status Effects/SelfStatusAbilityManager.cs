@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.Cinemachine;
 using UnityEngine;
 
 // MYTHRENOR'S HALLOW - SELF STATUS ABILITY MANAGER
@@ -26,6 +27,21 @@ public class SelfStatusAbilityManager : MonoBehaviour
     private readonly Dictionary<SelfStatusAbilityData, float> nextUseTimes = new Dictionary<SelfStatusAbilityData, float>();
 
     // PURPOSE:
+    // Configurable usuage limits for each self-ability.
+    // These values can be changed in Unity's Inspector.
+    // Self-Ability Usage Limits
+    [SerializeField, Min(0)] private int maxAttackBoostUses = 2;
+    [SerializeField, Min(0)] private int maxDefenseBoostUses = 2;
+    [SerializeField, Min(0)] private int maxRegenerationUses = 5;
+
+    // PURPOSE:
+    // Tracks remaining ability uses during gameplay.
+    // Each character has its own counters.
+    private int remainingAttackBoostUses;
+    private int remainingDefenseBoostUses;
+    private int remainingRegenerationUses;
+
+    // PURPOSE:
     // Retrieves the character and status effect manager.
     private void Awake()
     {
@@ -40,6 +56,22 @@ public class SelfStatusAbilityManager : MonoBehaviour
         }
 
         combatEntity = entityComponent as ICombatEntity;
+
+        ResetAbilityUses();
+    }
+
+    // PURPOSE:
+    // Restores all self-ability uses.
+    // Can also be called when starting a new encounter.
+    private void ResetAbilityUses()
+    {
+        remainingAttackBoostUses = maxAttackBoostUses;
+
+        remainingDefenseBoostUses = maxDefenseBoostUses;
+
+        remainingRegenerationUses = maxRegenerationUses;
+
+        nextUseTimes.Clear();
     }
 
     // PURPOSE:
@@ -77,6 +109,16 @@ public class SelfStatusAbilityManager : MonoBehaviour
             return false;
         }
 
+        // PURPOSE:
+        // Reject self-abilities that have no uses left.
+        // This happens before any mana is consumed.
+        if (GetRemainingUses(ability) <= 0)
+        {
+            Debug.Log($"{name}: No remaining uses for {ability.abilityName}.");
+
+            return false;
+        }
+
         // Check the ability's cooldown.
         if (nextUseTimes.TryGetValue(ability, out float nextUseTime))
         {
@@ -102,6 +144,30 @@ public class SelfStatusAbilityManager : MonoBehaviour
             return false;
         }
 
+        // PURPOSE:
+        // Consume one use only after the status effect
+        // has been activated successfully.
+        switch (effectType)
+        {
+            case StatusEffectType.AttackBuff:
+
+                remainingAttackBoostUses--;
+
+                break;
+
+            case StatusEffectType.DefenseBuff:
+
+                remainingDefenseBoostUses--;
+
+                break;
+
+            case StatusEffectType.Regeneration:
+
+                remainingRegenerationUses--;
+
+                break;
+        }
+
         // Start cooldown only after successful activation.
         nextUseTimes[ability] = Time.time + Mathf.Max(0f, ability.cooldown);
 
@@ -120,5 +186,66 @@ public class SelfStatusAbilityManager : MonoBehaviour
         }
 
         return Mathf.Max(0f, nextUseTime - Time.time);
+    }
+
+    // PURPOSE:
+    // Returns how many uses remain for a self-ability.
+    // Can be used by the combat hotbar later.
+    public int GetRemainingUses(SelfStatusAbilityData ability)
+    {
+        if (ability == null || ability.statusEffect == null)
+        {
+            return 0;
+        }
+
+        switch (ability.statusEffect.effectType)
+        {
+            case StatusEffectType.AttackBuff:
+
+                return remainingAttackBoostUses;
+
+            case StatusEffectType.DefenseBuff:
+
+                return remainingDefenseBoostUses;
+
+            case StatusEffectType.Regeneration:
+
+                return remainingRegenerationUses;
+
+            default:
+
+                return 0;
+        }
+    }
+
+    // PURPOSE:
+    // Returns the maximum number of uses
+    // configured for a self-ability.
+    // Used by the Combat Hotbar.
+    public int GetMaxUses(SelfStatusAbilityData ability)
+    {
+        if (ability == null || ability.statusEffect == null)
+        {
+            return 0;
+        }
+
+        switch (ability.statusEffect.effectType)
+        {
+            case StatusEffectType.AttackBuff:
+
+                return maxAttackBoostUses;
+
+            case StatusEffectType.DefenseBuff:
+
+                return maxDefenseBoostUses;
+
+            case StatusEffectType.Regeneration:
+
+                return maxRegenerationUses;
+
+            default:
+
+                return 0;
+        }
     }
 }
