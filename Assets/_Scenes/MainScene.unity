@@ -882,6 +882,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1920073765}
     - target: {fileID: 2342279044125585436, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
+      propertyPath: chaseSpeed
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2342279044125585436, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
       propertyPath: meleeAttack
       value: 
       objectReference: {fileID: 11400000, guid: 944f462a79c4cc74fbb320b80644dc3e, type: 2}
@@ -897,6 +901,10 @@ PrefabInstance:
       propertyPath: targetingData
       value: 
       objectReference: {fileID: 11400000, guid: b23bcc3549ba11e45bc1b3ebfd07fd04, type: 2}
+    - target: {fileID: 2342279044125585436, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
+      propertyPath: attackCheckInterval
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 3371458300878072808, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
       propertyPath: m_Name
       value: Goblin_Minions 2
@@ -915,7 +923,7 @@ PrefabInstance:
       objectReference: {fileID: 181830664}
     - target: {fileID: 8783428028264927014, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
       propertyPath: m_Height
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8783428028264927014, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
       propertyPath: m_Enabled
@@ -923,7 +931,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8783428028264927014, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
       propertyPath: m_Center.y
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 5126692357646459197, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
@@ -8554,7 +8562,7 @@ PrefabInstance:
       objectReference: {fileID: 1920073765}
     - target: {fileID: 2342279044125585436, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
       propertyPath: chaseSpeed
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2342279044125585436, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
       propertyPath: meleeAttack
@@ -8572,6 +8580,10 @@ PrefabInstance:
       propertyPath: targetingData
       value: 
       objectReference: {fileID: 11400000, guid: b23bcc3549ba11e45bc1b3ebfd07fd04, type: 2}
+    - target: {fileID: 2342279044125585436, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
+      propertyPath: attackCheckInterval
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 3371458300878072808, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
       propertyPath: m_Name
       value: Goblin_Minions
