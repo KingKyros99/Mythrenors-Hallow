@@ -306,6 +306,55 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!1 &9818358
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9818360}
+  - component: {fileID: 9818359}
+  m_Layer: 0
+  m_Name: BrightVolume
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &9818359
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9818358}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Core.Runtime::UnityEngine.Rendering.Volume
+  m_IsGlobal: 1
+  priority: 10
+  blendDistance: 0
+  weight: 0
+  sharedProfile: {fileID: 11400000, guid: 6fd5ef25181709b41acebe37ab1f07d8, type: 2}
+--- !u!4 &9818360
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9818358}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 18.637842, y: -12.479066, z: 44.097576}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &27112793
 GameObject:
   m_ObjectHideFlags: 0
@@ -2822,6 +2871,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 363262100}
   m_CullTransparentMesh: 1
+--- !u!1 &364988522
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 364988524}
+  - component: {fileID: 364988523}
+  m_Layer: 0
+  m_Name: MusicVolumeHook
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &364988523
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 364988522}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 825929696461b244bb5c5e08ac1f4fba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MusicVolumeHook
+--- !u!4 &364988524
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 364988522}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 18.63784, y: -12.47907, z: 44.09758}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &368800147
 GameObject:
   m_ObjectHideFlags: 0
@@ -3356,6 +3449,7 @@ MonoBehaviour:
   fill: {fileID: 768111636}
   trail: {fileID: 0}
   valueText: {fileID: 0}
+  vertical: 0
   dropSpeed: 4
   riseSpeed: 1.2
   trailDelay: 0.4
@@ -11742,8 +11836,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SettingsLoader
   mixer: {fileID: 0}
-  brightVolume: {fileID: 0}
-  darkVolume: {fileID: 0}
+  brightVolume: {fileID: 9818359}
+  darkVolume: {fileID: 1337758264}
   inputActions: {fileID: 0}
   applyScreenSettings: 1
 --- !u!114 &1183680771
@@ -11802,8 +11896,8 @@ MonoBehaviour:
   brightnessSlider: {fileID: 459155906}
   brightnessValue: {fileID: 368800150}
   vsyncToggle: {fileID: 1834433080}
-  brightVolume: {fileID: 0}
-  darkVolume: {fileID: 0}
+  brightVolume: {fileID: 9818359}
+  darkVolume: {fileID: 1337758264}
   mouseSensSlider: {fileID: 1771813210}
   mouseSensValue: {fileID: 1635171785}
   invertYToggle: {fileID: 1603772360}
@@ -12536,6 +12630,7 @@ MonoBehaviour:
   fill: {fileID: 1704337727}
   trail: {fileID: 0}
   valueText: {fileID: 0}
+  vertical: 0
   dropSpeed: 4
   riseSpeed: 1.2
   trailDelay: 0.4
@@ -13920,6 +14015,7 @@ MonoBehaviour:
   fill: {fileID: 1896348047}
   trail: {fileID: 0}
   valueText: {fileID: 0}
+  vertical: 0
   dropSpeed: 4
   riseSpeed: 1.2
   trailDelay: 0.4
@@ -14002,6 +14098,55 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1333574497}
   m_CullTransparentMesh: 1
+--- !u!1 &1337758263
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1337758265}
+  - component: {fileID: 1337758264}
+  m_Layer: 0
+  m_Name: DarkVolume
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1337758264
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1337758263}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Core.Runtime::UnityEngine.Rendering.Volume
+  m_IsGlobal: 1
+  priority: 10
+  blendDistance: 0
+  weight: 0
+  sharedProfile: {fileID: 11400000, guid: 71dc08e576d42214987de275a529037b, type: 2}
+--- !u!4 &1337758265
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1337758263}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 18.637842, y: -12.479066, z: 44.097576}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1343722972
 GameObject:
   m_ObjectHideFlags: 0
@@ -22608,3 +22753,6 @@ SceneRoots:
   - {fileID: 2097574386}
   - {fileID: 350374207}
   - {fileID: 1643089045}
+  - {fileID: 364988524}
+  - {fileID: 9818360}
+  - {fileID: 1337758265}
