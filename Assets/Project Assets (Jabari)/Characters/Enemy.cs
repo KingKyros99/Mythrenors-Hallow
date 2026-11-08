@@ -31,7 +31,7 @@ public class Enemy : CharacterBase
     public BossDoor bossDoor;
 
     private Transform target;
-    private MovementController movementController;
+    private EnemyController movementController;
     private CombatEntityAdapter combatEntity;
     private float nextAttackCheck;
 
@@ -40,10 +40,9 @@ public class Enemy : CharacterBase
 
     public EnemyState CurrentState => currentState;
 
-   
     protected override void Awake()
     {
-        movementController = GetComponent<MovementController>();
+        movementController = GetComponent<EnemyController>();
         combatEntity = GetComponent<CombatEntityAdapter>();
         homePosition = transform.position;
     }
@@ -55,6 +54,8 @@ public class Enemy : CharacterBase
 
     private void UpdateAI()
     {
+        Debug.Log($"{name} | Alive: {combatEntity?.IsAlive} | State: {currentState}");
+
         if (combatEntity == null || !combatEntity.IsAlive)
         {
             ChangeState(EnemyState.Disabled);
@@ -157,18 +158,29 @@ public class Enemy : CharacterBase
 
     private void FindPlayer()
     {
-        if (combatEntity == null || targetingData == null)
+        if (combatEntity == null)
         {
+            Debug.LogError($"{name}: CombatEntity is NULL!");
             return;
         }
 
-        ICombatEntity nearestEnemy =
-            TargetingSystem.FindNearestEnemy(combatEntity, targetingData);
-
-        if (nearestEnemy != null)
+        if (targetingData == null)
         {
-            target = nearestEnemy.CombatTransform;
+            Debug.LogError($"{name}: TargetingData is NULL!");
+            return;
         }
+
+        ICombatEntity nearestEnemy = TargetingSystem.FindNearestEnemy(combatEntity, targetingData);
+
+        if (nearestEnemy == null)
+        {
+            Debug.LogWarning($"{name}: No valid target found!");
+            return;
+        }
+
+        target = nearestEnemy.CombatTransform;
+
+        Debug.Log($"{name}: Target acquired: {target.name}");
     }
 
     private bool IsTargetValid()
@@ -176,32 +188,36 @@ public class Enemy : CharacterBase
         if (target == null)
             return false;
 
-        CombatEntityAdapter targetEntity =
-            target.GetComponent<CombatEntityAdapter>();
+        CombatEntityAdapter targetEntity = target.GetComponent<CombatEntityAdapter>();
 
         return targetEntity != null && targetEntity.IsAlive;
     }
 
     private void ChaseTarget()
     {
-        if (target == null)
+        if (target == null || movementController == null)
             return;
 
         Vector3 direction = target.position - transform.position;
         direction.y = 0f;
 
-        if (direction.sqrMagnitude > 0.01f && movementController != null)
-        {
-            direction.Normalize();
-            transform.forward = direction;
-            movementController.SetAIMovement(direction);
-        }
+        float distance = direction.magnitude;
+
+        Debug.Log(
+            $"{name} | Distance: {distance:F2} | " +
+            $"Direction: {direction.normalized} | " +
+            $"Enemy Position: {transform.position} | " +
+            $"Player Position: {target.position}"
+        );
+
+        if (direction.sqrMagnitude > 0.01f)
+            movementController.SetMovement(direction.normalized, chaseSpeed);
     }
 
     private void StopMoving()
     {
         if (movementController != null)
-            movementController.SetAIMovement(Vector3.zero);
+            movementController.StopMovement();
     }
 
     private void AttackTarget()
@@ -258,7 +274,7 @@ public class Enemy : CharacterBase
         transform.forward = direction;
 
         if (movementController != null)
-            movementController.SetAIMovement(direction, patrolSpeed);
+            movementController.SetMovement(direction, patrolSpeed);
     }
 
     protected virtual void OnChase()
@@ -288,7 +304,7 @@ public class Enemy : CharacterBase
         transform.forward = direction;
 
         if (movementController != null)
-            movementController.SetAIMovement(direction);
+            movementController.SetMovement(direction);
     }
 
     protected virtual void OnEnterState(EnemyState state)
