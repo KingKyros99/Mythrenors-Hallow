@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 
 public class CharacterBase : MonoBehaviour
@@ -164,8 +165,18 @@ public class CharacterBase : MonoBehaviour
 
         mIsDead = true;
 
-        Destroy(gameObject);
+        if (gameObject.CompareTag("Player")) 
+        {
+            SceneManager.LoadScene("Lose");
+        }
+        else if (gameObject.CompareTag("Boss"))
+        {
+            SceneManager.LoadScene("Win");
+        }
+            Destroy(gameObject);
         Debug.Log($"{name} has died.");
+
+
     }
 
     // ==================== STAT STUFF ====================
