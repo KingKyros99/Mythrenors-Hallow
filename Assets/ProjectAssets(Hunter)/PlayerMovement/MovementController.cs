@@ -6,11 +6,6 @@ public class MovementController : MonoBehaviour
     public CharacterController controller;
     private CharacterBase character;
 
-    // PURPOSE:
-    // Provides dodge displacement without handling
-    // stamina, invulnerability or combat damage.
-    private DodgeMovement dodgeMovement;
-
     //Movement/Sprint Var.
     [Header("sprint")]
 
@@ -47,6 +42,7 @@ public class MovementController : MonoBehaviour
     [SerializeField] private bool aiControlled = false;
 
     private Vector3 aiMoveDirection;
+    private float aiMoveSpeed = -1f;
 
     //Bools
 
@@ -56,36 +52,7 @@ public class MovementController : MonoBehaviour
     //check if the player controller is grounded
     public bool isGrounded => controller.isGrounded;
 
-    // PURPOSE:
-    // Gets the current movement direction so
-    // CombatInputController can begin a directional dodge.
-    public Vector3 CurrentMoveDirection
-    {
-        get
-        {
-            if (aiControlled)
-            {
-                Vector3 aiDirection = aiMoveDirection;
 
-                aiDirection.y = 0f;
-
-                return Vector3.ClampMagnitude(aiDirection, 1f);
-            }
-
-            if (moveAct == null)
-            {
-                return Vector3.zero;
-            }
-
-            Vector2 input = Vector2.ClampMagnitude(moveAct.ReadValue<Vector2>(), 1f);
-
-            Vector3 direction = transform.forward * input.y + transform.right * input.x;
-
-            direction.y = 0f;
-
-            return Vector3.ClampMagnitude(direction, 1f);
-        }
-    }
 
     private void Awake()
     {
@@ -107,8 +74,6 @@ public class MovementController : MonoBehaviour
 
         jumpAct = new InputAction("Jump", InputActionType.Button);
         jumpAct.AddBinding("<Keyboard>/space");
-
-        dodgeMovement = GetComponent<DodgeMovement>();
     }
 
     private void OnEnable()
@@ -130,76 +95,43 @@ public class MovementController : MonoBehaviour
         jump();
         movement();
     }
-
-    // Made updates to it to allow dodging into a directional way.
     void movement()
     {
-        // Read movement input for the player.
-        Vector2 currInput = Vector2.zero;
-
-        if (!aiControlled && moveAct != null)
+        if (aiControlled)
         {
-            currInput = Vector2.ClampMagnitude(moveAct.ReadValue<Vector2>(), 1f);
-        }
-
-        // Use the existing movement direction.
-        moveDir = CurrentMoveDirection;
-
-        // Check whether dodge displacement is active.
-        bool dodgeActive = dodgeMovement != null && dodgeMovement.IsMoving;
-
-        // Sprinting is disabled during dodging.
-        if (aiControlled || dodgeActive)
-        {
+            moveDir = aiMoveDirection;
             isSprinting = false;
         }
         else
         {
+            //get curr input and make sure that diagonal move is not accelerated
+            Vector2 currInput = Vector2.ClampMagnitude(moveAct.ReadValue<Vector2>(), 1f);
+
+
+            //temp without camera
+
+            moveDir = transform.forward * currInput.y + transform.right * currInput.x;
+
             SprintStamina(currInput);
         }
 
-        // PURPOSE:
-        // Dodge movement replaces normal horizontal
-        // movement but preserves vertical gravity.
-        if (dodgeActive)
-        {
-            Vector3 dodgeStep = dodgeMovement.ConsumeFrameMovement(Time.deltaTime);
 
-            // Remove old walking or sprinting momentum.
-            velocity.x = 0f;
-
-            velocity.z = 0f;
-
-            // Keep gravity active during the dodge.
-            dodgeStep.y = velocity.y * Time.deltaTime;
-
-            controller.Move(dodgeStep);
-
-            return;
-        }
-
-        // Normal walking or sprinting.
-        float currentSpeed = isSprinting ? sprintSpeed : baseSpeed;
+        float currentSpeed = aiControlled && aiMoveSpeed >= 0f ? aiMoveSpeed : isSprinting ? sprintSpeed : baseSpeed;
 
         Vector3 horizontalDir = moveDir * currentSpeed;
+        Vector3 horizontal = new Vector3(velocity.x, 0, velocity.z);
 
-        Vector3 horizontal = new Vector3(velocity.x, 0f, velocity.z);
-
-        if (moveResistance <= 0f)
+        if (moveResistance <= 0)
         {
             horizontal = horizontalDir;
         }
-
         else
         {
             horizontal = Vector3.MoveTowards(horizontal, horizontalDir, moveResistance * Time.deltaTime);
         }
-
         velocity.x = horizontal.x;
-
         velocity.z = horizontal.z;
 
-        // Apply movement once per frame.
         controller.Move(velocity * Time.deltaTime);
     }
 
@@ -227,17 +159,13 @@ public class MovementController : MonoBehaviour
             jumpCount = 1;
         }
 
-        // PURPOSE:
-        // Prevent jumping while dodge movement is active.
-        bool dodgeActive = dodgeMovement != null && dodgeMovement.IsMoving;
-
-        if (!dodgeActive && jumpAct.WasPressedThisFrame() && jumpCount < jumpCountMax)
+        if (jumpAct.WasPressedThisFrame() && jumpCount < jumpCountMax)
         {
-            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
-
+            velocity.y = Mathf.Sqrt(jumpHeight * -2 * gravity);
             jumpCount++;
-
             jumpTimer = 0f;
+
+
         }
 
         velocity.y = Mathf.Max(velocity.y + gravity * Time.deltaTime, fallVelocity);
@@ -273,9 +201,10 @@ public class MovementController : MonoBehaviour
         }
     }
 
-    public void SetAIMovement(Vector3 direction)
+    public void SetAIMovement(Vector3 direction, float speed = -1f)
     {
         aiControlled = true;
         aiMoveDirection = Vector3.ClampMagnitude(direction, 1f);
+        aiMoveSpeed = speed;
     }
 }

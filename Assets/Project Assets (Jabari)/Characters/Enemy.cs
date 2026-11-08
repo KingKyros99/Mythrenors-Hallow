@@ -1,72 +1,157 @@
 using UnityEngine;
 
+public enum EnemyState
+{
+    Idle,
+    Patrol,
+    Chasing,
+    Attacking,
+    Returning,
+    Disabled
+}
+
 public class Enemy : CharacterBase
 {
     [Header("Enemy AI")]
-    [SerializeField] private float detectionRange = 10f;
+    [SerializeField] private float leashDistance = 20f;
     [SerializeField] private float attackRange = 2f;
     [SerializeField] private TargetingData targetingData;
     [SerializeField] private MeleeManager meleeManager;
     [SerializeField] private MeleeAttackData meleeAttack;
     [SerializeField] private float attackCheckInterval = 0.2f;
+    [SerializeField] private bool canPatrol = false;
+    [SerializeField] private Transform[] patrolPoints;
+    [SerializeField] private float patrolSpeed = 2f;
+    [SerializeField] private float chaseSpeed = 4f;
+    [SerializeField] private float returnSpeed = 3f;
 
+    private Vector3 homePosition;
+    private int currentPatrolIndex;
 
     public BossDoor bossDoor;
 
-
     private Transform target;
-    private bool isChasing;
     private MovementController movementController;
     private CombatEntityAdapter combatEntity;
     private float nextAttackCheck;
 
+    [Header("AI State")]
+    [SerializeField] private EnemyState currentState = EnemyState.Idle;
+
+    public EnemyState CurrentState => currentState;
+
+   
     protected override void Awake()
     {
         movementController = GetComponent<MovementController>();
         combatEntity = GetComponent<CombatEntityAdapter>();
+        homePosition = transform.position;
     }
 
     private void Update()
     {
-        if (IsDead)
+        UpdateAI();
+    }
+
+    private void UpdateAI()
+    {
+        if (combatEntity == null || !combatEntity.IsAlive)
         {
+            ChangeState(EnemyState.Disabled);
             return;
         }
-        // Find the player if we don't have a target.
-        if (target == null)
+
+        UpdateState();
+        HandleState();
+    }
+
+    protected virtual void ChangeState(EnemyState newState)
+    {
+        if (currentState == newState)
+            return;
+
+        OnExitState(currentState);
+
+        currentState = newState;
+
+        OnEnterState(currentState);
+    }
+
+    private void UpdateState()
+    {
+        if (currentState == EnemyState.Returning)
+            return;
+
+        if (currentState == EnemyState.Disabled)
+            return;
+
+        if (!IsTargetValid())
         {
+            target = null;
             FindPlayer();
 
-            if (target == null)
-                StopMoving();
-               
-            return;
+            if (!IsTargetValid())
+            {
+                target = null;
+
+                if (canPatrol && patrolPoints != null && patrolPoints.Length > 0)
+                {
+                    ChangeState(EnemyState.Patrol);
+                }
+                else
+                {
+                    ChangeState(EnemyState.Idle);
+                }
+
+                return;
+            }
         }
 
-        float distance = Vector3.Distance(
-            transform.position,
-            target.position);
+        float distance = Vector3.Distance(transform.position, target.position);
+        float distanceFromHome = Vector3.Distance(transform.position, homePosition);
 
-        // Stop pursuing if the player leaves detection range.
-        if (distance > detectionRange)
+        if (distanceFromHome >= leashDistance)
         {
-            isChasing = false;
-            StopMoving();
             target = null;
-            return;
+            ChangeState(EnemyState.Returning);
         }
-
-        // Chase while the player is outside attack range.
-        if (distance > attackRange)
+        else if (distance <= attackRange)
         {
-            isChasing = true;
-            ChaseTarget();
+            ChangeState(EnemyState.Attacking);
         }
         else
         {
-            isChasing = false;
-            StopMoving();
-            AttackTarget();
+            ChangeState(EnemyState.Chasing);
+        }
+    }
+
+    private void HandleState()
+    {
+        switch (currentState)
+        {
+            case EnemyState.Idle:
+                OnIdle();
+                break;
+
+            case EnemyState.Patrol:
+                OnPatrol();
+                break;
+
+            case EnemyState.Chasing:
+                OnChase();
+                break;
+
+            case EnemyState.Attacking:
+                OnAttack();
+                break;
+
+            case EnemyState.Returning:
+                OnReturn();
+                break;
+
+            case EnemyState.Disabled:
+                StopMoving();
+                break;
         }
     }
 
@@ -86,12 +171,21 @@ public class Enemy : CharacterBase
         }
     }
 
+    private bool IsTargetValid()
+    {
+        if (target == null)
+            return false;
+
+        CombatEntityAdapter targetEntity =
+            target.GetComponent<CombatEntityAdapter>();
+
+        return targetEntity != null && targetEntity.IsAlive;
+    }
+
     private void ChaseTarget()
     {
-        if (!isChasing || target == null)
-        {
+        if (target == null)
             return;
-        }
 
         Vector3 direction = target.position - transform.position;
         direction.y = 0f;
@@ -112,45 +206,98 @@ public class Enemy : CharacterBase
 
     private void AttackTarget()
     {
-        if (combatEntity == null || meleeManager == null || meleeAttack == null)
-        {
+        if (target == null || combatEntity == null || meleeManager == null || meleeAttack == null)
             return;
-        }
 
         if (Time.time < nextAttackCheck)
-        {
             return;
-        }
 
         nextAttackCheck = Time.time + attackCheckInterval;
 
         ICombatEntity targetEntity = target.GetComponent<CombatEntityAdapter>();
 
         if (targetEntity == null)
-        {
             return;
-        }
 
         meleeManager.TryAttack(combatEntity, targetEntity, meleeAttack);
     }
 
-
-
-
-    public override void Die()
+    protected virtual void OnIdle()
     {
-        if (IsDead)
+        StopMoving();
+    }
+
+    protected virtual void OnPatrol()
+    {
+        if (!canPatrol || patrolPoints == null || patrolPoints.Length == 0)
         {
+            ChangeState(EnemyState.Idle);
             return;
         }
 
-        if (bossDoor != null)
+        Transform patrolTarget = patrolPoints[currentPatrolIndex];
+
+        // Skip empty patrol point slots.
+        if (patrolTarget == null)
         {
-            bossDoor.RemoveEnemy(this);
+            currentPatrolIndex = (currentPatrolIndex + 1) % patrolPoints.Length;
+            return;
         }
 
-        base.Die();
+        Vector3 direction = patrolTarget.position - transform.position;
+        direction.y = 0f;
+
+        if (direction.sqrMagnitude < 0.25f)
+        {
+            currentPatrolIndex = (currentPatrolIndex + 1) % patrolPoints.Length;
+            StopMoving();
+            return;
+        }
+
+        direction.Normalize();
+        transform.forward = direction;
+
+        if (movementController != null)
+            movementController.SetAIMovement(direction, patrolSpeed);
     }
 
+    protected virtual void OnChase()
+    {
+        ChaseTarget();
+    }
 
+    protected virtual void OnAttack()
+    {
+        StopMoving();
+        AttackTarget();
+    }
+
+    protected virtual void OnReturn()
+    {
+        Vector3 direction = homePosition - transform.position;
+        direction.y = 0f;
+
+        if (direction.sqrMagnitude < 0.25f)
+        {
+            StopMoving();
+            ChangeState(EnemyState.Idle);
+            return;
+        }
+
+        direction.Normalize();
+        transform.forward = direction;
+
+        if (movementController != null)
+            movementController.SetAIMovement(direction);
+    }
+
+    protected virtual void OnEnterState(EnemyState state)
+    {
+        // Handle state initialization.
+    }
+
+    protected virtual void OnExitState(EnemyState state)
+    {
+        // Handle state cleanup.
+    }
 }
