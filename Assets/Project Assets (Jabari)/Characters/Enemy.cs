@@ -28,6 +28,8 @@ public class Enemy : CharacterBase
     private Vector3 homePosition;
     private int currentPatrolIndex;
 
+    public BossDoor bossDoor;
+
     private Transform target;
     private MovementController movementController;
     private CombatEntityAdapter combatEntity;
@@ -38,7 +40,7 @@ public class Enemy : CharacterBase
 
     public EnemyState CurrentState => currentState;
 
-
+   
     protected override void Awake()
     {
         movementController = GetComponent<MovementController>();
