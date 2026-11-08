@@ -9,6 +9,8 @@ public class SaveData
     public float posX, posY, posZ;
     public float rotY;
 
+    public bool isCheckpoint;
+
     public int health;
     public int mana;
     public float stamina;
