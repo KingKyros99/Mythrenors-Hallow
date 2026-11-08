@@ -165,14 +165,20 @@ public class Projectile : MonoBehaviour
         }
 
         // Ignore colliders belonging to the attacker
-        if (owner != null && owner.CombatTransform != null)
+        if (owner is UnityEngine.Object ownerObject && ownerObject == null)
+        {
+            return true;
+        }
+
+        if (owner != null)
         {
             Transform ownerTransform = owner.CombatTransform;
 
-            if (hit.transform == ownerTransform || hit.transform.IsChildOf(ownerTransform))
-            {
+            if (ownerTransform == null)
                 return true;
-            }
+
+            if (hit.transform == ownerTransform || hit.transform.IsChildOf(ownerTransform))
+                return true;
         }
 
         if (hit.isTrigger)
