@@ -49,4 +49,15 @@ public class StatusEffectData : ScriptableObject
 
     [Min(1)]
     public int maxStacks = 1;
+
+    // PURPOSE:
+    // Stores the visual effect prefab associated
+    // with this status effect.
+    //
+    // NOTE:
+    // The VFX controller will handle spawning
+    // and removing the effect during gameplay.
+
+    // Visual Effects
+    public GameObject vfxPrefab;
 }
