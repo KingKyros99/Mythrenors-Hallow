@@ -850,12 +850,20 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1920073765}
     - target: {fileID: 2342279044125585436, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2342279044125585436, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
       propertyPath: meleeManager
       value: 
       objectReference: {fileID: 1564851961}
     - target: {fileID: 3371458300878072808, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
       propertyPath: m_Name
       value: Goblin_Minions 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3371458300878072808, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2068,6 +2076,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 414634779}
   m_CullTransparentMesh: 1
+--- !u!1 &433641872 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6692306801720775169, guid: 9a086d9d50f6f984facd1f600ed73b38, type: 3}
+  m_PrefabInstance: {fileID: 565028309}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &440023725
 GameObject:
   m_ObjectHideFlags: 0
@@ -4907,7 +4920,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6692306801720775169, guid: 9a086d9d50f6f984facd1f600ed73b38, type: 3}
+      insertIndex: 13
+      addedObject: {fileID: 1564852012}
   m_SourcePrefab: {fileID: 100100000, guid: 9a086d9d50f6f984facd1f600ed73b38, type: 3}
 --- !u!4 &565028310 stripped
 Transform:
@@ -6220,6 +6236,11 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4801677f4f709374cab32474c47a65f1, type: 3}
   m_PrefabInstance: {fileID: 822540692}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &909853692 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 4473533347580063619, guid: 9a086d9d50f6f984facd1f600ed73b38, type: 3}
+  m_PrefabInstance: {fileID: 565028309}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &923539093
 GameObject:
@@ -8044,12 +8065,20 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1920073765}
     - target: {fileID: 2342279044125585436, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2342279044125585436, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
       propertyPath: meleeManager
       value: 
       objectReference: {fileID: 1564851961}
     - target: {fileID: 3371458300878072808, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
       propertyPath: m_Name
       value: Goblin_Minions
+      objectReference: {fileID: 0}
+    - target: {fileID: 3371458300878072808, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7495617866163824117, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
       propertyPath: vfxController
@@ -9785,7 +9814,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5773064741859545964, guid: 9a086d9d50f6f984facd1f600ed73b38, type: 3}
   m_PrefabInstance: {fileID: 565028309}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 433641872}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 988812b1c25e2f048b2844264c3fe503, type: 3}
@@ -9796,7 +9825,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5886479858383258493, guid: 9a086d9d50f6f984facd1f600ed73b38, type: 3}
   m_PrefabInstance: {fileID: 565028309}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 433641872}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d6bf4f60b9ef4f74d950895edb5f4b3b, type: 3}
@@ -9807,7 +9836,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8373078474409299971, guid: 9a086d9d50f6f984facd1f600ed73b38, type: 3}
   m_PrefabInstance: {fileID: 565028309}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 433641872}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d0ac6fd807dc11444af88cc1cd663b6f, type: 3}
@@ -9818,7 +9847,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8571765432547944258, guid: 9a086d9d50f6f984facd1f600ed73b38, type: 3}
   m_PrefabInstance: {fileID: 565028309}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 433641872}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d4e3f2aac6a4b0a44bdff07a7b96c13f, type: 3}
@@ -9829,7 +9858,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7932120353252398543, guid: 9a086d9d50f6f984facd1f600ed73b38, type: 3}
   m_PrefabInstance: {fileID: 565028309}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 433641872}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f5ef732a09a8f3e4e83d610f12ac2b21, type: 3}
@@ -9840,12 +9869,27 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5052667502017468757, guid: 9a086d9d50f6f984facd1f600ed73b38, type: 3}
   m_PrefabInstance: {fileID: 565028309}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 433641872}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2a23bc9ab45ca4e40b9a25c46a2e381e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CoreFunctions
+--- !u!114 &1564852012
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 433641872}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29805a86a8325dd4b8b8d5d8e2266f23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHitReaction
+  playerAnimator: {fileID: 909853692}
+  characterBase: {fileID: 1564851962}
+  coreFunctions: {fileID: 1564851980}
 --- !u!1 &1590706139
 GameObject:
   m_ObjectHideFlags: 0

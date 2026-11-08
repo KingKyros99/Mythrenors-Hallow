@@ -8,6 +8,10 @@ public class CharacterBase : MonoBehaviour
 
     private CoreFunctions coreFunctions;
 
+    // PURPOSE:
+    // Notifies other systems when health is reduced.
+    public event System.Action<int> OnDamageTaken;
+
     protected virtual void Awake()
     {
         health = maxHealth;
@@ -28,14 +32,30 @@ public class CharacterBase : MonoBehaviour
 
     public void TakeDamage(int amount)
     {
-        if (amount <= 0)
+        if (amount <= 0 || mIsDead)
+        {
             return;
+        }
 
+        // Remember health before receiving damage.
+        int previousHealth = health;
+
+        // Apply damage without going below zero.
         health = Mathf.Max(0, health - amount);
 
+        // Calculate how much health was actually lost.
+        int actualDamage = previousHealth - health;
+
+        // Check whether the character died.
         if (health <= 0 && !mIsDead)
         {
             Die();
+        }
+
+        // Notify other systems when health decreases.
+        if (actualDamage > 0)
+        {
+            OnDamageTaken?.Invoke(actualDamage);
         }
     }
 
