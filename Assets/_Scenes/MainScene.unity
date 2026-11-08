@@ -877,6 +877,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2342279044125585436, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
+      propertyPath: bossDoor
+      value: 
+      objectReference: {fileID: 1920073765}
+    - target: {fileID: 2342279044125585436, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
+      propertyPath: meleeAttack
+      value: 
+      objectReference: {fileID: 11400000, guid: 944f462a79c4cc74fbb320b80644dc3e, type: 2}
+    - target: {fileID: 2342279044125585436, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
+      propertyPath: currentState
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2342279044125585436, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
+      propertyPath: meleeManager
+      value: 
+      objectReference: {fileID: 1564851961}
+    - target: {fileID: 2342279044125585436, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
+      propertyPath: targetingData
+      value: 
+      objectReference: {fileID: 11400000, guid: b23bcc3549ba11e45bc1b3ebfd07fd04, type: 2}
     - target: {fileID: 3371458300878072808, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
       propertyPath: m_Name
       value: Goblin_Minions 2
@@ -894,10 +914,19 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 181830664}
     - target: {fileID: 8783428028264927014, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
+      propertyPath: m_Height
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8783428028264927014, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
       propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8783428028264927014, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
+      propertyPath: m_Center.y
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5126692357646459197, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 1296039361487314252, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
@@ -913,6 +942,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3371458300878072808, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
       insertIndex: -1
       addedObject: {fileID: 181830664}
+    - targetCorrespondingSourceObject: {fileID: 3371458300878072808, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 181830673}
   m_SourcePrefab: {fileID: 100100000, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
 --- !u!4 &181830652 stripped
 Transform:
@@ -962,6 +994,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StatusEffectVFXController
   effectAnchor: {fileID: 1943076365}
+--- !u!114 &181830673
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 181830653}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63c3257d895022149a2e6af6e342a43b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyController
+  moveSpeed: 3
+  gravity: -20
+  terminalVelocity: -30
 --- !u!1 &192251183
 GameObject:
   m_ObjectHideFlags: 0
@@ -8463,11 +8510,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1296039361487314252, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.926
+      value: 0.902
       objectReference: {fileID: 0}
     - target: {fileID: 1296039361487314252, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.437
+      value: 0.511
       objectReference: {fileID: 0}
     - target: {fileID: 1296039361487314252, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
       propertyPath: m_LocalPosition.z
@@ -8501,9 +8548,37 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2342279044125585436, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
+      propertyPath: bossDoor
+      value: 
+      objectReference: {fileID: 1920073765}
+    - target: {fileID: 2342279044125585436, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
+      propertyPath: chaseSpeed
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2342279044125585436, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
+      propertyPath: meleeAttack
+      value: 
+      objectReference: {fileID: 11400000, guid: 944f462a79c4cc74fbb320b80644dc3e, type: 2}
+    - target: {fileID: 2342279044125585436, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
+      propertyPath: currentState
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2342279044125585436, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
+      propertyPath: meleeManager
+      value: 
+      objectReference: {fileID: 1564851961}
+    - target: {fileID: 2342279044125585436, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
+      propertyPath: targetingData
+      value: 
+      objectReference: {fileID: 11400000, guid: b23bcc3549ba11e45bc1b3ebfd07fd04, type: 2}
     - target: {fileID: 3371458300878072808, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
       propertyPath: m_Name
       value: Goblin_Minions
+      objectReference: {fileID: 0}
+    - target: {fileID: 3371458300878072808, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4159044416957823885, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
       propertyPath: m_Name
@@ -8543,17 +8618,18 @@ PrefabInstance:
       objectReference: {fileID: 1313058544}
     - target: {fileID: 8783428028264927014, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
       propertyPath: m_Height
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8783428028264927014, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8783428028264927014, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
       propertyPath: m_Center.y
       value: 0.5
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5126692357646459197, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 1296039361487314252, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
@@ -8569,6 +8645,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3371458300878072808, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1313058544}
+    - targetCorrespondingSourceObject: {fileID: 3371458300878072808, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1313058553}
   m_SourcePrefab: {fileID: 100100000, guid: bd4f2349050fcca479699ff0443434ed, type: 3}
 --- !u!4 &1313058524 stripped
 Transform:
@@ -8613,6 +8692,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StatusEffectVFXController
   effectAnchor: {fileID: 2119141516}
+--- !u!114 &1313058553
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 328558060}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63c3257d895022149a2e6af6e342a43b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyController
+  moveSpeed: 3
+  gravity: -20
+  terminalVelocity: -30
 --- !u!1 &1313096881
 GameObject:
   m_ObjectHideFlags: 0
@@ -12406,6 +12500,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 730191658928937174, guid: 53e380a4e78c5ad4ca622958604c6225, type: 3}
   m_PrefabInstance: {fileID: 1998613422882292082}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1920073765 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5775152491561468557, guid: 4f11f1c7ec2f4d0468b7c7907685e1f3, type: 3}
+  m_PrefabInstance: {fileID: 1010415629}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c41c0ab5f9351434fadab2c151cc8968, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BossDoor
 --- !u!1 &1922585835
 GameObject:
   m_ObjectHideFlags: 0
