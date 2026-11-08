@@ -29,6 +29,9 @@ public class Enemy : CharacterBase
     private int currentPatrolIndex;
 
     public BossDoor bossDoor;
+    //Combat Audio
+    [SerializeField] private bool CombatMusic = true;
+    private bool isAggroed;
 
     private Transform target;
     private MovementController movementController;
@@ -75,6 +78,7 @@ public class Enemy : CharacterBase
         currentState = newState;
 
         OnEnterState(currentState);
+
     }
 
     private void UpdateState()
@@ -299,5 +303,44 @@ public class Enemy : CharacterBase
     protected virtual void OnExitState(EnemyState state)
     {
         // Handle state cleanup.
+    }
+
+
+    //Music Methods
+
+    private void AggroMusic()
+    {
+        if (!CombatMusic)
+        {
+            return;
+        }
+        bool aggroed = currentState == EnemyState.Chasing || currentState == EnemyState.Attacking;
+
+        if (aggroed == isAggroed)
+        {
+            return;
+        }
+
+
+        if (aggroed)
+        {
+            AudioManger.inst.CombatStarted();
+        }
+        else
+        {
+            AudioManger.inst.CombatEnded();
+        }
+    }
+    private void OnDisable()
+    {
+        if (!isAggroed)
+        {
+            return;
+        }
+        isAggroed = false;
+        if (AudioManger.inst != null)
+        {
+            AudioManger.inst.CombatEnded();
+        }
     }
 }

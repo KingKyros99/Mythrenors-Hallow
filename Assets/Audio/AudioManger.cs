@@ -12,6 +12,13 @@ public class AudioManger : MonoBehaviour
         public AudioClip clip; 
     }
 
+
+    //combat var
+    [SerializeField] private AudioClip combatTrack;
+    [SerializeField] private float ExitFade;
+    private int aggro;
+    private bool inCombat;
+
     //Track List
     [SerializeField] private sceneAudio[] Tracks;
     //Fade In/Out,Volume
@@ -104,5 +111,37 @@ public class AudioManger : MonoBehaviour
             yield return null;
         }
         source.volume = volume;
+    }
+
+
+
+
+    public void CombatStarted()
+    {
+        aggro++;
+        if (inCombat || combatTrack == null)
+        {
+            return;
+        }
+        inCombat = true;
+        PlayCombatMusic(combatTrack);
+    }
+    public void CombatEnded()
+    {
+        aggro = Mathf.Max(0, aggro - 1);
+        if (aggro > 0 || !inCombat) 
+        {
+            return;
+        }
+
+    }
+
+    public void PlayCombatMusic(AudioClip clip)
+    {
+        if (clip == null)
+        {
+            return;
+        }
+
     }
 }
