@@ -25,6 +25,9 @@ public class Enemy : CharacterBase
     [SerializeField] private float chaseSpeed = 4f;
     [SerializeField] private float returnSpeed = 3f;
 
+
+    public BossDoor bossDoor;
+
     private Vector3 homePosition;
     private int currentPatrolIndex;
 
@@ -48,12 +51,8 @@ public class Enemy : CharacterBase
 
     private void Update()
     {
-        UpdateAI();
-    }
-
-    private void UpdateAI()
-    {
-        if (combatEntity == null || !combatEntity.IsAlive)
+        // Find the player if we don't have a target.
+        if (target == null)
         {
             ChangeState(EnemyState.Disabled);
             return;
@@ -257,45 +256,5 @@ public class Enemy : CharacterBase
 
         if (movementController != null)
             movementController.SetAIMovement(direction, patrolSpeed);
-    }
-
-    protected virtual void OnChase()
-    {
-        ChaseTarget();
-    }
-
-    protected virtual void OnAttack()
-    {
-        StopMoving();
-        AttackTarget();
-    }
-
-    protected virtual void OnReturn()
-    {
-        Vector3 direction = homePosition - transform.position;
-        direction.y = 0f;
-
-        if (direction.sqrMagnitude < 0.25f)
-        {
-            StopMoving();
-            ChangeState(EnemyState.Idle);
-            return;
-        }
-
-        direction.Normalize();
-        transform.forward = direction;
-
-        if (movementController != null)
-            movementController.SetAIMovement(direction);
-    }
-
-    protected virtual void OnEnterState(EnemyState state)
-    {
-        // Handle state initialization.
-    }
-
-    protected virtual void OnExitState(EnemyState state)
-    {
-        // Handle state cleanup.
     }
 }
