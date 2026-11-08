@@ -6,10 +6,8 @@ using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-
 public class TitleScreenUI : MonoBehaviour
 {
-    
     public const string KeyHasGame = "mh.save.hasGame";
 
     [Header("Buttons")]
@@ -20,32 +18,44 @@ public class TitleScreenUI : MonoBehaviour
 
     [Header("Continue greyed-out look")]
     [SerializeField] private TMP_Text continueLabel;
-    [SerializeField] private Color normalTextColor = new Color32(0xE8, 0xE1, 0xD0, 0xFF);
-    [SerializeField] private Color disabledTextColor = new Color32(0xE8, 0xE1, 0xD0, 0x55);
+    [SerializeField]
+    private Color normalTextColor =
+        new Color32(0xE8, 0xE1, 0xD0, 0xFF);
+    [SerializeField]
+    private Color disabledTextColor =
+        new Color32(0xE8, 0xE1, 0xD0, 0x55);
 
     [Header("Panels")]
     [SerializeField] private SettingsMenuUI settingsMenu;
-    [SerializeField] private ConfirmDialog confirmDialog;     
-    [SerializeField] private GameObject[] hideWhileSettingsOpen; 
+    [SerializeField] private ConfirmDialog confirmDialog;
+    [SerializeField] private GameObject[] hideWhileSettingsOpen;
 
     [Header("Scene loading")]
     [SerializeField] private string gameplaySceneName = "";
-    [SerializeField] private CanvasGroup fadeToBlack;        
+    [SerializeField] private CanvasGroup fadeToBlack;
     [SerializeField] private float fadeTime = 1f;
 
     [Header("Teammate hooks")]
-    public UnityEvent onContinue = new UnityEvent();  
-    public UnityEvent onNewGame = new UnityEvent();   
+    public UnityEvent onContinue = new UnityEvent();
+    public UnityEvent onNewGame = new UnityEvent();
 
     private bool continueAvailable;
     private bool busy;
 
     private void Awake()
     {
-        continueButton.onClick.AddListener(OnContinue);
-        newGameButton.onClick.AddListener(OnNewGame);
-        settingsButton.onClick.AddListener(OnSettings);
-        quitButton.onClick.AddListener(OnQuit);
+        // Buttons are optional so this also works on Win/Lose screens.
+        if (continueButton != null)
+            continueButton.onClick.AddListener(OnContinue);
+
+        if (newGameButton != null)
+            newGameButton.onClick.AddListener(OnNewGame);
+
+        if (settingsButton != null)
+            settingsButton.onClick.AddListener(OnSettings);
+
+        if (quitButton != null)
+            quitButton.onClick.AddListener(OnQuit);
 
         if (fadeToBlack != null)
         {
@@ -60,40 +70,69 @@ public class TitleScreenUI : MonoBehaviour
         SelectFirstButton();
     }
 
-    
+    private void OnDestroy()
+    {
+        if (continueButton != null)
+            continueButton.onClick.RemoveListener(OnContinue);
+
+        if (newGameButton != null)
+            newGameButton.onClick.RemoveListener(OnNewGame);
+
+        if (settingsButton != null)
+            settingsButton.onClick.RemoveListener(OnSettings);
+
+        if (quitButton != null)
+            quitButton.onClick.RemoveListener(OnQuit);
+    }
 
     public void SetContinueAvailable(bool available)
     {
-        continueAvailable = available;
-        continueButton.interactable = available;
-        if (continueLabel != null) continueLabel.color = available ? normalTextColor : disabledTextColor;
+        continueAvailable = available && continueButton != null;
+
+        if (continueButton != null)
+            continueButton.interactable = continueAvailable;
+
+        if (continueLabel != null)
+        {
+            continueLabel.color = continueAvailable
+                ? normalTextColor
+                : disabledTextColor;
+        }
     }
-
-
 
     private void OnContinue()
     {
         if (busy || !continueAvailable) return;
+
         onContinue.Invoke();
-        
-        if (onContinue.GetPersistentEventCount() == 0) StartCoroutine(FadeAndLoad());
+
+        if (onContinue.GetPersistentEventCount() == 0)
+            StartCoroutine(FadeAndLoad());
     }
 
     private void OnNewGame()
     {
         if (busy) return;
+
         if (continueAvailable && confirmDialog != null)
         {
-            confirmDialog.Show("Start a new game? Your current progress will be lost.", StartNewGame);
+            confirmDialog.Show(
+                "Start a new game? Your current progress will be lost.",
+                StartNewGame
+            );
             return;
         }
+
         StartNewGame();
     }
 
     private void StartNewGame()
     {
+        if (busy) return;
+
         PlayerPrefs.SetInt(KeyHasGame, 1);
         PlayerPrefs.Save();
+
         onNewGame.Invoke();
         StartCoroutine(FadeAndLoad());
     }
@@ -101,17 +140,26 @@ public class TitleScreenUI : MonoBehaviour
     private void OnSettings()
     {
         if (busy || settingsMenu == null) return;
+
         SetMainMenuVisible(false);
+
         settingsMenu.Open(() =>
         {
             SetMainMenuVisible(true);
-            if (EventSystem.current != null) EventSystem.current.SetSelectedGameObject(settingsButton.gameObject);
+
+            if (EventSystem.current != null && settingsButton != null)
+            {
+                EventSystem.current.SetSelectedGameObject(
+                    settingsButton.gameObject
+                );
+            }
         });
     }
 
     private void OnQuit()
     {
         if (busy) return;
+
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #else
@@ -119,50 +167,74 @@ public class TitleScreenUI : MonoBehaviour
 #endif
     }
 
-  
-
     private void SelectFirstButton()
     {
         if (EventSystem.current == null) return;
-        GameObject first = continueAvailable ? continueButton.gameObject : newGameButton.gameObject;
-        EventSystem.current.SetSelectedGameObject(first);
+
+        Button first = continueAvailable ? continueButton : newGameButton;
+
+        if (first == null || !first.interactable)
+            first = quitButton;
+
+        if (first != null && first.interactable)
+        {
+            EventSystem.current.SetSelectedGameObject(first.gameObject);
+        }
     }
 
     private void SetMainMenuVisible(bool visible)
     {
+        if (hideWhileSettingsOpen == null) return;
+
         foreach (GameObject go in hideWhileSettingsOpen)
-            if (go != null) go.SetActive(visible);
+        {
+            if (go != null)
+                go.SetActive(visible);
+        }
     }
 
     private IEnumerator FadeAndLoad()
     {
         busy = true;
+
         if (fadeToBlack != null)
         {
             fadeToBlack.blocksRaycasts = true;
-            float t = 0f;
-            while (t < fadeTime)
+
+            float elapsed = 0f;
+
+            while (elapsed < fadeTime)
             {
-                t += Time.unscaledDeltaTime;
-                fadeToBlack.alpha = Mathf.Clamp01(t / fadeTime);
+                elapsed += Time.unscaledDeltaTime;
+                fadeToBlack.alpha = Mathf.Clamp01(elapsed / fadeTime);
                 yield return null;
             }
+
+            fadeToBlack.alpha = 1f;
         }
 
-        if (!string.IsNullOrEmpty(gameplaySceneName))
+        if (!string.IsNullOrWhiteSpace(gameplaySceneName))
         {
             Time.timeScale = 1f;
             SceneManager.LoadScene(gameplaySceneName);
         }
         else
         {
-            Debug.Log("TitleScreenUI: no gameplay scene name set yet, so nothing was loaded.");
-            if (fadeToBlack != null) { fadeToBlack.alpha = 0f; fadeToBlack.blocksRaycasts = false; }
+            Debug.LogWarning(
+                "TitleScreenUI: assign Gameplay Scene Name in the Inspector.",
+                this
+            );
+
+            if (fadeToBlack != null)
+            {
+                fadeToBlack.alpha = 0f;
+                fadeToBlack.blocksRaycasts = false;
+            }
+
             busy = false;
         }
     }
 
-   
     [ContextMenu("Reset Continue (testing)")]
     private void ResetContinueForTesting()
     {

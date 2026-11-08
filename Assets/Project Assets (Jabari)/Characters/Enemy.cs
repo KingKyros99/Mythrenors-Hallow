@@ -89,6 +89,8 @@ public class Enemy : CharacterBase
 
         OnEnterState(currentState);
 
+
+        AggroMusic();
     }
 
     private void UpdateState()
@@ -378,7 +380,7 @@ public class Enemy : CharacterBase
 
     private void AggroMusic()
     {
-        if (!CombatMusic)
+        if (!CombatMusic || AudioManger.inst == null)
         {
             return;
         }
@@ -388,7 +390,7 @@ public class Enemy : CharacterBase
         {
             return;
         }
-
+        isAggroed = aggroed;
 
         if (aggroed)
         {

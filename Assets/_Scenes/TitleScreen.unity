@@ -17823,11 +17823,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be4747a18016c32438eb43e810aeff34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AudioManger
+  combatTrack: {fileID: 8300000, guid: c584e723453d3bc4d9912cdcd89fa056, type: 3}
+  ExitFade: 0
   Tracks:
   - Name: TitleScreen
     clip: {fileID: 8300000, guid: 97cc143d6d98d84458fce4c30ca48240, type: 3}
   - Name: MainScene
     clip: {fileID: 8300000, guid: 1f85445b395ec7643a9fa9ec05068a0a, type: 3}
+  - Name: Win
+    clip: {fileID: 8300000, guid: 3e2520148b61d6f42b4e205c7f30f508, type: 3}
+  - Name: Lose
+    clip: {fileID: 8300000, guid: c140a2ca595272147b089a131b811370, type: 3}
   transitionTime: 3
   volume: 5
 --- !u!4 &1643089045

@@ -624,6 +624,7 @@ GameObject:
   - component: {fileID: 5773064741859545964}
   - component: {fileID: 3375520482744053410}
   - component: {fileID: 6118873395034366008}
+  - component: {fileID: 3083989480059733075}
   - component: {fileID: 7641387063016503771}
   - component: {fileID: 3314376354705158196}
   - component: {fileID: 4824588268551584704}
@@ -869,6 +870,21 @@ MonoBehaviour:
   guardVFX: {fileID: 3317098467326687979}
   guardForceField: {fileID: 1751959487528899110}
   guardImpactVFX: {fileID: 4442720560889976111}
+--- !u!114 &3083989480059733075
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6692306801720775169}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29805a86a8325dd4b8b8d5d8e2266f23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHitReaction
+  playerAnimator: {fileID: 4473533347580063619}
+  characterBase: {fileID: 7932120353252398543}
+  coreFunctions: {fileID: 5052667502017468757}
 --- !u!114 &7641387063016503771
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -26,7 +26,7 @@ public class AudioManger : MonoBehaviour
     [SerializeField] private float volume;
     //What plays the audio
     private AudioSource source;
-
+    private AudioClip audioClip;
 
     private void Awake()
     {
@@ -84,6 +84,21 @@ public class AudioManger : MonoBehaviour
         }
     }
 
+    void PlayTrack(AudioClip clip)
+    {
+        if (clip == null)
+        {
+            return;
+        }
+        if (source.clip == clip && source.isPlaying)
+        {
+            return;
+        }
+        StopAllCoroutines();
+        StartCoroutine(FadeInOut(clip));
+    }
+
+
 
     //Fade out/in method
     IEnumerator FadeInOut(AudioClip nextClip)
@@ -133,7 +148,8 @@ public class AudioManger : MonoBehaviour
         {
             return;
         }
-
+        inCombat = false;
+        PlayTrack(audioClip);
     }
 
     public void PlayCombatMusic(AudioClip clip)
@@ -142,6 +158,6 @@ public class AudioManger : MonoBehaviour
         {
             return;
         }
-
+        PlayTrack(clip);
     }
 }
