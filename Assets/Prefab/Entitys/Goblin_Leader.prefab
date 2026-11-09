@@ -80,9 +80,12 @@ GameObject:
   - component: {fileID: 2527852740892685367}
   - component: {fileID: 5439914043149174034}
   - component: {fileID: 5533647605775338046}
+  - component: {fileID: 7973203478291782680}
+  - component: {fileID: 1101336277431045155}
+  - component: {fileID: 29828823718377569}
   m_Layer: 3
   m_Name: Goblin_Leader
-  m_TagString: Untagged
+  m_TagString: Boss
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -265,6 +268,89 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StatusEffectVFXController
   effectAnchor: {fileID: 6853489470845483572}
+--- !u!143 &7973203478291782680
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9166200667505185630}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Height: 1
+  m_Radius: 0.4606933
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1101336277431045155
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9166200667505185630}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63c3257d895022149a2e6af6e342a43b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyController
+  moveSpeed: 3
+  gravity: -20
+  terminalVelocity: -30
+--- !u!114 &29828823718377569
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9166200667505185630}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a4c4208672761044a10cd0178acbdd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Enemy
+  charName: 
+  maxHealth: 100
+  maxMana: 70
+  maxStamina: 50
+  staminaRecoveryRate: 15
+  staminaRecoveryDelay: 1
+  attack: 2
+  defense: 2
+  critChance: 2
+  critMult: 1.1
+  dodgeChance: 2
+  mStatusResistance: 0
+  mCritResistance: 0
+  leashDistance: 6
+  attackRange: 2
+  targetingData: {fileID: 11400000, guid: b23bcc3549ba11e45bc1b3ebfd07fd04, type: 2}
+  meleeManager: {fileID: 0}
+  meleeAttack: {fileID: 11400000, guid: f5aa5daf00a22414d96b45847423be69, type: 2}
+  attackCheckInterval: 0.2
+  canPatrol: 0
+  patrolPoints: []
+  patrolSpeed: 2
+  chaseSpeed: 4
+  returnSpeed: 3
+  rangedAttackManager: {fileID: 0}
+  rangedAttack: {fileID: 0}
+  projectileSpawnPoint: {fileID: 0}
+  rangedAttackRange: 12
+  bossDoor: {fileID: 0}
+  CombatMusic: 1
+  currentState: 0
 --- !u!1001 &2607334693838870143
 PrefabInstance:
   m_ObjectHideFlags: 0
