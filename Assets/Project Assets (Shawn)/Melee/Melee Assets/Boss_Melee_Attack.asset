@@ -15,7 +15,7 @@ MonoBehaviour:
   attackName: Enemy_Melee_Attack
   description: 
   damage:
-    BaseDamage: 8
+    BaseDamage: 15
     DamageType: 0
     CanCrit: 1
     IgnoreDefense: 0
