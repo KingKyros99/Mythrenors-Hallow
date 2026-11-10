@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: Target_Ranged
   m_EditorClassIdentifier: Assembly-CSharp::TargetingData
   targetType: 3
-  maxRange: 25
+  maxRange: 12
   radius: 0
   attackAngle: 120
   targetLayers:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 64
   requireLineOfSight: 0
   obstructionLayers:
     serializedVersion: 2

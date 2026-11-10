@@ -113,6 +113,46 @@ public class RangedAttackManager : MonoBehaviour
     }
 
     // PURPOSE:
+    // Fires a ranged projectile using a supplied
+    // direction instead of automatically targeting
+    // a specific enemy.
+    //
+    // NOTE:
+    // Used by player reticle aiming.
+    // Existing target-based firing remains available
+    // for enemy AI and other combat systems.
+    public bool TryFireManual(ICombatEntity attacker, RangedAttackData attackData, Vector3 spawnPosition, Vector3 direction)
+    {
+        // Verify the attack can be performed.
+        if (!CanAttack(attacker, attackData))
+        {
+            return false;
+        }
+
+        // Reject an invalid firing direction.
+        if (direction.sqrMagnitude <= 0.0001f)
+        {
+            return false;
+        }
+
+        // Spawn the projectile using the direction
+        // provided by the player's camera.
+        bool successful = projectileManager.TrySpawnProjectile(attacker, attackData.projectileData, attackData.damage,
+            spawnPosition, direction.normalized, attackData.statusEffect);
+
+        if (!successful)
+        {
+            return false;
+        }
+
+        // Begin the cooldown after successfully firing.
+        nextAttackTimes[attackData] = Time.time + Mathf.Max(0f, attackData.cooldown);
+
+        return true;
+    }
+
+
+    // PURPOSE:
     // Returns the remaining ranged attack cooldown.
     public float GetRemainingCooldown(RangedAttackData attackData)
     {

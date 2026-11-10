@@ -14,6 +14,10 @@ namespace MythrenorHallow.UI
         [SerializeField, Tooltip("Optional text such as '120 / 150'.")]
         private TMP_Text valueText;
 
+        [Header("Direction")]
+        [SerializeField, Tooltip("Tick for vertical bars (drains top to bottom).")]
+        private bool vertical;
+
         [Header("Motion (fractions of the bar per second)")]
         [SerializeField, Tooltip("How quickly the fill drops when damaged.")]
         private float dropSpeed = 4f;
@@ -43,23 +47,28 @@ namespace MythrenorHallow.UI
                 return;
             }
 
-            
             ConfigureFilled(fill);
             if (trail != null) ConfigureFilled(trail);
             Apply();
         }
 
-        private static void ConfigureFilled(Image image)
+        private void ConfigureFilled(Image image)
         {
             image.type = Image.Type.Filled;
-            image.fillMethod = Image.FillMethod.Horizontal;
-            image.fillOrigin = (int)Image.OriginHorizontal.Left;
+            if (vertical)
+            {
+                image.fillMethod = Image.FillMethod.Vertical;
+                image.fillOrigin = (int)Image.OriginVertical.Bottom;
+            }
+            else
+            {
+                image.fillMethod = Image.FillMethod.Horizontal;
+                image.fillOrigin = (int)Image.OriginHorizontal.Left;
+            }
         }
 
-        
         public void SetValue(float current, float max)
         {
-            
             if (max <= 0f)
             {
                 Debug.LogWarning("ResourceBar.SetValue: max must be greater than 0.", this);
@@ -68,7 +77,6 @@ namespace MythrenorHallow.UI
 
             float target = Mathf.Clamp01(current / max);
 
-            
             if (target < targetValue) trailTimer = trailDelay;
 
             targetValue = target;
@@ -76,7 +84,6 @@ namespace MythrenorHallow.UI
             animating = true;
         }
 
-        
         public void SetInstant(float current, float max)
         {
             if (max <= 0f)
@@ -94,7 +101,6 @@ namespace MythrenorHallow.UI
             Apply();
         }
 
-        
         public void SetWidth(float width)
         {
             rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
@@ -102,23 +108,19 @@ namespace MythrenorHallow.UI
 
         private void Update()
         {
-            
             if (!animating || fill == null) return;
 
             float dt = Time.unscaledDeltaTime;
 
-            
             float speed = fillValue > targetValue ? dropSpeed : riseSpeed;
             fillValue = Mathf.MoveTowards(fillValue, targetValue, speed * dt);
 
             if (trailValue < fillValue)
             {
-               
                 trailValue = fillValue;
             }
             else if (trailValue > fillValue)
             {
-                
                 if (trailTimer > 0f) trailTimer -= dt;
                 else trailValue = Mathf.MoveTowards(trailValue, fillValue, trailSpeed * dt);
             }
@@ -142,7 +144,6 @@ namespace MythrenorHallow.UI
             int c = Mathf.CeilToInt(current);
             int m = Mathf.CeilToInt(max);
 
-            // dont rebuild the text if the numbers are the same
             if (c == lastCurrent && m == lastMax) return;
 
             lastCurrent = c;

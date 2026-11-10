@@ -165,14 +165,20 @@ public class Projectile : MonoBehaviour
         }
 
         // Ignore colliders belonging to the attacker
-        if (owner != null && owner.CombatTransform != null)
+        if (owner is UnityEngine.Object ownerObject && ownerObject == null)
+        {
+            return true;
+        }
+
+        if (owner != null)
         {
             Transform ownerTransform = owner.CombatTransform;
 
-            if (hit.transform == ownerTransform || hit.transform.IsChildOf(ownerTransform))
-            {
+            if (ownerTransform == null)
                 return true;
-            }
+
+            if (hit.transform == ownerTransform || hit.transform.IsChildOf(ownerTransform))
+                return true;
         }
 
         if (hit.isTrigger)
@@ -271,9 +277,22 @@ public class Projectile : MonoBehaviour
             return;
         }
 
-        // Find the point on the collider nearest
-        // to the projectile's current position.
-        Vector3 impactPosition = hit.ClosestPoint(transform.position);
+        // PURPOSE:
+        // Find a safe impact position for the projectile VFX.
+        // Use the collider's actual surface when supported.
+        // Otherwise, fall back to its bounding box.
+
+        Vector3 impactPosition;
+
+        if (hit is BoxCollider || hit is SphereCollider || hit is CapsuleCollider || (hit is MeshCollider mesh && mesh.convex))
+        {
+            impactPosition = hit.ClosestPoint(transform.position);
+        }
+
+        else
+        {
+            impactPosition = hit.ClosestPointOnBounds(transform.position);
+        }
 
         // Spawn the effect independently of the projectile.
         GameObject effect = Instantiate(effectPrefab, impactPosition, Quaternion.identity);
