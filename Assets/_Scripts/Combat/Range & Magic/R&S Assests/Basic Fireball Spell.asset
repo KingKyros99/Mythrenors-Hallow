@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4abe7dcff52b344eb8d1a549e7eaccd, type: 3}
+  m_Name: Basic Fireball Spell
+  m_EditorClassIdentifier: Assembly-CSharp::SpellData
+  spellName: Basic Fireball Spell
+  description: 
+  damage:
+    BaseDamage: 12
+    DamageType: 1
+    CanCrit: 0
+    IgnoreDefense: 0
+  projectileData: {fileID: 11400000, guid: ebb53643a99af234b8618a27ebd66fcb, type: 2}
+  targetingData: {fileID: 11400000, guid: 5befc17e8073b584faa50fd2f25c6bf3, type: 2}
+  manaCost: 10
+  cooldown: 2
+  statusEffect: {fileID: 11400000, guid: c17fe083381d469409fc09045e4023be, type: 2}

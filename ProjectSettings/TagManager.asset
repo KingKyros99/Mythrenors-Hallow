@@ -3,17 +3,19 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 3
-  tags: []
+  tags:
+  - Enemy
+  - Boss
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Enemy
   - Water
   - UI
-  - 
-  - 
-  - 
+  - player
+  - Floor
+  - EnviromentalColision
   - 
   - 
   - 
@@ -58,3 +60,4 @@ TagManager:
   - Decal Layer 5
   - Decal Layer 6
   - Decal Layer 7
+  m_MigratedRenderPipelines: []
