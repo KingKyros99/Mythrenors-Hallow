@@ -5138,7 +5138,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2606375456179207541, guid: e1dff99e5f31e2c4a9ca5c6c1b22a09e, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2606375456179207541, guid: e1dff99e5f31e2c4a9ca5c6c1b22a09e, type: 3}
       propertyPath: rangedAttackManager
@@ -5204,7 +5204,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 1025436030}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9a4c4208672761044a10cd0178acbdd8, type: 3}
   m_Name: 
