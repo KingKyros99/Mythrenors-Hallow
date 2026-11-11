@@ -1,17 +1,9 @@
 fileFormatVersion: 2
-guid: ca825309dbbb03640874997c5db5cb48
+guid: 0fac03826e1c80b46aba1be4249dc14a
 ShaderImporter:
   externalObjects: {}
   defaultTextures: []
   nonModifiableTextures: []
-  preprocessorOverride: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 173450
-  packageName: Sword slashes PRO
-  packageVersion: 3.0
-  assetPath: Assets/Hovl Studio/HSFiles/Shaders/BlendDistort.shader
-  uploadId: 865410
