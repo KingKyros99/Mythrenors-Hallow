@@ -35,6 +35,11 @@ public class TitleScreenUI : MonoBehaviour
     [SerializeField] private CanvasGroup fadeToBlack;
     [SerializeField] private float fadeTime = 1f;
 
+    [Header("Loading screen")]
+    [SerializeField] private GameObject loadingPanel;
+    [SerializeField] private TMP_Text loadingText;
+    [SerializeField, Min(0f)] private float minimumLoadingTime = 1f;
+
     [Header("Teammate hooks")]
     public UnityEvent onContinue = new UnityEvent();
     public UnityEvent onNewGame = new UnityEvent();
@@ -44,7 +49,6 @@ public class TitleScreenUI : MonoBehaviour
 
     private void Awake()
     {
-        // Buttons are optional so this also works on Win/Lose screens.
         if (continueButton != null)
             continueButton.onClick.AddListener(OnContinue);
 
@@ -62,6 +66,9 @@ public class TitleScreenUI : MonoBehaviour
             fadeToBlack.alpha = 0f;
             fadeToBlack.blocksRaycasts = false;
         }
+
+        if (loadingPanel != null)
+            loadingPanel.SetActive(false);
     }
 
     private void Start()
@@ -104,10 +111,16 @@ public class TitleScreenUI : MonoBehaviour
     {
         if (busy || !continueAvailable) return;
 
-        onContinue.Invoke();
+        
+        if (onContinue.GetPersistentEventCount() > 0)
+        {
+            onContinue.Invoke();
+            return;
+        }
 
-        if (onContinue.GetPersistentEventCount() == 0)
-            StartCoroutine(FadeAndLoad());
+        busy = true;
+        onContinue.Invoke();
+        StartCoroutine(FadeAndLoad());
     }
 
     private void OnNewGame()
@@ -129,6 +142,9 @@ public class TitleScreenUI : MonoBehaviour
     private void StartNewGame()
     {
         if (busy) return;
+        if (!CanLoadGameplayScene()) return;
+
+        busy = true;
 
         PlayerPrefs.SetInt(KeyHasGame, 1);
         PlayerPrefs.Save();
@@ -177,9 +193,7 @@ public class TitleScreenUI : MonoBehaviour
             first = quitButton;
 
         if (first != null && first.interactable)
-        {
             EventSystem.current.SetSelectedGameObject(first.gameObject);
-        }
     }
 
     private void SetMainMenuVisible(bool visible)
@@ -193,12 +207,68 @@ public class TitleScreenUI : MonoBehaviour
         }
     }
 
+    private bool CanLoadGameplayScene()
+    {
+        if (!string.IsNullOrWhiteSpace(gameplaySceneName) &&
+            Application.CanStreamedLevelBeLoaded(gameplaySceneName))
+        {
+            return true;
+        }
+
+        Debug.LogError(
+            "TitleScreenUI: assign Gameplay Scene Name and include " +
+            "that scene in the active Build Profile's scene list.",
+            this
+        );
+
+        return false;
+    }
+
+    
+    public void LoadGameplayWithLoadingScreen()
+    {
+        if (busy) return;
+
+        busy = true;
+        StartCoroutine(FadeAndLoad());
+    }
+
     private IEnumerator FadeAndLoad()
     {
+        if (!CanLoadGameplayScene())
+        {
+            busy = false;
+            SelectFirstButton();
+            yield break;
+        }
+
         busy = true;
 
-        if (fadeToBlack != null)
+        if (EventSystem.current != null)
+            EventSystem.current.SetSelectedGameObject(null);
+
+        if (loadingPanel != null)
         {
+            // will take away the fade for scenes with a loading panel, but will still fade for scenes without one.
+            if (fadeToBlack != null)
+            {
+                fadeToBlack.alpha = 0f;
+                fadeToBlack.blocksRaycasts = false;
+            }
+
+            if (loadingText != null)
+                loadingText.text = "Loading...";
+
+            loadingPanel.transform.SetAsLastSibling();
+            loadingPanel.SetActive(true);
+
+            // Allows the loading screen to render before loading starts.
+            yield return null;
+            yield return null;
+        }
+        else if (fadeToBlack != null)
+        {
+            // this will Keep the original fade for scenes without a loading panel.
             fadeToBlack.blocksRaycasts = true;
 
             float elapsed = 0f;
@@ -213,26 +283,63 @@ public class TitleScreenUI : MonoBehaviour
             fadeToBlack.alpha = 1f;
         }
 
-        if (!string.IsNullOrWhiteSpace(gameplaySceneName))
+        float startedAt = Time.realtimeSinceStartup;
+
+        AsyncOperation loading = null;
+        string loadingError = null;
+
+        try
         {
-            Time.timeScale = 1f;
-            SceneManager.LoadScene(gameplaySceneName);
+            loading = SceneManager.LoadSceneAsync(gameplaySceneName);
         }
-        else
+        catch (System.Exception exception)
         {
-            Debug.LogWarning(
-                "TitleScreenUI: assign Gameplay Scene Name in the Inspector.",
+            loadingError = exception.Message;
+        }
+
+        if (loading == null)
+        {
+            Debug.LogError(
+                "TitleScreenUI: scene loading failed. " + loadingError,
                 this
             );
 
-            if (fadeToBlack != null)
-            {
-                fadeToBlack.alpha = 0f;
-                fadeToBlack.blocksRaycasts = false;
-            }
-
-            busy = false;
+            RestoreMenuAfterLoadingFailure();
+            yield break;
         }
+
+        loading.allowSceneActivation = false;
+
+        float minimumTime = loadingPanel != null
+            ? Mathf.Max(0f, minimumLoadingTime)
+            : 0f;
+
+        while (loading.progress < 0.9f ||
+               Time.realtimeSinceStartup - startedAt < minimumTime)
+        {
+            yield return null;
+        }
+
+        Time.timeScale = 1f;
+        loading.allowSceneActivation = true;
+
+        while (!loading.isDone)
+            yield return null;
+    }
+
+    private void RestoreMenuAfterLoadingFailure()
+    {
+        if (loadingPanel != null)
+            loadingPanel.SetActive(false);
+
+        if (fadeToBlack != null)
+        {
+            fadeToBlack.alpha = 0f;
+            fadeToBlack.blocksRaycasts = false;
+        }
+
+        busy = false;
+        SelectFirstButton();
     }
 
     [ContextMenu("Reset Continue (testing)")]
