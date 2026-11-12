@@ -7,26 +7,18 @@ namespace MythrenorHallow.UI
     public class ResourceBar : MonoBehaviour
     {
         [Header("Images")]
-        [SerializeField, Tooltip("The coloured bar. Needs a sprite so the Filled type works.")]
-        private Image fill;
-        [SerializeField, Tooltip("The pale bar behind the fill that slides down after damage. Place it BEHIND the fill.")]
-        private Image trail;
-        [SerializeField, Tooltip("Optional text such as '120 / 150'.")]
-        private TMP_Text valueText;
+        [SerializeField] private Image fill;
+        [SerializeField] private Image trail;
+        [SerializeField] private TMP_Text valueText;
 
         [Header("Direction")]
-        [SerializeField, Tooltip("Tick for vertical bars (drains top to bottom).")]
-        private bool vertical;
+        [SerializeField] private bool vertical;
 
         [Header("Motion (fractions of the bar per second)")]
-        [SerializeField, Tooltip("How quickly the fill drops when damaged.")]
-        private float dropSpeed = 4f;
-        [SerializeField, Tooltip("How quickly the fill rises when healed. Lower is smoother.")]
-        private float riseSpeed = 1.2f;
-        [SerializeField, Tooltip("Seconds the trail waits before sliding after damage.")]
-        private float trailDelay = 0.4f;
-        [SerializeField, Tooltip("How quickly the trail catches up to the fill.")]
-        private float trailSpeed = 0.8f;
+        [SerializeField] private float dropSpeed = 4f;
+        [SerializeField] private float riseSpeed = 1.2f;
+        [SerializeField] private float trailDelay = 0.4f;
+        [SerializeField] private float trailSpeed = 0.8f;
 
         private RectTransform rectTransform;
         private float fillValue = 1f;
@@ -41,20 +33,20 @@ namespace MythrenorHallow.UI
         {
             rectTransform = (RectTransform)transform;
 
-            if (fill == null)
-            {
-                Debug.LogWarning("ResourceBar: 'Fill' image is not assigned.", this);
-                return;
-            }
+            if (fill == null) return;
 
             ConfigureFilled(fill);
-            if (trail != null) ConfigureFilled(trail);
+
+            if (trail != null)
+                ConfigureFilled(trail);
+
             Apply();
         }
 
         private void ConfigureFilled(Image image)
         {
             image.type = Image.Type.Filled;
+
             if (vertical)
             {
                 image.fillMethod = Image.FillMethod.Vertical;
@@ -69,15 +61,12 @@ namespace MythrenorHallow.UI
 
         public void SetValue(float current, float max)
         {
-            if (max <= 0f)
-            {
-                Debug.LogWarning("ResourceBar.SetValue: max must be greater than 0.", this);
-                return;
-            }
+            if (max <= 0f) return;
 
             float target = Mathf.Clamp01(current / max);
 
-            if (target < targetValue) trailTimer = trailDelay;
+            if (target < targetValue)
+                trailTimer = trailDelay;
 
             targetValue = target;
             UpdateText(current, max);
@@ -86,34 +75,46 @@ namespace MythrenorHallow.UI
 
         public void SetInstant(float current, float max)
         {
-            if (max <= 0f)
-            {
-                Debug.LogWarning("ResourceBar.SetInstant: max must be greater than 0.", this);
-                return;
-            }
+            if (max <= 0f) return;
 
             targetValue = Mathf.Clamp01(current / max);
             fillValue = targetValue;
             trailValue = targetValue;
             trailTimer = 0f;
             animating = false;
+
             UpdateText(current, max);
             Apply();
         }
 
         public void SetWidth(float width)
         {
-            rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
+            if (rectTransform == null)
+                rectTransform = transform as RectTransform;
+
+            if (rectTransform == null) return;
+
+            rectTransform.SetSizeWithCurrentAnchors(
+                RectTransform.Axis.Horizontal,
+                width
+            );
         }
 
         private void Update()
         {
             if (!animating || fill == null) return;
 
-            float dt = Time.unscaledDeltaTime;
+            float deltaTime = Time.unscaledDeltaTime;
 
-            float speed = fillValue > targetValue ? dropSpeed : riseSpeed;
-            fillValue = Mathf.MoveTowards(fillValue, targetValue, speed * dt);
+            float speed = fillValue > targetValue
+                ? dropSpeed
+                : riseSpeed;
+
+            fillValue = Mathf.MoveTowards(
+                fillValue,
+                targetValue,
+                speed * deltaTime
+            );
 
             if (trailValue < fillValue)
             {
@@ -121,34 +122,50 @@ namespace MythrenorHallow.UI
             }
             else if (trailValue > fillValue)
             {
-                if (trailTimer > 0f) trailTimer -= dt;
-                else trailValue = Mathf.MoveTowards(trailValue, fillValue, trailSpeed * dt);
+                if (trailTimer > 0f)
+                {
+                    trailTimer -= deltaTime;
+                }
+                else
+                {
+                    trailValue = Mathf.MoveTowards(
+                        trailValue,
+                        fillValue,
+                        trailSpeed * deltaTime
+                    );
+                }
             }
 
             Apply();
 
-            animating = !Mathf.Approximately(fillValue, targetValue)
-                        || !Mathf.Approximately(trailValue, fillValue);
+            animating =
+                !Mathf.Approximately(fillValue, targetValue) ||
+                !Mathf.Approximately(trailValue, fillValue);
         }
 
         private void Apply()
         {
-            fill.fillAmount = fillValue;
-            if (trail != null) trail.fillAmount = trailValue;
+            if (fill != null)
+                fill.fillAmount = fillValue;
+
+            if (trail != null)
+                trail.fillAmount = trailValue;
         }
 
         private void UpdateText(float current, float max)
         {
             if (valueText == null) return;
 
-            int c = Mathf.CeilToInt(current);
-            int m = Mathf.CeilToInt(max);
+            int currentValue = Mathf.CeilToInt(current);
+            int maxValue = Mathf.CeilToInt(max);
 
-            if (c == lastCurrent && m == lastMax) return;
+            if (currentValue == lastCurrent && maxValue == lastMax)
+                return;
 
-            lastCurrent = c;
-            lastMax = m;
-            valueText.text = c + " / " + m;
+            lastCurrent = currentValue;
+            lastMax = maxValue;
+
+            valueText.text = currentValue + " / " + maxValue;
         }
     }
 }
