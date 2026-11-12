@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -12,6 +13,10 @@ public class PauseMenuUI : MonoBehaviour
     [Header("Scenes")]
     public string titleSceneName = "TitleScreen";
 
+    [Header("Loading screen")]
+    [SerializeField] private GameObject loadingPanel;
+    [SerializeField, Min(0f)] private float minimumLoadingTime = 3f;
+
     [Header("Events (teammates hook these)")]
     public UnityEvent onPaused = new UnityEvent();
     public UnityEvent onResumed = new UnityEvent();
@@ -23,6 +28,7 @@ public class PauseMenuUI : MonoBehaviour
 
     private InputAction pauseAction;
     private bool isPaused;
+    private bool leavingToTitle;
     private float previousTimeScale = 1f;
     private CursorLockMode previousCursorLock;
     private bool previousCursorVisible;
@@ -48,8 +54,19 @@ public class PauseMenuUI : MonoBehaviour
     {
         pauseAction.Disable();
 
-        if (isPaused)
-            Resume();
+        if (isPaused && !leavingToTitle)
+        {
+            isPaused = false;
+            Time.timeScale = previousTimeScale;
+
+            Cursor.lockState = previousCursorLock;
+            Cursor.visible = previousCursorVisible;
+
+            if (pausePanel != null)
+                pausePanel.SetActive(false);
+
+            onResumed.Invoke();
+        }
     }
 
     private void OnDestroy()
@@ -63,7 +80,11 @@ public class PauseMenuUI : MonoBehaviour
         if (pausePanel != null)
             pausePanel.SetActive(false);
 
+        if (loadingPanel != null)
+            loadingPanel.SetActive(false);
+
         isPaused = false;
+        leavingToTitle = false;
     }
 
     private void OnPauseInput(InputAction.CallbackContext context)
@@ -73,6 +94,8 @@ public class PauseMenuUI : MonoBehaviour
 
     private void OnPausePressed()
     {
+        if (leavingToTitle) return;
+
         if (Time.frameCount <= lastSettingsCloseFrame + 1)
             return;
 
@@ -87,7 +110,7 @@ public class PauseMenuUI : MonoBehaviour
 
     public void Pause()
     {
-        if (isPaused) return;
+        if (isPaused || leavingToTitle) return;
 
         previousTimeScale = Time.timeScale;
         previousCursorLock = Cursor.lockState;
@@ -107,7 +130,7 @@ public class PauseMenuUI : MonoBehaviour
 
     public void Resume()
     {
-        if (!isPaused) return;
+        if (!isPaused || leavingToTitle) return;
 
         if (settingsMenu != null && settingsMenu.IsOpen)
             return;
@@ -126,7 +149,7 @@ public class PauseMenuUI : MonoBehaviour
 
     public void OpenSettings()
     {
-        if (settingsMenu == null) return;
+        if (leavingToTitle || settingsMenu == null) return;
         if (settingsMenu.IsOpen) return;
 
         if (!isPaused)
@@ -139,42 +162,153 @@ public class PauseMenuUI : MonoBehaviour
         {
             lastSettingsCloseFrame = Time.frameCount;
 
-            if (isPaused)
-            {
-                Time.timeScale = 0f;
+            if (leavingToTitle || !isPaused)
+                return;
 
-                if (pausePanel != null)
-                    pausePanel.SetActive(true);
+            Time.timeScale = 0f;
 
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
-            }
+            if (pausePanel != null)
+                pausePanel.SetActive(true);
+
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         });
     }
 
     public void OpenSettingsViaTitle()
     {
+        if (leavingToTitle) return;
+
+        if (!CanLoadTitle()) return;
+
         OpenSettingsOnLoad = true;
         LeaveToTitle();
     }
 
     public void QuitToTitle()
     {
+        if (leavingToTitle) return;
+
+        OpenSettingsOnLoad = false;
         LeaveToTitle();
+    }
+
+    private bool CanLoadTitle()
+    {
+        if (!string.IsNullOrWhiteSpace(titleSceneName) &&
+            Application.CanStreamedLevelBeLoaded(titleSceneName))
+        {
+            return true;
+        }
+
+        Debug.LogError(
+            "PauseMenuUI: check Title Scene Name and include " +
+            "that scene in the active Build Profile's scene list.",
+            this
+        );
+
+        return false;
     }
 
     private void LeaveToTitle()
     {
+        if (leavingToTitle) return;
+        if (!CanLoadTitle()) return;
+
+        leavingToTitle = true;
+        StartCoroutine(LoadTitle());
+    }
+
+    private IEnumerator LoadTitle()
+    {
+        if (!isPaused)
+        {
+            previousTimeScale = Time.timeScale;
+            previousCursorLock = Cursor.lockState;
+            previousCursorVisible = Cursor.visible;
+
+            isPaused = true;
+            onPaused.Invoke();
+        }
+
+        Time.timeScale = 0f;
         onBeforeQuitToTitle.Invoke();
 
-        isPaused = false;
-        Time.timeScale = 1f;
+        if (pausePanel != null)
+            pausePanel.SetActive(false);
+
+        if (loadingPanel != null)
+        {
+            loadingPanel.transform.SetAsLastSibling();
+            loadingPanel.SetActive(true);
+        }
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
+        yield return null;
+        yield return null;
+
+        float startedAt = Time.realtimeSinceStartup;
+
+        AsyncOperation loading = null;
+        string loadingError = null;
+
+        try
+        {
+            loading = SceneManager.LoadSceneAsync(titleSceneName);
+        }
+        catch (System.Exception exception)
+        {
+            loadingError = exception.Message;
+        }
+
+        if (loading == null)
+        {
+            Debug.LogError(
+                "PauseMenuUI: could not load the title scene. " +
+                loadingError,
+                this
+            );
+
+            leavingToTitle = false;
+            OpenSettingsOnLoad = false;
+
+            if (loadingPanel != null)
+                loadingPanel.SetActive(false);
+
+            if (pausePanel != null &&
+                (settingsMenu == null || !settingsMenu.IsOpen))
+            {
+                pausePanel.SetActive(true);
+            }
+
+            yield break;
+        }
+
+        loading.allowSceneActivation = false;
+
+        float minimumTime = loadingPanel != null
+            ? Mathf.Max(0f, minimumLoadingTime)
+            : 0f;
+
+        while (loading.progress < 0.9f ||
+               Time.realtimeSinceStartup - startedAt < minimumTime)
+        {
+            yield return null;
+        }
+
+        isPaused = false;
+        Time.timeScale = 1f;
+
         onResumed.Invoke();
 
-        SceneManager.LoadScene(titleSceneName);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        loading.allowSceneActivation = true;
+
+        while (!loading.isDone)
+            yield return null;
     }
 }

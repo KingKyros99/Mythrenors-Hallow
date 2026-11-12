@@ -12,23 +12,8 @@ public class SaveButtons : MonoBehaviour
 
     public void Continue()
     {
-        if (SaveManager.Instance == null)
-        {
-            Debug.LogWarning(
-                "SaveButtons: no SaveManager found.",
-                this
-            );
+        if (SaveManager.Instance == null || titleScreenUI == null)
             return;
-        }
-
-        if (titleScreenUI == null)
-        {
-            Debug.LogError(
-                "SaveButtons: assign Title Screen UI in the Inspector.",
-                this
-            );
-            return;
-        }
 
         if (!SaveManager.Instance.PrepareContinue())
             return;

@@ -27,8 +27,6 @@ public class SaveManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
         SceneManager.sceneLoaded += OnSceneLoaded;
-
-        Debug.Log("[Save] SaveManager ready. File: " + FilePath);
     }
 
     private void OnDestroy()
@@ -79,17 +77,9 @@ public class SaveManager : MonoBehaviour
 
     public void Save(string saveId, Transform spawnPoint = null)
     {
-        Debug.Log("[Save] Save called: " + saveId);
-
         CharacterBase player = FindPlayer();
 
-        if (player == null)
-        {
-            Debug.LogWarning(
-                "[Save] No object with tag Player and CharacterBase found."
-            );
-            return;
-        }
+        if (player == null) return;
 
         string scene = SceneManager.GetActiveScene().name;
         SaveData old = ReadFile();
@@ -110,10 +100,6 @@ public class SaveManager : MonoBehaviour
             data.posZ = spawnPoint.position.z;
             data.rotY = spawnPoint.eulerAngles.y;
             data.isCheckpoint = true;
-
-            Debug.Log(
-                "[Save] Checkpoint saved at " + spawnPoint.name
-            );
         }
         else if (old != null &&
                  old.isCheckpoint &&
@@ -124,10 +110,6 @@ public class SaveManager : MonoBehaviour
             data.posZ = old.posZ;
             data.rotY = old.rotY;
             data.isCheckpoint = true;
-
-            Debug.Log(
-                "[Save] Kept checkpoint spot from: " + old.lastSaveId
-            );
         }
         else
         {
@@ -145,35 +127,21 @@ public class SaveManager : MonoBehaviour
                 JsonUtility.ToJson(data, true)
             );
         }
-        catch (Exception exception)
+        catch
         {
-            Debug.LogError(
-                "[Save] Could not write file: " + exception.Message
-            );
             return;
         }
 
         PlayerPrefs.SetInt(KeyHasGame, 1);
         PlayerPrefs.Save();
 
-        Debug.Log("[Save] Saved to " + FilePath);
         Saved?.Invoke();
     }
 
     public bool PrepareContinue()
     {
         pending = ReadFile();
-
-        if (pending == null)
-        {
-            Debug.LogWarning(
-                "[Save] Continue pressed but no readable save file at " +
-                FilePath
-            );
-            return false;
-        }
-
-        return true;
+        return pending != null;
     }
 
     public void Continue()
@@ -181,8 +149,6 @@ public class SaveManager : MonoBehaviour
         if (!PrepareContinue()) return;
 
         Time.timeScale = 1f;
-
-        Debug.Log("[Save] Continue: loading " + gameplaySceneName);
         SceneManager.LoadScene(gameplaySceneName);
     }
 
@@ -195,8 +161,6 @@ public class SaveManager : MonoBehaviour
 
         PlayerPrefs.SetInt(KeyHasGame, 0);
         PlayerPrefs.Save();
-
-        Debug.Log("[Save] Save deleted (New Game)");
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -225,7 +189,6 @@ public class SaveManager : MonoBehaviour
         if (controllerWasEnabled)
             controller.enabled = true;
 
-        Debug.Log("[Save] Player moved to saved spot");
         pending = null;
     }
 }
