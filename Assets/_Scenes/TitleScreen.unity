@@ -17827,7 +17827,7 @@ MonoBehaviour:
   ExitFade: 0
   sfxTracks:
   - Name: UIClick
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: 2b73334f9858e4042bc5126a6e034d2b, type: 3}
     volume: 5
     randomPitch: 0
   - Name: UISlider
@@ -17839,11 +17839,11 @@ MonoBehaviour:
     volume: 0
     randomPitch: 0
   - Name: UIReturn
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: b0b8970cc5dfc154cbf135de35be5755, type: 3}
     volume: 0
     randomPitch: 0
   - Name: MenuHover
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: f9752e4d83774c94781e00d61c4cee67, type: 3}
     volume: 0
     randomPitch: 0
   - Name: SwordAttack
@@ -21560,6 +21560,8 @@ MonoBehaviour:
   - {fileID: 616238747}
   slideSpeed: 14
   lineOffsetY: -30
+  clickSfx: 
+  hoverSfx: 
 --- !u!114 &2045638704
 MonoBehaviour:
   m_ObjectHideFlags: 0
