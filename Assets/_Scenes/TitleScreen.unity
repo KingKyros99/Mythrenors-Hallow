@@ -17825,7 +17825,53 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AudioManger
   combatTrack: {fileID: 8300000, guid: c584e723453d3bc4d9912cdcd89fa056, type: 3}
   ExitFade: 0
-  Tracks:
+  sfxTracks:
+  - Name: UIClick
+    clip: {fileID: 0}
+    volume: 5
+    randomPitch: 0
+  - Name: UISlider
+    clip: {fileID: 0}
+    volume: 0
+    randomPitch: 0
+  - Name: UIToggles
+    clip: {fileID: 0}
+    volume: 0
+    randomPitch: 0
+  - Name: UIReturn
+    clip: {fileID: 0}
+    volume: 0
+    randomPitch: 0
+  - Name: MenuHover
+    clip: {fileID: 0}
+    volume: 0
+    randomPitch: 0
+  - Name: SwordAttack
+    clip: {fileID: 0}
+    volume: 0
+    randomPitch: 1
+  - Name: SpellAttack
+    clip: {fileID: 0}
+    volume: 0
+    randomPitch: 1
+  - Name: RangedAttack
+    clip: {fileID: 0}
+    volume: 0
+    randomPitch: 1
+  - Name: Damaged
+    clip: {fileID: 0}
+    volume: 0
+    randomPitch: 0
+  - Name: Guarded
+    clip: {fileID: 0}
+    volume: 0
+    randomPitch: 0
+  - Name: Walking
+    clip: {fileID: 0}
+    volume: 0
+    randomPitch: 0
+  sfxVolume: 1
+  sceneTracks:
   - Name: TitleScreen
     clip: {fileID: 8300000, guid: 97cc143d6d98d84458fce4c30ca48240, type: 3}
   - Name: MainScene
@@ -17833,7 +17879,7 @@ MonoBehaviour:
   - Name: Win
     clip: {fileID: 8300000, guid: 3e2520148b61d6f42b4e205c7f30f508, type: 3}
   - Name: Lose
-    clip: {fileID: 8300000, guid: c140a2ca595272147b089a131b811370, type: 3}
+    clip: {fileID: 8300000, guid: b099627283e2212449604257c5872216, type: 3}
   transitionTime: 3
   volume: 5
 --- !u!4 &1643089045

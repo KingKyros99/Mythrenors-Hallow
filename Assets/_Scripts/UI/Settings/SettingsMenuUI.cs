@@ -65,6 +65,12 @@ public class SettingsMenuUI : MonoBehaviour
     [SerializeField] private InputAction applyAction = new InputAction("Apply", InputActionType.Button, "<Keyboard>/enter");
     [SerializeField] private InputAction backAction = new InputAction("Back", InputActionType.Button, "<Keyboard>/escape");
 
+    [Header("MenuAudio")]
+    private string clickSfx = "UIClick";
+    private string hoverSfx = "MenuHover";
+    private string BackSfx = "UIReturn";
+
+
     [Header("Teammate hook")]
     public UnityEvent onSettingsApplied = new UnityEvent();
 
@@ -97,11 +103,15 @@ public class SettingsMenuUI : MonoBehaviour
         SetupSlider(brightnessSlider, 0, 100, true);
         SetupSlider(mouseSensSlider, 0.1f, 3f, false);
 
-        
+
         for (int i = 0; i < tabButtons.Length; i++)
         {
             int tab = i;
-            tabButtons[i].onClick.AddListener(() => ShowTab(tab));
+            tabButtons[i].onClick.AddListener(() =>
+            {
+                PlaySfx(clickSfx);
+                ShowTab(tab);
+            });
         }
 
         
@@ -164,6 +174,7 @@ public class SettingsMenuUI : MonoBehaviour
 
     public void Apply()
     {
+        PlaySfx(clickSfx);
         saved = ReadFromUI();
         GameSettings.Save(saved);
         GameSettings.SaveBindings(inputActions);
@@ -177,6 +188,7 @@ public class SettingsMenuUI : MonoBehaviour
     public void Back()
     {
         if (RebindBusy()) return;
+        PlaySfx(BackSfx);
         if (dirty && confirmDialog != null)
         {
             confirmDialog.Show("Discard changes?", () => { RevertPreview(); Close(); });
@@ -359,12 +371,26 @@ public class SettingsMenuUI : MonoBehaviour
             dirty = true;
             PreviewLive();
         });
+
+        EventTrigger trigger = s.gameObject.GetComponent<EventTrigger>();
+        if (trigger == null)
+        {
+            trigger = s.gameObject.AddComponent<EventTrigger>();
+        }
+
+        var entry = new EventTrigger.Entry { eventID = EventTriggerType.PointerDown };
+        entry.callback.AddListener(_ => PlaySfx(clickSfx));
+        trigger.triggers.Add(entry);
     }
 
     private void AddToggle(Toggle t)
     {
         if (t == null) return;
-        t.onValueChanged.AddListener(_ => dirty = true);
+        t.onValueChanged.AddListener(_ =>
+        {
+            dirty = true;
+            PlaySfx(clickSfx);
+        });
     }
 
     private static void SetSlider(Slider s, TMP_Text label, float value, bool whole)
@@ -383,4 +409,16 @@ public class SettingsMenuUI : MonoBehaviour
     {
         if (label != null) label.text = whole ? Mathf.RoundToInt(value).ToString() : value.ToString("0.0");
     }
+
+    private void PlaySfx(string Name)
+    {
+        if (AudioManger.inst == null)
+        {
+            return;
+        }
+        AudioManger.inst.PlaySFX(Name);
+    }
+    
+
+
 }

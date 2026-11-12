@@ -42,6 +42,8 @@ public class TitleScreenUI : MonoBehaviour
     private bool continueAvailable;
     private bool busy;
 
+    private string clickSfx = "UIClick";
+
     private void Awake()
     {
         // Buttons are optional so this also works on Win/Lose screens.
@@ -104,6 +106,8 @@ public class TitleScreenUI : MonoBehaviour
     {
         if (busy || !continueAvailable) return;
 
+        PlayClick();
+
         onContinue.Invoke();
 
         if (onContinue.GetPersistentEventCount() == 0)
@@ -113,6 +117,8 @@ public class TitleScreenUI : MonoBehaviour
     private void OnNewGame()
     {
         if (busy) return;
+
+        PlayClick();
 
         if (continueAvailable && confirmDialog != null)
         {
@@ -130,6 +136,8 @@ public class TitleScreenUI : MonoBehaviour
     {
         if (busy) return;
 
+        PlayClick();
+
         PlayerPrefs.SetInt(KeyHasGame, 1);
         PlayerPrefs.Save();
 
@@ -140,6 +148,8 @@ public class TitleScreenUI : MonoBehaviour
     private void OnSettings()
     {
         if (busy || settingsMenu == null) return;
+
+        PlayClick();
 
         SetMainMenuVisible(false);
 
@@ -159,7 +169,7 @@ public class TitleScreenUI : MonoBehaviour
     private void OnQuit()
     {
         if (busy) return;
-
+        PlayClick();
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #else
@@ -242,4 +252,10 @@ public class TitleScreenUI : MonoBehaviour
         PlayerPrefs.Save();
         SetContinueAvailable(false);
     }
+
+    private void PlayClick()
+    {
+        AudioManger.inst.PlaySFX(clickSfx);
+    }
+
 }
