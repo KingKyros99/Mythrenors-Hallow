@@ -12514,6 +12514,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 9166200667505185630, guid: c87c5b1d9ab41464392b53f41442d8f9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2085802454}
+    - targetCorrespondingSourceObject: {fileID: 9166200667505185630, guid: c87c5b1d9ab41464392b53f41442d8f9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2085802466}
     - targetCorrespondingSourceObject: {fileID: 2949423204438666030, guid: c87c5b1d9ab41464392b53f41442d8f9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2078548889}
@@ -12620,6 +12623,21 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2085802466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1565036635}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d42f390781793554ab810fc6fc7d0828, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DamageReactionAnimator
+  characterBase: {fileID: 2085802446}
+  animator: {fileID: 2078548889}
+  hitTrigger: TakeHit
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
