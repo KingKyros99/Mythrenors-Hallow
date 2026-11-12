@@ -13,70 +13,142 @@ public class PauseMenuUI : MonoBehaviour
     public string titleSceneName = "TitleScreen";
 
     [Header("Events (teammates hook these)")]
-    public UnityEvent onPaused;
-    public UnityEvent onResumed;
-    public UnityEvent onBeforeQuitToTitle;
+    public UnityEvent onPaused = new UnityEvent();
+    public UnityEvent onResumed = new UnityEvent();
+    public UnityEvent onBeforeQuitToTitle = new UnityEvent();
 
     public static bool OpenSettingsOnLoad;
 
-    InputAction pauseAction;
-    bool isPaused;
-    int lastSettingsCloseFrame = -1;
+    public bool IsPaused => isPaused;
 
-    void Awake()
+    private InputAction pauseAction;
+    private bool isPaused;
+    private float previousTimeScale = 1f;
+    private CursorLockMode previousCursorLock;
+    private bool previousCursorVisible;
+    private int lastSettingsCloseFrame = -1;
+
+    private void Awake()
     {
-        pauseAction = new InputAction("Pause", InputActionType.Button, "<Keyboard>/escape");
-        pauseAction.performed += _ => OnPausePressed();
+        pauseAction = new InputAction(
+            "Pause",
+            InputActionType.Button,
+            "<Keyboard>/escape"
+        );
+
+        pauseAction.performed += OnPauseInput;
     }
 
-    void OnEnable() { pauseAction.Enable(); }
-    void OnDisable() { pauseAction.Disable(); }
+    private void OnEnable()
+    {
+        pauseAction.Enable();
+    }
 
-    void OnDestroy()
+    private void OnDisable()
     {
         pauseAction.Disable();
+
+        if (isPaused)
+            Resume();
+    }
+
+    private void OnDestroy()
+    {
+        pauseAction.performed -= OnPauseInput;
         pauseAction.Dispose();
     }
 
-    void Start()
+    private void Start()
     {
-        pausePanel.SetActive(false);
+        if (pausePanel != null)
+            pausePanel.SetActive(false);
+
         isPaused = false;
     }
 
-    void OnPausePressed()
+    private void OnPauseInput(InputAction.CallbackContext context)
     {
-        if (Time.frameCount == lastSettingsCloseFrame) return;
-        if (isPaused) Resume();
-        else Pause();
+        OnPausePressed();
+    }
+
+    private void OnPausePressed()
+    {
+        if (Time.frameCount <= lastSettingsCloseFrame + 1)
+            return;
+
+        if (settingsMenu != null && settingsMenu.IsOpen)
+            return;
+
+        if (isPaused)
+            Resume();
+        else
+            Pause();
     }
 
     public void Pause()
     {
+        if (isPaused) return;
+
+        previousTimeScale = Time.timeScale;
+        previousCursorLock = Cursor.lockState;
+        previousCursorVisible = Cursor.visible;
+
         isPaused = true;
-        pausePanel.SetActive(true);
+        Time.timeScale = 0f;
+
+        if (pausePanel != null)
+            pausePanel.SetActive(true);
+
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+
         onPaused.Invoke();
     }
 
     public void Resume()
     {
+        if (!isPaused) return;
+
+        if (settingsMenu != null && settingsMenu.IsOpen)
+            return;
+
         isPaused = false;
-        pausePanel.SetActive(false);
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        Time.timeScale = previousTimeScale;
+
+        if (pausePanel != null)
+            pausePanel.SetActive(false);
+
+        Cursor.lockState = previousCursorLock;
+        Cursor.visible = previousCursorVisible;
+
         onResumed.Invoke();
     }
 
     public void OpenSettings()
     {
         if (settingsMenu == null) return;
-        pausePanel.SetActive(false);
+        if (settingsMenu.IsOpen) return;
+
+        if (!isPaused)
+            Pause();
+
+        if (pausePanel != null)
+            pausePanel.SetActive(false);
+
         settingsMenu.Open(() =>
         {
             lastSettingsCloseFrame = Time.frameCount;
-            pausePanel.SetActive(true);
+
+            if (isPaused)
+            {
+                Time.timeScale = 0f;
+
+                if (pausePanel != null)
+                    pausePanel.SetActive(true);
+
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
         });
     }
 
@@ -91,13 +163,18 @@ public class PauseMenuUI : MonoBehaviour
         LeaveToTitle();
     }
 
-    void LeaveToTitle()
+    private void LeaveToTitle()
     {
         onBeforeQuitToTitle.Invoke();
+
         isPaused = false;
+        Time.timeScale = 1f;
+
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+
         onResumed.Invoke();
+
         SceneManager.LoadScene(titleSceneName);
     }
 }

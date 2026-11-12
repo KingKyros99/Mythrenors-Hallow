@@ -8441,7 +8441,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Loading....
+  m_text: Loading..
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -8476,7 +8476,7 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 2
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_characterHorizontalScale: 1
@@ -12176,6 +12176,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 535f4fbea936f3747a6c320d5060f046, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SaveButtons
+  titleScreenUI: {fileID: 1183680773}
 --- !u!1 &1189533397
 GameObject:
   m_ObjectHideFlags: 0
