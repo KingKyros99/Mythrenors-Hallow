@@ -1,4 +1,6 @@
+using NUnit.Framework;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -45,6 +47,9 @@ public class AudioManger : MonoBehaviour
     private AudioSource musicSource;
     private AudioClip audioClip;
 
+    private List<AudioSource> sfxList = new List<AudioSource>();
+    
+
     private void Awake()
     {
         if (inst != null)
@@ -68,7 +73,14 @@ public class AudioManger : MonoBehaviour
         sfxSource.playOnAwake = false;
 
         //Build SoundEffects
-
+        for (int i = 0; i < sfxTracks.Length; i++)
+        {
+            AudioSource source = gameObject.AddComponent<AudioSource>();
+            source.loop = false;
+            source.playOnAwake = false;
+            sfxList.Add(source);
+            
+        }
 
 
         SceneManager.sceneLoaded += SceneLoaded;
@@ -195,11 +207,11 @@ public class AudioManger : MonoBehaviour
     {
         foreach (var sfx in sfxTracks)
         {
-            if (sfx.Name == Name)
+            if (sfx.Name != Name)
             {
                 continue;
             }
-            if (sfx.clip == null)
+            if (sfx.clip == null || sfx.clip.length == 0)
             {
                 return;
             }
@@ -209,15 +221,31 @@ public class AudioManger : MonoBehaviour
             return;
         }
     }
+
     public void PlaySFX(AudioClip clip, float volume, bool randomPitch)
     {
         if (clip == null)
         {
             return;
         }
+        AudioSource source = GetSFXSource();
         sfxSource.pitch = randomPitch ? Random.Range(0.6f, 1.0f) : 1f;
         float finalVolume = Mathf.Clamp01(volume) * sfxVolume;
+        sfxSource.clip = clip;
         sfxSource.PlayOneShot(clip, finalVolume);
     }
+
+    private AudioSource GetSFXSource()
+    {
+        foreach (var source in sfxList)
+        {
+            if (source.isPlaying == false)
+            {
+                return source; 
+            }
+        }
+        return sfxList[0];
+    }
+
 
 }
