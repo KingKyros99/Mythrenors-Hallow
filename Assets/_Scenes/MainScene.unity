@@ -12426,7 +12426,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 29828823718377569, guid: c87c5b1d9ab41464392b53f41442d8f9, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 29828823718377569, guid: c87c5b1d9ab41464392b53f41442d8f9, type: 3}
       propertyPath: chaseSpeed
@@ -12442,7 +12442,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1101336277431045155, guid: c87c5b1d9ab41464392b53f41442d8f9, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4701428713156202941, guid: c87c5b1d9ab41464392b53f41442d8f9, type: 3}
       propertyPath: m_LocalPosition.x
@@ -12506,6 +12506,12 @@ PrefabInstance:
       addedObject: {fileID: 961967506}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 9166200667505185630, guid: c87c5b1d9ab41464392b53f41442d8f9, type: 3}
+      insertIndex: 5
+      addedObject: {fileID: 2085802466}
+    - targetCorrespondingSourceObject: {fileID: 9166200667505185630, guid: c87c5b1d9ab41464392b53f41442d8f9, type: 3}
+      insertIndex: 10
+      addedObject: {fileID: 2085802467}
+    - targetCorrespondingSourceObject: {fileID: 9166200667505185630, guid: c87c5b1d9ab41464392b53f41442d8f9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2085802456}
     - targetCorrespondingSourceObject: {fileID: 9166200667505185630, guid: c87c5b1d9ab41464392b53f41442d8f9, type: 3}
@@ -12514,9 +12520,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 9166200667505185630, guid: c87c5b1d9ab41464392b53f41442d8f9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2085802454}
-    - targetCorrespondingSourceObject: {fileID: 9166200667505185630, guid: c87c5b1d9ab41464392b53f41442d8f9, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2085802466}
     - targetCorrespondingSourceObject: {fileID: 2949423204438666030, guid: c87c5b1d9ab41464392b53f41442d8f9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2078548889}
@@ -12623,6 +12626,17 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2085802464 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 682931020731209164, guid: c87c5b1d9ab41464392b53f41442d8f9, type: 3}
+  m_PrefabInstance: {fileID: 2085802442}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1565036635}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8a615b7d82e2a6478d4ebfe28e34fc7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StatusEffectManager
 --- !u!114 &2085802466
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12637,7 +12651,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DamageReactionAnimator
   characterBase: {fileID: 2085802446}
   animator: {fileID: 2078548889}
+  statusEffectManager: {fileID: 2085802464}
   hitTrigger: TakeHit
+--- !u!114 &2085802467
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1565036635}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c12d87d1d8f12f044a8c9f023668c445, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyLocomotionAnimator
+  animator: {fileID: 2078548889}
+  movementRoot: {fileID: 2085802443}
+  runningSpeed: 4
+  minimumMovementSpeed: 0.08
+  smoothingTime: 0.12
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
