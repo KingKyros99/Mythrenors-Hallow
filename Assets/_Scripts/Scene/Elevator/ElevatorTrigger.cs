@@ -5,15 +5,36 @@ using UnityEngine;
 //How the player/entity triggers elevator movement
 public class ElevatorTrigger : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [SerializeField] ElevatorMovement elevator;
+    private void Start()
     {
-
+        if (elevator != null)
+        {
+            return;
+        }
+        elevator = elevator.GetComponent<ElevatorMovement>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player") && elevator != null)
+        {
+            other.transform.SetParent(transform);
+            if (elevator.canMove == false)
+            {
+                elevator.canMove = true;
+            }
+        }
     }
+
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            other.transform.SetParent(null);
+        }
+    }
+
 }
