@@ -1,6 +1,8 @@
+using NUnit.Framework;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections.Generic;
 
 public class PlayerInteractions : MonoBehaviour
 {
@@ -16,7 +18,8 @@ public class PlayerInteractions : MonoBehaviour
 
 
     //inventory
-
+    [SerializeField] private List<string> allKeys = new List<string>();
+    public List<string> Keys => allKeys;
 
 
     //Input

@@ -2,26 +2,32 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Text;
 using TMPro;
-public class BossDoor : MonoBehaviour
+public class BossDoor : MonoBehaviour, IInteraction
 {
-    
-    [SerializeField] private List<Enemy> minionCount = new List<Enemy>();
+    [Header("Locked")]
+    [SerializeField] private bool isLocked;
+    [SerializeField] private string keyNeeded;
+    [SerializeField] private bool keepKey = false;
+
     [SerializeField] private Collider doorCollider;
     [SerializeField] private TMP_Text objectiveBoard;
     private bool isDoorOpen;
 
+
+    private void Awake()
+    {
+        if (doorCollider == null)
+        {
+            doorCollider = GetComponent<Collider>();
+
+        }
+    }
+
+
     void Start()
     {
-        foreach (Enemy e in minionCount)
-        {
-            if (e != null)
-            {
-                e.bossDoor = this;
-            }
-        }
-        //checks the boss doors open condion and displays it on the objective obj
         ObjectiveBoard();
-        CheckObjective();
+        
     }
 
     private void Update()
@@ -31,24 +37,38 @@ public class BossDoor : MonoBehaviour
         {
             return;
         }
-        //removes the enemys if they are destroyed
-        minionCount.RemoveAll(e => e == null);
         //checks the boss doors open condion and displays it on the objective obj
         ObjectiveBoard();
-        CheckObjective();
+        
+    }
+    public string PromptInteraction(PlayerInteractions interaction)
+    {
+        return interaction.Keys.Contains(keyNeeded) ? "Unlock Boss Gate" : $"Locked ({keyNeeded} Required)";
+    }
+    public bool CanInteract(PlayerInteractions interaction)
+    {
+        return isLocked && !interaction.IsInteracting;
+    }
+    public void Interact(PlayerInteractions interaction)
+    {
+        if (!isLocked)
+        {
+            return;
+        }
+        if (interaction.Keys.Contains(keyNeeded))
+        {
+            isLocked = false;
+            if (keepKey == true)
+            {
+                interaction.Keys.Remove(keyNeeded);
+            }
+            if (doorCollider != null)
+            {
+                doorCollider.enabled = false;
+            }
+        }
     }
 
-    public void addEnemy(Enemy enemy)
-    {
-        minionCount.Add(enemy);
-        enemy.bossDoor = this;
-    }
-    public void RemoveEnemy(Enemy enemy)
-    {
-        minionCount.RemoveAll(e => e == null || e == enemy);
-        ObjectiveBoard();
-        CheckObjective();
-    }
 
     void ObjectiveBoard()
     {
@@ -56,23 +76,10 @@ public class BossDoor : MonoBehaviour
         {
             return;
         }
-        string text = $"Enemies Remaining: {minionCount.Count}";
+        string text = isDoorOpen ? "Gate is Open" : $"Find {keyNeeded}" ;
         objectiveBoard.text = text;
     }
 
-
-    void CheckObjective()
-    {
-        if (minionCount.Count == 0 && !isDoorOpen) 
-        {
-            DoorOpen();
-        }
-        else
-        {
-            return;
-        }
-    }
-  
     
     void DoorOpen()
     {
@@ -82,10 +89,7 @@ public class BossDoor : MonoBehaviour
             doorCollider.enabled = false;
         }
 
-        if (objectiveBoard != null)
-        {
-            objectiveBoard.text = "Gate was Opened";
-        }
+        ObjectiveBoard();
 
     }
 
