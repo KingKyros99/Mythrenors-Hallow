@@ -3,64 +3,88 @@ using UnityEngine;
 public class BossDoorSave : MonoBehaviour
 {
     public string roomId = "bossdoor";
-    public Transform gate;            // Level1 (1) > NewLevelDesign > BossDoor
-    public Transform spawnPoint;      // BossDoorSpawn (gets moved to the player when saving)
-    public float saveDistance = 8f;   // flat distance to the gate, ignores height
+    public Transform gate;
+    public Transform spawnPoint;
+    public float saveDistance = 8f;
 
-    Transform player;
-    Renderer[] playerRenderers;
-    Collider gateCollider;
-    bool done;
+    private Transform player;
+    private Renderer[] playerRenderers;
+    private Collider gateCollider;
+    private bool done;
 
-    void Start()
+    private void Start()
     {
-        if (gate != null) gateCollider = gate.GetComponentInChildren<Collider>();
+        if (gate != null)
+            gateCollider = gate.GetComponentInChildren<Collider>();
     }
 
-    void Update()
+    private void Update()
     {
         if (done || gate == null) return;
 
         if (player == null)
         {
-            GameObject p = GameObject.FindGameObjectWithTag("Player");
-            if (p == null) return;
-            player = p.transform;
-            playerRenderers = p.GetComponentsInChildren<Renderer>();
+            GameObject playerObject =
+                GameObject.FindGameObjectWithTag("Player");
+
+            if (playerObject == null) return;
+
+            player = playerObject.transform;
+            playerRenderers =
+                playerObject.GetComponentsInChildren<Renderer>();
         }
 
-        Vector3 g = gateCollider != null ? gateCollider.bounds.center : gate.position;
-        Vector3 body = PlayerBodyPosition();
-        float dist = Vector2.Distance(new Vector2(body.x, body.z), new Vector2(g.x, g.z));
+        Vector3 gatePosition = gateCollider != null
+            ? gateCollider.bounds.center
+            : gate.position;
 
-        if (dist <= saveDistance) TrySave();
+        Vector3 bodyPosition = PlayerBodyPosition();
+
+        float distance = Vector2.Distance(
+            new Vector2(bodyPosition.x, bodyPosition.z),
+            new Vector2(gatePosition.x, gatePosition.z)
+        );
+
+        if (distance <= saveDistance)
+            TrySave();
     }
 
-    Vector3 PlayerBodyPosition()
+    private Vector3 PlayerBodyPosition()
     {
         if (playerRenderers != null)
         {
-            foreach (Renderer r in playerRenderers)
-                if (r != null && r.enabled && r is SkinnedMeshRenderer) return r.bounds.center;
-            foreach (Renderer r in playerRenderers)
-                if (r != null && r.enabled) return r.bounds.center;
+            foreach (Renderer playerRenderer in playerRenderers)
+            {
+                if (playerRenderer != null &&
+                    playerRenderer.enabled &&
+                    playerRenderer is SkinnedMeshRenderer)
+                {
+                    return playerRenderer.bounds.center;
+                }
+            }
+
+            foreach (Renderer playerRenderer in playerRenderers)
+            {
+                if (playerRenderer != null && playerRenderer.enabled)
+                    return playerRenderer.bounds.center;
+            }
         }
+
         return player.position;
     }
 
-    void TrySave()
+    private void TrySave()
     {
-        if (SaveManager.Instance == null)
+        if (SaveManager.Instance == null) return;
+
+        if (spawnPoint != null)
         {
-            Debug.LogWarning("[Save] Door: no SaveManager. Start from TitleScreen.");
-            return;
+            spawnPoint.SetPositionAndRotation(
+                player.position,
+                player.rotation
+            );
         }
 
-        // Save the spot where the player is standing right now (outside the gate)
-        if (spawnPoint != null)
-            spawnPoint.SetPositionAndRotation(player.position, player.rotation);
-
-        Debug.Log("[Save] Door save at the gate");
         done = true;
         SaveManager.Instance.Save(roomId, spawnPoint);
     }

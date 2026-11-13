@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -15,6 +16,12 @@ public class TitleScreenUI : MonoBehaviour
     [SerializeField] private Button newGameButton;
     [SerializeField] private Button settingsButton;
     [SerializeField] private Button quitButton;
+
+    [Header("Credits")]
+    [SerializeField] private Button creditsButton;
+    [SerializeField] private Button creditsBackButton;
+    [SerializeField] private GameObject creditsPanel;
+    [SerializeField] private GameObject mainMenuPanel;
 
     [Header("Continue greyed-out look")]
     [SerializeField] private TMP_Text continueLabel;
@@ -35,18 +42,27 @@ public class TitleScreenUI : MonoBehaviour
     [SerializeField] private CanvasGroup fadeToBlack;
     [SerializeField] private float fadeTime = 1f;
 
+    [Header("Loading screen")]
+    [SerializeField] private GameObject loadingPanel;
+    [SerializeField] private TMP_Text loadingText;
+    [SerializeField, Min(0f)] private float minimumLoadingTime = 1f;
+
     [Header("Teammate hooks")]
     public UnityEvent onContinue = new UnityEvent();
     public UnityEvent onNewGame = new UnityEvent();
 
     private bool continueAvailable;
     private bool busy;
+    private bool creditsOpen;
 
-    private string clickSfx = "UIClick";
+    private bool MenuBlocked =>
+        busy ||
+        creditsOpen ||
+        (settingsMenu != null && settingsMenu.IsOpen) ||
+        (confirmDialog != null && confirmDialog.IsOpen);
 
     private void Awake()
     {
-        // Buttons are optional so this also works on Win/Lose screens.
         if (continueButton != null)
             continueButton.onClick.AddListener(OnContinue);
 
@@ -59,17 +75,39 @@ public class TitleScreenUI : MonoBehaviour
         if (quitButton != null)
             quitButton.onClick.AddListener(OnQuit);
 
+        if (creditsButton != null)
+            creditsButton.onClick.AddListener(OpenCredits);
+
+        if (creditsBackButton != null)
+            creditsBackButton.onClick.AddListener(CloseCredits);
+
+        if (creditsPanel != null)
+            creditsPanel.SetActive(false);
+
         if (fadeToBlack != null)
         {
             fadeToBlack.alpha = 0f;
             fadeToBlack.blocksRaycasts = false;
         }
+
+        if (loadingPanel != null)
+            loadingPanel.SetActive(false);
     }
 
     private void Start()
     {
         SetContinueAvailable(PlayerPrefs.GetInt(KeyHasGame, 0) == 1);
         SelectFirstButton();
+    }
+
+    private void Update()
+    {
+        if (!creditsOpen || busy) return;
+
+        Keyboard keyboard = Keyboard.current;
+
+        if (keyboard != null && keyboard.escapeKey.wasPressedThisFrame)
+            CloseCredits();
     }
 
     private void OnDestroy()
@@ -85,6 +123,12 @@ public class TitleScreenUI : MonoBehaviour
 
         if (quitButton != null)
             quitButton.onClick.RemoveListener(OnQuit);
+
+        if (creditsButton != null)
+            creditsButton.onClick.RemoveListener(OpenCredits);
+
+        if (creditsBackButton != null)
+            creditsBackButton.onClick.RemoveListener(CloseCredits);
     }
 
     public void SetContinueAvailable(bool available)
@@ -104,19 +148,22 @@ public class TitleScreenUI : MonoBehaviour
 
     private void OnContinue()
     {
-        if (busy || !continueAvailable) return;
+        if (MenuBlocked || !continueAvailable) return;
 
-        PlayClick();
+        if (onContinue.GetPersistentEventCount() > 0)
+        {
+            onContinue.Invoke();
+            return;
+        }
 
+        busy = true;
         onContinue.Invoke();
-
-        if (onContinue.GetPersistentEventCount() == 0)
-            StartCoroutine(FadeAndLoad());
+        StartCoroutine(FadeAndLoad());
     }
 
     private void OnNewGame()
     {
-        if (busy) return;
+        if (MenuBlocked) return;
 
         PlayClick();
 
@@ -135,8 +182,9 @@ public class TitleScreenUI : MonoBehaviour
     private void StartNewGame()
     {
         if (busy) return;
+        if (!CanLoadGameplayScene()) return;
 
-        PlayClick();
+        busy = true;
 
         PlayerPrefs.SetInt(KeyHasGame, 1);
         PlayerPrefs.Save();
@@ -147,7 +195,7 @@ public class TitleScreenUI : MonoBehaviour
 
     private void OnSettings()
     {
-        if (busy || settingsMenu == null) return;
+        if (MenuBlocked || settingsMenu == null) return;
 
         PlayClick();
 
@@ -166,10 +214,63 @@ public class TitleScreenUI : MonoBehaviour
         });
     }
 
+    public void OpenCredits()
+    {
+        if (MenuBlocked || creditsPanel == null) return;
+
+        creditsOpen = true;
+
+        if (EventSystem.current != null)
+            EventSystem.current.SetSelectedGameObject(null);
+
+        if (mainMenuPanel != null)
+            mainMenuPanel.SetActive(false);
+
+        creditsPanel.transform.SetAsLastSibling();
+        creditsPanel.SetActive(true);
+
+        if (EventSystem.current != null && creditsBackButton != null)
+        {
+            EventSystem.current.SetSelectedGameObject(
+                creditsBackButton.gameObject
+            );
+        }
+    }
+
+    public void CloseCredits()
+    {
+        if (!creditsOpen || busy) return;
+
+        creditsOpen = false;
+
+        if (EventSystem.current != null)
+            EventSystem.current.SetSelectedGameObject(null);
+
+        if (creditsPanel != null)
+            creditsPanel.SetActive(false);
+
+        if (mainMenuPanel != null)
+            mainMenuPanel.SetActive(true);
+
+        if (EventSystem.current != null &&
+            creditsButton != null &&
+            creditsButton.isActiveAndEnabled &&
+            creditsButton.IsInteractable())
+        {
+            EventSystem.current.SetSelectedGameObject(
+                creditsButton.gameObject
+            );
+        }
+        else
+        {
+            SelectFirstButton();
+        }
+    }
+
     private void OnQuit()
     {
-        if (busy) return;
-        PlayClick();
+        if (MenuBlocked) return;
+
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #else
@@ -186,7 +287,8 @@ public class TitleScreenUI : MonoBehaviour
         if (first == null || !first.interactable)
             first = quitButton;
 
-        if (first != null && first.interactable)
+        if (first != null && first.isActiveAndEnabled &&
+            first.IsInteractable())
         {
             EventSystem.current.SetSelectedGameObject(first.gameObject);
         }
@@ -203,11 +305,63 @@ public class TitleScreenUI : MonoBehaviour
         }
     }
 
+    private bool CanLoadGameplayScene()
+    {
+        if (!string.IsNullOrWhiteSpace(gameplaySceneName) &&
+            Application.CanStreamedLevelBeLoaded(gameplaySceneName))
+        {
+            return true;
+        }
+
+        Debug.LogError(
+            "TitleScreenUI: assign Gameplay Scene Name and include " +
+            "that scene in the active Build Profile's scene list.",
+            this
+        );
+
+        return false;
+    }
+
+    public void LoadGameplayWithLoadingScreen()
+    {
+        if (busy) return;
+
+        busy = true;
+        StartCoroutine(FadeAndLoad());
+    }
+
     private IEnumerator FadeAndLoad()
     {
+        if (!CanLoadGameplayScene())
+        {
+            busy = false;
+            SelectFirstButton();
+            yield break;
+        }
+
         busy = true;
 
-        if (fadeToBlack != null)
+        if (EventSystem.current != null)
+            EventSystem.current.SetSelectedGameObject(null);
+
+        if (loadingPanel != null)
+        {
+            if (fadeToBlack != null)
+            {
+                fadeToBlack.alpha = 0f;
+                fadeToBlack.blocksRaycasts = false;
+            }
+
+            if (loadingText != null)
+                loadingText.text = "Loading...";
+
+            loadingPanel.transform.SetAsLastSibling();
+            loadingPanel.SetActive(true);
+
+            yield return null;
+            yield return null;
+        }
+        else if (fadeToBlack != null)
         {
             fadeToBlack.blocksRaycasts = true;
 
@@ -223,39 +377,62 @@ public class TitleScreenUI : MonoBehaviour
             fadeToBlack.alpha = 1f;
         }
 
-        if (!string.IsNullOrWhiteSpace(gameplaySceneName))
+        float startedAt = Time.realtimeSinceStartup;
+
+        AsyncOperation loading = null;
+        string loadingError = null;
+
+        try
         {
-            Time.timeScale = 1f;
-            SceneManager.LoadScene(gameplaySceneName);
+            loading = SceneManager.LoadSceneAsync(gameplaySceneName);
         }
-        else
+        catch (System.Exception exception)
         {
-            Debug.LogWarning(
-                "TitleScreenUI: assign Gameplay Scene Name in the Inspector.",
+            loadingError = exception.Message;
+        }
+
+        if (loading == null)
+        {
+            Debug.LogError(
+                "TitleScreenUI: scene loading failed. " + loadingError,
                 this
             );
 
-            if (fadeToBlack != null)
-            {
-                fadeToBlack.alpha = 0f;
-                fadeToBlack.blocksRaycasts = false;
-            }
-
-            busy = false;
+            RestoreMenuAfterLoadingFailure();
+            yield break;
         }
+
+        loading.allowSceneActivation = false;
+
+        float minimumTime = loadingPanel != null
+            ? Mathf.Max(0f, minimumLoadingTime)
+            : 0f;
+
+        while (loading.progress < 0.9f ||
+               Time.realtimeSinceStartup - startedAt < minimumTime)
+        {
+            yield return null;
+        }
+
+        Time.timeScale = 1f;
+        loading.allowSceneActivation = true;
+
+        while (!loading.isDone)
+            yield return null;
     }
 
-    [ContextMenu("Reset Continue (testing)")]
-    private void ResetContinueForTesting()
+    private void RestoreMenuAfterLoadingFailure()
     {
-        PlayerPrefs.DeleteKey(KeyHasGame);
-        PlayerPrefs.Save();
-        SetContinueAvailable(false);
-    }
+        if (loadingPanel != null)
+            loadingPanel.SetActive(false);
 
-    private void PlayClick()
-    {
-        AudioManger.inst.PlaySFX(clickSfx);
-    }
+        if (fadeToBlack != null)
+        {
+            fadeToBlack.alpha = 0f;
+            fadeToBlack.blocksRaycasts = false;
+        }
 
+        busy = false;
+        SelectFirstButton();
+    }
 }

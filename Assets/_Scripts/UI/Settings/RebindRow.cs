@@ -6,19 +6,19 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-
 public class RebindRow : MonoBehaviour
 {
     [Header("What this row changes")]
-    [SerializeField] private InputActionReference action;   
+    [SerializeField] private InputActionReference action;
+
     [Tooltip("Leave empty for normal actions. For Move, use up, down, left or right.")]
     [SerializeField] private string compositePart = "";
 
     [Header("UI")]
-    [SerializeField] private TMP_Text actionLabel;          
+    [SerializeField] private TMP_Text actionLabel;
     [SerializeField] private string displayName = "";
-    [SerializeField] private Button keyButton;              
-    [SerializeField] private TMP_Text keyLabel;             
+    [SerializeField] private Button keyButton;
+    [SerializeField] private TMP_Text keyLabel;
     [SerializeField] private string waitingText = "PRESS A KEY...";
     [SerializeField] private string inUseText = "ALREADY USED";
 
@@ -31,69 +31,104 @@ public class RebindRow : MonoBehaviour
 
     private void Awake()
     {
-        if (keyButton != null) keyButton.onClick.AddListener(StartRebind);
-        if (actionLabel != null && !string.IsNullOrEmpty(displayName)) actionLabel.text = displayName;
+        if (keyButton != null)
+            keyButton.onClick.AddListener(StartRebind);
+
+        if (actionLabel != null && !string.IsNullOrEmpty(displayName))
+            actionLabel.text = displayName;
     }
 
-    private void OnEnable() { Refresh(); }
+    private void OnEnable()
+    {
+        Refresh();
+    }
 
     private void OnDisable()
     {
-        if (operation != null) operation.Cancel();
+        if (operation != null)
+            operation.Cancel();
     }
 
     public void Refresh()
     {
-        if (keyLabel == null || action == null || action.action == null) return;
+        if (keyLabel == null || action == null || action.action == null)
+            return;
+
         int index = FindBindingIndex();
+
         keyLabel.text = index < 0
             ? "-"
-            : action.action.GetBindingDisplayString(index, InputBinding.DisplayStringOptions.DontIncludeInteractions).ToUpperInvariant();
+            : action.action.GetBindingDisplayString(
+                index,
+                InputBinding.DisplayStringOptions.DontIncludeInteractions
+            ).ToUpperInvariant();
     }
 
     private int FindBindingIndex()
     {
-        InputAction a = action.action;
-        for (int i = 0; i < a.bindings.Count; i++)
+        InputAction inputAction = action.action;
+
+        for (int i = 0; i < inputAction.bindings.Count; i++)
         {
-            InputBinding b = a.bindings[i];
-            if (b.isComposite) continue;
-            bool isKeyboardOrMouse = b.path.StartsWith("<Keyboard>") || b.path.StartsWith("<Mouse>");
+            InputBinding binding = inputAction.bindings[i];
+
+            if (binding.isComposite) continue;
+
+            bool isKeyboardOrMouse =
+                binding.path.StartsWith("<Keyboard>") ||
+                binding.path.StartsWith("<Mouse>");
+
             if (!isKeyboardOrMouse) continue;
 
             if (string.IsNullOrEmpty(compositePart))
             {
-                if (!b.isPartOfComposite) return i;
+                if (!binding.isPartOfComposite)
+                    return i;
             }
-            else if (b.isPartOfComposite && string.Equals(b.name, compositePart, StringComparison.OrdinalIgnoreCase))
+            else if (
+                binding.isPartOfComposite &&
+                string.Equals(
+                    binding.name,
+                    compositePart,
+                    StringComparison.OrdinalIgnoreCase
+                ))
             {
                 return i;
             }
         }
+
         return -1;
     }
 
     private void StartRebind()
     {
-        if (IsAnyRebinding || Time.frameCount <= LastRebindEndFrame + 1) return;
-        if (action == null || action.action == null) return;
-        int index = FindBindingIndex();
-        if (index < 0)
+        if (IsAnyRebinding ||
+            Time.frameCount <= LastRebindEndFrame + 1)
         {
-            Debug.LogWarning($"RebindRow: no keyboard/mouse binding found on {action.action.name} {compositePart}");
             return;
         }
 
-        InputAction a = action.action;
-        bool wasEnabled = a.enabled;
-        string previousOverride = a.bindings[index].overridePath;
+        if (action == null || action.action == null)
+            return;
 
-        a.Disable();                     
+        int index = FindBindingIndex();
+
+        if (index < 0) return;
+
+        InputAction inputAction = action.action;
+        bool wasEnabled = inputAction.enabled;
+
+        string previousOverride =
+            inputAction.bindings[index].overridePath;
+
+        inputAction.Disable();
         IsAnyRebinding = true;
         keyLabel.text = waitingText;
-        if (EventSystem.current != null) EventSystem.current.SetSelectedGameObject(null); 
 
-        operation = a.PerformInteractiveRebinding(index)
+        if (EventSystem.current != null)
+            EventSystem.current.SetSelectedGameObject(null);
+
+        operation = inputAction.PerformInteractiveRebinding(index)
             .WithControlsHavingToMatchPath("<Keyboard>")
             .WithControlsHavingToMatchPath("<Mouse>")
             .WithControlsExcluding("<Mouse>/position")
@@ -105,54 +140,98 @@ public class RebindRow : MonoBehaviour
             .OnMatchWaitForAnother(0.1f)
             .OnComplete(op =>
             {
-                bool duplicate = IsUsedElsewhere(a, index);
+                bool duplicate = IsUsedElsewhere(inputAction, index);
+
                 if (duplicate)
                 {
-                    if (string.IsNullOrEmpty(previousOverride)) a.RemoveBindingOverride(index);
-                    else a.ApplyBindingOverride(index, previousOverride);
+                    if (string.IsNullOrEmpty(previousOverride))
+                    {
+                        inputAction.RemoveBindingOverride(index);
+                    }
+                    else
+                    {
+                        inputAction.ApplyBindingOverride(
+                            index,
+                            previousOverride
+                        );
+                    }
                 }
-                Finish(a, wasEnabled);
-                if (duplicate) StartCoroutine(ShowInUse());
-                else onChanged?.Invoke();
+
+                Finish(inputAction, wasEnabled);
+
+                if (duplicate)
+                    StartCoroutine(ShowInUse());
+                else
+                    onChanged?.Invoke();
             })
-            .OnCancel(op => Finish(a, wasEnabled));
+            .OnCancel(op => Finish(inputAction, wasEnabled));
 
         operation.Start();
     }
 
-    private void Finish(InputAction a, bool wasEnabled)
+    private void Finish(InputAction inputAction, bool wasEnabled)
     {
         operation?.Dispose();
         operation = null;
+
         IsAnyRebinding = false;
         LastRebindEndFrame = Time.frameCount;
-        if (wasEnabled) a.Enable();
+
+        if (wasEnabled)
+            inputAction.Enable();
+
         Refresh();
-        if (EventSystem.current != null && keyButton != null) EventSystem.current.SetSelectedGameObject(keyButton.gameObject);
+
+        if (EventSystem.current != null && keyButton != null)
+        {
+            EventSystem.current.SetSelectedGameObject(
+                keyButton.gameObject
+            );
+        }
     }
 
-    
-    private static bool IsUsedElsewhere(InputAction a, int index)
+    private static bool IsUsedElsewhere(
+        InputAction inputAction,
+        int index)
     {
-        string newPath = a.bindings[index].effectivePath;
-        if (string.IsNullOrEmpty(newPath) || a.actionMap == null) return false;
+        string newPath =
+            inputAction.bindings[index].effectivePath;
 
-        foreach (InputAction other in a.actionMap.actions)
+        if (string.IsNullOrEmpty(newPath) ||
+            inputAction.actionMap == null)
+        {
+            return false;
+        }
+
+        foreach (InputAction other in inputAction.actionMap.actions)
         {
             for (int i = 0; i < other.bindings.Count; i++)
             {
-                if (other == a && i == index) continue;
-                InputBinding b = other.bindings[i];
-                if (b.isComposite) continue;
-                if (string.Equals(b.effectivePath, newPath, StringComparison.OrdinalIgnoreCase)) return true;
+                if (other == inputAction && i == index)
+                    continue;
+
+                InputBinding binding = other.bindings[i];
+
+                if (binding.isComposite) continue;
+
+                if (string.Equals(
+                    binding.effectivePath,
+                    newPath,
+                    StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
             }
         }
+
         return false;
     }
 
     private IEnumerator ShowInUse()
     {
-        if (keyLabel != null) keyLabel.text = inUseText;
+        if (keyLabel != null)
+            keyLabel.text = inUseText;
+
         yield return new WaitForSecondsRealtime(1f);
         Refresh();
     }
