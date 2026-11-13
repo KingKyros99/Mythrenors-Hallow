@@ -21,6 +21,13 @@ public class StatusEffectManager : MonoBehaviour
 
     private ICombatEntity combatEntity;
 
+    public bool IsApplyingStatusDamage
+    {
+        get;
+
+        private set;
+    }
+
     // PURPOSE:
     // Connects active status effects to their
     // visual effects on the Entity.
@@ -206,13 +213,27 @@ public class StatusEffectManager : MonoBehaviour
 
         switch (effect.data.effectType)
         {
+
             case StatusEffectType.Poison:
 
             case StatusEffectType.Burn:
 
             case StatusEffectType.Bleed:
 
-                combatEntity.ReceiveDamage(amount);
+                // Mark this damage as coming from a status effect.
+                IsApplyingStatusDamage = true;
+
+                try
+                {
+                    // Preserve the existing combat damage pipeline.
+                    combatEntity.ReceiveDamage(amount);
+                }
+
+                finally
+                {
+                    // Reset the flag even if damage processing fails.
+                    IsApplyingStatusDamage = false;
+                }
 
                 break;
 

@@ -32,6 +32,17 @@ public class Enemy : CharacterBase
     [SerializeField] private Transform projectileSpawnPoint;
     [SerializeField] private float rangedAttackRange = 12f;
 
+    // Optional Animated Melee
+    [SerializeField] private bool useAnimatedMelee = false;
+    [SerializeField] private Animator meleeAttackAnimator;
+
+    // Animated Ranged Combat
+    [SerializeField] private bool useAnimatedRanged = false;
+    [SerializeField] private Animator rangedAnimator;
+
+    private bool rangedShotPending;
+
+
 
     private Vector3 homePosition;
     private int currentPatrolIndex;
@@ -266,7 +277,28 @@ public class Enemy : CharacterBase
         if (targetEntity == null)
             return;
 
-        meleeManager.TryAttack(combatEntity, targetEntity, meleeAttack);
+        if (useAnimatedMelee && meleeAttackAnimator != null)
+        {
+            // Wait until the Animator is ready for another swing.
+            AnimatorStateInfo state = meleeAttackAnimator.GetCurrentAnimatorStateInfo(0);
+
+            if (!state.IsName("Locomotion") || meleeAttackAnimator.IsInTransition(0))
+            {
+                return;
+            }
+
+            // Reserve the attack without applying damage yet.
+            if (meleeManager.TryBeginAnimatedAttack( combatEntity, targetEntity, meleeAttack))
+            {
+                meleeAttackAnimator.SetTrigger("Attack");
+            }
+        }
+
+        else
+        {
+            // Preserve the original behavior for other enemies.
+            meleeManager.TryAttack(combatEntity, targetEntity, meleeAttack);
+        }
     }
 
     private void RangedAttackTarget()
@@ -343,7 +375,72 @@ public class Enemy : CharacterBase
     {
         StopMoving();
         FaceTarget();
+
+        if (useAnimatedRanged)
+        {
+            TryStartAnimatedRangedAttack();
+        }
+
+        else
+        {
+            // Keep the original firing behavior.
+            RangedAttackTarget();
+        }
+    }
+
+    // PURPOSE:
+    // Starts the shooting animation without immediately firing.
+    private void TryStartAnimatedRangedAttack()
+    {
+        if (rangedShotPending || rangedAnimator == null || !rangedAnimator.isActiveAndEnabled || target == null || combatEntity == null ||
+            rangedAttackManager == null || rangedAttack == null || projectileSpawnPoint == null)
+        {
+            return;
+        }
+
+        if (Time.time < nextRangedAttackCheck || !rangedAttackManager.CanAttack(combatEntity, rangedAttack))
+        {
+            return;
+        }
+
+        CombatEntityAdapter targetEntity = target.GetComponent<CombatEntityAdapter>();
+
+        if (targetEntity == null || !TargetingSystem.IsValidTarget(combatEntity, targetEntity, rangedAttack.targetingData))
+        {
+            return;
+        }
+
+        // Only start a new shot from Locomotion.
+        if (rangedAnimator.IsInTransition(0) || !rangedAnimator.GetCurrentAnimatorStateInfo(0).IsName("Locomotion"))
+        {
+            return;
+        }
+
+        rangedShotPending = true;
+
+        rangedAnimator.SetTrigger("Shoot");
+    }
+
+    // PURPOSE:
+    // Called when the shooting animation reaches its firing frame.
+    public void FireAnimatedRangedShot()
+    {
+        if (!rangedShotPending)
+        {
+            return;
+        }
+
+        rangedShotPending = false;
+
+        // Reuse the existing firing and cooldown system.
         RangedAttackTarget();
+    }
+
+    // PURPOSE:
+    // Cancels a shot if its animation is interrupted.
+    public void CancelAnimatedRangedShot()
+    {
+        rangedShotPending = false;
     }
 
     protected virtual void OnReturn()
