@@ -32,6 +32,10 @@ public class Enemy : CharacterBase
     [SerializeField] private Transform projectileSpawnPoint;
     [SerializeField] private float rangedAttackRange = 12f;
 
+    // Optional Animated Melee
+    [SerializeField] private bool useAnimatedMelee = false;
+    [SerializeField] private Animator meleeAttackAnimator;
+
 
     private Vector3 homePosition;
     private int currentPatrolIndex;
@@ -266,7 +270,28 @@ public class Enemy : CharacterBase
         if (targetEntity == null)
             return;
 
-        meleeManager.TryAttack(combatEntity, targetEntity, meleeAttack);
+        if (useAnimatedMelee && meleeAttackAnimator != null)
+        {
+            // Wait until the Animator is ready for another swing.
+            AnimatorStateInfo state = meleeAttackAnimator.GetCurrentAnimatorStateInfo(0);
+
+            if (!state.IsName("Locomotion") || meleeAttackAnimator.IsInTransition(0))
+            {
+                return;
+            }
+
+            // Reserve the attack without applying damage yet.
+            if (meleeManager.TryBeginAnimatedAttack( combatEntity, targetEntity, meleeAttack))
+            {
+                meleeAttackAnimator.SetTrigger("Attack");
+            }
+        }
+
+        else
+        {
+            // Preserve the original behavior for other enemies.
+            meleeManager.TryAttack(combatEntity, targetEntity, meleeAttack);
+        }
     }
 
     private void RangedAttackTarget()

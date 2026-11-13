@@ -12416,6 +12416,20 @@ MonoBehaviour:
   - m_Rig: {fileID: 1490849789}
     m_Active: 1
   m_Effectors: []
+--- !u!114 &2078548891
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 146042933}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52fe1dbe27c457c4a94f48631dbed54b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyMeleeAnimationEvents
+  meleeManager: {fileID: 1564851961}
+  combatEntity: {fileID: 2085802465}
 --- !u!1001 &2085802442
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12440,6 +12454,14 @@ PrefabInstance:
       propertyPath: leashDistance
       value: 15
       objectReference: {fileID: 0}
+    - target: {fileID: 29828823718377569, guid: c87c5b1d9ab41464392b53f41442d8f9, type: 3}
+      propertyPath: useAnimatedMelee
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 29828823718377569, guid: c87c5b1d9ab41464392b53f41442d8f9, type: 3}
+      propertyPath: meleeAttackAnimator
+      value: 
+      objectReference: {fileID: 2078548889}
     - target: {fileID: 1101336277431045155, guid: c87c5b1d9ab41464392b53f41442d8f9, type: 3}
       propertyPath: m_Enabled
       value: 1
@@ -12512,6 +12534,9 @@ PrefabInstance:
       insertIndex: 10
       addedObject: {fileID: 2085802467}
     - targetCorrespondingSourceObject: {fileID: 9166200667505185630, guid: c87c5b1d9ab41464392b53f41442d8f9, type: 3}
+      insertIndex: 11
+      addedObject: {fileID: 2085802468}
+    - targetCorrespondingSourceObject: {fileID: 9166200667505185630, guid: c87c5b1d9ab41464392b53f41442d8f9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2085802456}
     - targetCorrespondingSourceObject: {fileID: 9166200667505185630, guid: c87c5b1d9ab41464392b53f41442d8f9, type: 3}
@@ -12526,6 +12551,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2949423204438666030, guid: c87c5b1d9ab41464392b53f41442d8f9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2078548890}
+    - targetCorrespondingSourceObject: {fileID: 2949423204438666030, guid: c87c5b1d9ab41464392b53f41442d8f9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2078548891}
   m_SourcePrefab: {fileID: 100100000, guid: c87c5b1d9ab41464392b53f41442d8f9, type: 3}
 --- !u!4 &2085802443 stripped
 Transform:
@@ -12583,6 +12611,8 @@ MonoBehaviour:
   rangedAttack: {fileID: 0}
   projectileSpawnPoint: {fileID: 0}
   rangedAttackRange: 12
+  useAnimatedMelee: 0
+  meleeAttackAnimator: {fileID: 0}
   bossDoor: {fileID: 0}
   CombatMusic: 1
   currentState: 0
@@ -12626,6 +12656,17 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2085802457 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 29828823718377569, guid: c87c5b1d9ab41464392b53f41442d8f9, type: 3}
+  m_PrefabInstance: {fileID: 2085802442}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1565036635}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a4c4208672761044a10cd0178acbdd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Enemy
 --- !u!114 &2085802464 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 682931020731209164, guid: c87c5b1d9ab41464392b53f41442d8f9, type: 3}
@@ -12637,6 +12678,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8a615b7d82e2a6478d4ebfe28e34fc7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StatusEffectManager
+--- !u!114 &2085802465 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4036373335519703764, guid: c87c5b1d9ab41464392b53f41442d8f9, type: 3}
+  m_PrefabInstance: {fileID: 2085802442}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1565036635}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 685c370759683c3498b9cbaabe0cf075, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CombatEntityAdapter
 --- !u!114 &2085802466
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12670,6 +12722,22 @@ MonoBehaviour:
   runningSpeed: 4
   minimumMovementSpeed: 0.08
   smoothingTime: 0.12
+--- !u!114 &2085802468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1565036635}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d98b86d0c00991c40853871ccfb49bf4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyAttackAnimator
+  enemy: {fileID: 2085802457}
+  animator: {fileID: 2078548889}
+  attackTrigger: Attack
+  attackAnimationInterval: 1.2
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
