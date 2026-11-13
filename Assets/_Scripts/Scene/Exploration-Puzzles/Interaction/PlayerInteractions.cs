@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerInteractions : MonoBehaviour
 {
@@ -12,12 +13,28 @@ public class PlayerInteractions : MonoBehaviour
     [Header("UI")]
     [SerializeField] private TextMeshProUGUI interactionPrompt;
 
+
+
     //inventory
 
+
+
+    //Input
+    [SerializeField] private InputAction input = new InputAction("Interaction", InputActionType.Button, "<Keyboard>/e");
 
     //active when interacting with objects like maps and bonfires
     public bool IsInteracting { get; set; } = false;
     private IInteraction currentInteractable;
+
+
+    private void OnEnable()
+    {
+        input.Enable();
+    }
+    private void OnDisable()
+    {
+        input.Disable();
+    }
 
 
     void Update()
@@ -25,11 +42,12 @@ public class PlayerInteractions : MonoBehaviour
         if (IsInteracting == true)
         {
             interactionPrompt.gameObject.SetActive(false);
+            return;
         }
         //check if there is anything interactable in front of the player
         FindInteraction();
         //if find an interactable and press interact Interact
-        if (currentInteractable != null && Input.GetKeyDown(KeyCode.E))
+        if (currentInteractable != null && input.WasPressedThisFrame())
         {
             currentInteractable.Interact(this);
         }
