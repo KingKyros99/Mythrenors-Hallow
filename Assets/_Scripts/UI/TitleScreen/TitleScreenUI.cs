@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -15,6 +16,12 @@ public class TitleScreenUI : MonoBehaviour
     [SerializeField] private Button newGameButton;
     [SerializeField] private Button settingsButton;
     [SerializeField] private Button quitButton;
+
+    [Header("Credits")]
+    [SerializeField] private Button creditsButton;
+    [SerializeField] private Button creditsBackButton;
+    [SerializeField] private GameObject creditsPanel;
+    [SerializeField] private GameObject mainMenuPanel;
 
     [Header("Continue greyed-out look")]
     [SerializeField] private TMP_Text continueLabel;
@@ -44,10 +51,17 @@ public class TitleScreenUI : MonoBehaviour
     public UnityEvent onContinue = new UnityEvent();
     public UnityEvent onNewGame = new UnityEvent();
 
+    private string clickSfx = "UIClick";
+
     private bool continueAvailable;
     private bool busy;
+    private bool creditsOpen;
 
-    private string clickSfx = "UIClick";
+    private bool MenuBlocked =>
+        busy ||
+        creditsOpen ||
+        (settingsMenu != null && settingsMenu.IsOpen) ||
+        (confirmDialog != null && confirmDialog.IsOpen);
 
     private void Awake()
     {
@@ -62,6 +76,15 @@ public class TitleScreenUI : MonoBehaviour
 
         if (quitButton != null)
             quitButton.onClick.AddListener(OnQuit);
+
+        if (creditsButton != null)
+            creditsButton.onClick.AddListener(OpenCredits);
+
+        if (creditsBackButton != null)
+            creditsBackButton.onClick.AddListener(CloseCredits);
+
+        if (creditsPanel != null)
+            creditsPanel.SetActive(false);
 
         if (fadeToBlack != null)
         {
@@ -79,6 +102,16 @@ public class TitleScreenUI : MonoBehaviour
         SelectFirstButton();
     }
 
+    private void Update()
+    {
+        if (!creditsOpen || busy) return;
+
+        Keyboard keyboard = Keyboard.current;
+
+        if (keyboard != null && keyboard.escapeKey.wasPressedThisFrame)
+            CloseCredits();
+    }
+
     private void OnDestroy()
     {
         if (continueButton != null)
@@ -92,6 +125,12 @@ public class TitleScreenUI : MonoBehaviour
 
         if (quitButton != null)
             quitButton.onClick.RemoveListener(OnQuit);
+
+        if (creditsButton != null)
+            creditsButton.onClick.RemoveListener(OpenCredits);
+
+        if (creditsBackButton != null)
+            creditsBackButton.onClick.RemoveListener(CloseCredits);
     }
 
     public void SetContinueAvailable(bool available)
@@ -111,9 +150,8 @@ public class TitleScreenUI : MonoBehaviour
 
     private void OnContinue()
     {
-        if (busy || !continueAvailable) return;
+        if (MenuBlocked || !continueAvailable) return;
 
-        
         if (onContinue.GetPersistentEventCount() > 0)
         {
             onContinue.Invoke();
@@ -127,7 +165,7 @@ public class TitleScreenUI : MonoBehaviour
 
     private void OnNewGame()
     {
-        if (busy) return;
+        if (MenuBlocked) return;
 
         PlayClick();
 
@@ -159,7 +197,7 @@ public class TitleScreenUI : MonoBehaviour
 
     private void OnSettings()
     {
-        if (busy || settingsMenu == null) return;
+        if (MenuBlocked || settingsMenu == null) return;
 
         PlayClick();
 
@@ -178,10 +216,63 @@ public class TitleScreenUI : MonoBehaviour
         });
     }
 
+    public void OpenCredits()
+    {
+        if (MenuBlocked || creditsPanel == null) return;
+
+        creditsOpen = true;
+
+        if (EventSystem.current != null)
+            EventSystem.current.SetSelectedGameObject(null);
+
+        if (mainMenuPanel != null)
+            mainMenuPanel.SetActive(false);
+
+        creditsPanel.transform.SetAsLastSibling();
+        creditsPanel.SetActive(true);
+
+        if (EventSystem.current != null && creditsBackButton != null)
+        {
+            EventSystem.current.SetSelectedGameObject(
+                creditsBackButton.gameObject
+            );
+        }
+    }
+
+    public void CloseCredits()
+    {
+        if (!creditsOpen || busy) return;
+
+        creditsOpen = false;
+
+        if (EventSystem.current != null)
+            EventSystem.current.SetSelectedGameObject(null);
+
+        if (creditsPanel != null)
+            creditsPanel.SetActive(false);
+
+        if (mainMenuPanel != null)
+            mainMenuPanel.SetActive(true);
+
+        if (EventSystem.current != null &&
+            creditsButton != null &&
+            creditsButton.isActiveAndEnabled &&
+            creditsButton.IsInteractable())
+        {
+            EventSystem.current.SetSelectedGameObject(
+                creditsButton.gameObject
+            );
+        }
+        else
+        {
+            SelectFirstButton();
+        }
+    }
+
     private void OnQuit()
     {
-        if (busy) return;
-        PlayClick();
+        if (MenuBlocked) return;
+
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #else
@@ -198,8 +289,11 @@ public class TitleScreenUI : MonoBehaviour
         if (first == null || !first.interactable)
             first = quitButton;
 
-        if (first != null && first.interactable)
+        if (first != null && first.isActiveAndEnabled &&
+            first.IsInteractable())
+        {
             EventSystem.current.SetSelectedGameObject(first.gameObject);
+        }
     }
 
     private void SetMainMenuVisible(bool visible)
@@ -230,7 +324,6 @@ public class TitleScreenUI : MonoBehaviour
         return false;
     }
 
-    
     public void LoadGameplayWithLoadingScreen()
     {
         if (busy) return;
@@ -238,7 +331,10 @@ public class TitleScreenUI : MonoBehaviour
         busy = true;
         StartCoroutine(FadeAndLoad());
     }
-
+    private void PlayClick()
+    {
+        AudioManger.inst.PlaySFX(clickSfx);
+    }
     private IEnumerator FadeAndLoad()
     {
         if (!CanLoadGameplayScene())
@@ -255,7 +351,6 @@ public class TitleScreenUI : MonoBehaviour
 
         if (loadingPanel != null)
         {
-            // will take away the fade for scenes with a loading panel, but will still fade for scenes without one.
             if (fadeToBlack != null)
             {
                 fadeToBlack.alpha = 0f;
@@ -268,13 +363,11 @@ public class TitleScreenUI : MonoBehaviour
             loadingPanel.transform.SetAsLastSibling();
             loadingPanel.SetActive(true);
 
-            // Allows the loading screen to render before loading starts.
             yield return null;
             yield return null;
         }
         else if (fadeToBlack != null)
         {
-            // this will Keep the original fade for scenes without a loading panel.
             fadeToBlack.blocksRaycasts = true;
 
             float elapsed = 0f;
@@ -347,18 +440,4 @@ public class TitleScreenUI : MonoBehaviour
         busy = false;
         SelectFirstButton();
     }
-
-    [ContextMenu("Reset Continue (testing)")]
-    private void ResetContinueForTesting()
-    {
-        PlayerPrefs.DeleteKey(KeyHasGame);
-        PlayerPrefs.Save();
-        SetContinueAvailable(false);
-    }
-
-    private void PlayClick()
-    {
-        AudioManger.inst.PlaySFX(clickSfx);
-    }
-
 }
