@@ -88,7 +88,7 @@ public class TitleMenuSelector : MonoBehaviour
             if (index < 0) return;
         }
 
-        
+
         if (snapToSelection)
             Canvas.ForceUpdateCanvases();
 
@@ -128,7 +128,7 @@ public class TitleMenuSelector : MonoBehaviour
         Vector3 target = parent.InverseTransformPoint(worldTarget);
         Vector3 position = decoration.localPosition;
 
-        
+
         float targetY =
             target.y -
             decoration.rect.center.y * decoration.localScale.y +
@@ -164,6 +164,13 @@ public class TitleMenuSelector : MonoBehaviour
         }
     }
 
+    private void ClickSound()
+    {
+        if (AudioManger.inst != null)
+        {
+            AudioManger.inst.PlaySFX(clickSfx);
+        }
+    }
     private bool IsAvailable(Button button)
     {
         return button != null &&

@@ -11,6 +11,8 @@ using UnityEngine.UI;
 
 public class SettingsMenuUI : MonoBehaviour
 {
+
+
     [Header("Panel")]
     [SerializeField] private GameObject root;
     [SerializeField] private ConfirmDialog confirmDialog;
@@ -98,6 +100,10 @@ public class SettingsMenuUI : MonoBehaviour
     private bool initialized;
     private float confirmationTimeLeft;
 
+    [Header("MenuAudio")]
+    private string clickSfx = "UIClick";
+    private string hoverSfx = "MenuHover";
+    private string BackSfx = "UIReturn";
     private readonly List<Vector2Int> resolutions =
         new List<Vector2Int>();
 
@@ -265,8 +271,9 @@ public class SettingsMenuUI : MonoBehaviour
         GameSettings.ApplyVideo(saved, brightVolume, darkVolume);
 
         dirty = false;
-
+        AudioManger.inst.PlaySFX(clickSfx);
         ShowApplyConfirmation();
+
         onSettingsApplied.Invoke();
     }
 
@@ -290,7 +297,7 @@ public class SettingsMenuUI : MonoBehaviour
 
         if (dirty)
             RevertPreview();
-
+        AudioManger.inst.PlaySFX(BackSfx);
         Close();
     }
 
@@ -681,10 +688,10 @@ public class SettingsMenuUI : MonoBehaviour
             PreviewLive();
         });
 
-        EventTrigger trigger = s.gameObject.GetComponent<EventTrigger>();
+        EventTrigger trigger = slider.gameObject.GetComponent<EventTrigger>();
         if (trigger == null)
         {
-            trigger = s.gameObject.AddComponent<EventTrigger>();
+            trigger = slider.gameObject.AddComponent<EventTrigger>();
         }
 
         var entry = new EventTrigger.Entry { eventID = EventTriggerType.PointerDown };
@@ -696,9 +703,11 @@ public class SettingsMenuUI : MonoBehaviour
     {
         if (toggle == null) return;
 
-        toggle.onValueChanged.AddListener(
-            _ => MarkDirty()
-        );
+        toggle.onValueChanged.AddListener(_ =>
+        {
+            MarkDirty();
+            PlaySfx(clickSfx);
+        });
     }
 
     private static void SetSlider(
@@ -739,7 +748,7 @@ public class SettingsMenuUI : MonoBehaviour
         }
         AudioManger.inst.PlaySFX(Name);
     }
-    
+
 
 
 }
