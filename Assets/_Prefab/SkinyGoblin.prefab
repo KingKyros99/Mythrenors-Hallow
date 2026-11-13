@@ -684,7 +684,7 @@ Transform:
   m_GameObject: {fileID: 8093452016133282218}
   serializedVersion: 2
   m_LocalRotation: {x: -0.54387707, y: 0.011713099, z: 0.8020662, w: 0.24647592}
-  m_LocalPosition: {x: -0.12620527, y: -0.50401556, z: 0.100484595}
+  m_LocalPosition: {x: 0.0018, y: 0.3471, z: 0.0899}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -819,6 +819,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: c1ebbd44e52d37146851aa382eaf0fa9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 643297853686938273}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: c1ebbd44e52d37146851aa382eaf0fa9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5596051337729266238}
   m_SourcePrefab: {fileID: 100100000, guid: c1ebbd44e52d37146851aa382eaf0fa9, type: 3}
 --- !u!4 &541698903697887548 stripped
 Transform:
@@ -843,6 +846,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyRangedAnimationEvents
   enemy: {fileID: 2606375456179207541}
+--- !u!114 &5596051337729266238
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 923045392853093254}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d42f390781793554ab810fc6fc7d0828, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DamageReactionAnimator
+  characterBase: {fileID: 7168399871018968406}
+  animator: {fileID: 5865002404773907270}
+  statusEffectManager: {fileID: 6082056473961401614}
+  hitTrigger: TakeHit
 --- !u!4 &4162587440009000692 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4164213433230802979, guid: c1ebbd44e52d37146851aa382eaf0fa9, type: 3}

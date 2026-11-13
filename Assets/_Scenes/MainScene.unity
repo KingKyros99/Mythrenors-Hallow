@@ -7271,18 +7271,6 @@ PrefabInstance:
       propertyPath: rangedAttackManager
       value: 
       objectReference: {fileID: 1564851959}
-    - target: {fileID: 3548247103662697803, guid: e1dff99e5f31e2c4a9ca5c6c1b22a09e, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.0018
-      objectReference: {fileID: 0}
-    - target: {fileID: 3548247103662697803, guid: e1dff99e5f31e2c4a9ca5c6c1b22a09e, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.3471
-      objectReference: {fileID: 0}
-    - target: {fileID: 3548247103662697803, guid: e1dff99e5f31e2c4a9ca5c6c1b22a09e, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0.0899
-      objectReference: {fileID: 0}
     - target: {fileID: 4810051179517456004, guid: e1dff99e5f31e2c4a9ca5c6c1b22a09e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 5.709
