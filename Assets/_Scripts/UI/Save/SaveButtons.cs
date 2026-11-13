@@ -2,13 +2,28 @@ using UnityEngine;
 
 public class SaveButtons : MonoBehaviour
 {
+    [SerializeField] private TitleScreenUI titleScreenUI;
+
+    private void Awake()
+    {
+        if (titleScreenUI == null)
+            titleScreenUI = GetComponent<TitleScreenUI>();
+    }
+
     public void Continue()
     {
-        if (SaveManager.Instance != null) SaveManager.Instance.Continue();
+        if (SaveManager.Instance == null || titleScreenUI == null)
+            return;
+
+        if (!SaveManager.Instance.PrepareContinue())
+            return;
+
+        titleScreenUI.LoadGameplayWithLoadingScreen();
     }
 
     public void NewGame()
     {
-        if (SaveManager.Instance != null) SaveManager.Instance.DeleteSave();
+        if (SaveManager.Instance != null)
+            SaveManager.Instance.DeleteSave();
     }
 }
