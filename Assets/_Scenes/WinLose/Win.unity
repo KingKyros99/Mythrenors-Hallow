@@ -669,6 +669,10 @@ MonoBehaviour:
   newGameButton: {fileID: 1532141932}
   settingsButton: {fileID: 0}
   quitButton: {fileID: 218479679}
+  creditsButton: {fileID: 0}
+  creditsBackButton: {fileID: 0}
+  creditsPanel: {fileID: 0}
+  mainMenuPanel: {fileID: 0}
   continueLabel: {fileID: 0}
   normalTextColor: {r: 0.9098039, g: 0.88235295, b: 0.8156863, a: 1}
   disabledTextColor: {r: 0.9098039, g: 0.88235295, b: 0.8156863, a: 0.33333334}
