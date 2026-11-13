@@ -198,6 +198,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &193260375 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: b50d5f780ed24f445922302e1f43371b, type: 3}
+  m_PrefabInstance: {fileID: 1310185995}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &866878940
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -401,24 +406,6 @@ MonoBehaviour:
   Map: {fileID: -2374729819292948683, guid: 58a47c2fe117d294e8054c0daafb3679, type: 3}
   MapPanel: {fileID: 1273834746}
   MapImage: {fileID: 933281990}
-  closeMap:
-    m_Name: CloseMap
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 9a649938-ee2b-4b7c-ba17-453cff29be79
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 
-      m_Id: 4ec2c1b7-1409-43ba-a94b-68c3c1378c08
-      m_Path: <Keyboard>/escape
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: CloseMap
-      m_Flags: 0
-    m_Flags: 0
-    m_Priority: 0
 --- !u!1 &933281988
 GameObject:
   m_ObjectHideFlags: 0
@@ -630,20 +617,84 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -6443726650808615844, guid: b50d5f780ed24f445922302e1f43371b, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: b50d5f780ed24f445922302e1f43371b, type: 3}
       propertyPath: m_Name
       value: dungeonDoor
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: b50d5f780ed24f445922302e1f43371b, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 4173694682231054678, guid: b50d5f780ed24f445922302e1f43371b, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 4423045620967985251, guid: b50d5f780ed24f445922302e1f43371b, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 6464790103353768797, guid: b50d5f780ed24f445922302e1f43371b, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b50d5f780ed24f445922302e1f43371b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1310186000}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b50d5f780ed24f445922302e1f43371b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1310185999}
   m_SourcePrefab: {fileID: 100100000, guid: b50d5f780ed24f445922302e1f43371b, type: 3}
 --- !u!4 &1310185996 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: b50d5f780ed24f445922302e1f43371b, type: 3}
   m_PrefabInstance: {fileID: 1310185995}
   m_PrefabAsset: {fileID: 0}
+--- !u!65 &1310185999
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 193260375}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.0145699745, y: 0.038878825, z: 0.04147411}
+  m_Center: {x: -0.000022836786, y: 0.000000010044998, z: 0.020737058}
+--- !u!114 &1310186000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 193260375}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c41c0ab5f9351434fadab2c151cc8968, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Door
+  isLocked: 1
+  keyNeeded: DungeonKey
+  keepKey: 1
+  doorCollider: {fileID: 1310185999}
+  objectiveBoard: {fileID: 0}
 --- !u!1 &1385914263
 GameObject:
   m_ObjectHideFlags: 0
@@ -794,6 +845,18 @@ PrefabInstance:
     - target: {fileID: 1528781858860246099, guid: 9a086d9d50f6f984facd1f600ed73b38, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6400071033768800506, guid: 9a086d9d50f6f984facd1f600ed73b38, type: 3}
+      propertyPath: allKeys.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6400071033768800506, guid: 9a086d9d50f6f984facd1f600ed73b38, type: 3}
+      propertyPath: 'allKeys.Array.data[0]'
+      value: DungeonKey
+      objectReference: {fileID: 0}
+    - target: {fileID: 6400071033768800506, guid: 9a086d9d50f6f984facd1f600ed73b38, type: 3}
+      propertyPath: 'allKeys.Array.data[1]'
+      value: GregKey
       objectReference: {fileID: 0}
     - target: {fileID: 6692306801720775169, guid: 9a086d9d50f6f984facd1f600ed73b38, type: 3}
       propertyPath: m_Name

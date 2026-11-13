@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Text;
 using TMPro;
-public class BossDoor : MonoBehaviour, IInteraction
+public class Door : MonoBehaviour, IInteraction
 {
     [Header("Locked")]
     [SerializeField] private bool isLocked;
