@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 145bae762d8de8f4c8fb1b284128fae7
+guid: da4aa907139cedc4abc85f4735a4181b
 ShaderImporter:
   externalObjects: {}
   defaultTextures: []
@@ -7,10 +7,3 @@ ShaderImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 173450
-  packageName: Sword slashes PRO
-  packageVersion: 3.0
-  assetPath: Assets/Hovl Studio/HSFiles/Shaders/DissolveNoise.shader
-  uploadId: 865410

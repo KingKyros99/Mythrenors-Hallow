@@ -51,6 +51,8 @@ public class TitleScreenUI : MonoBehaviour
     public UnityEvent onContinue = new UnityEvent();
     public UnityEvent onNewGame = new UnityEvent();
 
+    private string clickSfx = "UIClick";
+
     private bool continueAvailable;
     private bool busy;
     private bool creditsOpen;
@@ -165,6 +167,8 @@ public class TitleScreenUI : MonoBehaviour
     {
         if (MenuBlocked) return;
 
+        PlayClick();
+
         if (continueAvailable && confirmDialog != null)
         {
             confirmDialog.Show(
@@ -194,6 +198,8 @@ public class TitleScreenUI : MonoBehaviour
     private void OnSettings()
     {
         if (MenuBlocked || settingsMenu == null) return;
+
+        PlayClick();
 
         SetMainMenuVisible(false);
 
@@ -325,7 +331,10 @@ public class TitleScreenUI : MonoBehaviour
         busy = true;
         StartCoroutine(FadeAndLoad());
     }
-
+    private void PlayClick()
+    {
+        AudioManger.inst.PlaySFX(clickSfx);
+    }
     private IEnumerator FadeAndLoad()
     {
         if (!CanLoadGameplayScene())

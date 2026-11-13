@@ -11,6 +11,8 @@ using UnityEngine.UI;
 
 public class SettingsMenuUI : MonoBehaviour
 {
+
+
     [Header("Panel")]
     [SerializeField] private GameObject root;
     [SerializeField] private ConfirmDialog confirmDialog;
@@ -98,6 +100,10 @@ public class SettingsMenuUI : MonoBehaviour
     private bool initialized;
     private float confirmationTimeLeft;
 
+    [Header("MenuAudio")]
+    private string clickSfx = "UIClick";
+    private string hoverSfx = "MenuHover";
+    private string BackSfx = "UIReturn";
     private readonly List<Vector2Int> resolutions =
         new List<Vector2Int>();
 
@@ -265,8 +271,9 @@ public class SettingsMenuUI : MonoBehaviour
         GameSettings.ApplyVideo(saved, brightVolume, darkVolume);
 
         dirty = false;
-
+        AudioManger.inst.PlaySFX(clickSfx);
         ShowApplyConfirmation();
+
         onSettingsApplied.Invoke();
     }
 
@@ -290,7 +297,7 @@ public class SettingsMenuUI : MonoBehaviour
 
         if (dirty)
             RevertPreview();
-
+        AudioManger.inst.PlaySFX(BackSfx);
         Close();
     }
 
@@ -680,15 +687,27 @@ public class SettingsMenuUI : MonoBehaviour
             MarkDirty();
             PreviewLive();
         });
+
+        EventTrigger trigger = slider.gameObject.GetComponent<EventTrigger>();
+        if (trigger == null)
+        {
+            trigger = slider.gameObject.AddComponent<EventTrigger>();
+        }
+
+        var entry = new EventTrigger.Entry { eventID = EventTriggerType.PointerDown };
+        entry.callback.AddListener(_ => PlaySfx(clickSfx));
+        trigger.triggers.Add(entry);
     }
 
     private void AddToggle(Toggle toggle)
     {
         if (toggle == null) return;
 
-        toggle.onValueChanged.AddListener(
-            _ => MarkDirty()
-        );
+        toggle.onValueChanged.AddListener(_ =>
+        {
+            MarkDirty();
+            PlaySfx(clickSfx);
+        });
     }
 
     private static void SetSlider(
@@ -720,4 +739,16 @@ public class SettingsMenuUI : MonoBehaviour
             ? Mathf.RoundToInt(value).ToString()
             : value.ToString("0.0");
     }
+
+    private void PlaySfx(string Name)
+    {
+        if (AudioManger.inst == null)
+        {
+            return;
+        }
+        AudioManger.inst.PlaySFX(Name);
+    }
+
+
+
 }

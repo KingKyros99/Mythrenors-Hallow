@@ -10,6 +10,10 @@ public class TitleMenuSelector : MonoBehaviour
     [SerializeField] private float slideSpeed = 14f;
     [SerializeField] private float lineOffsetY = -20f;
 
+    [SerializeField] private string clickSfx;
+    [SerializeField] private string hoverSfx;
+
+
     private int index = -1;
     private GameObject lastSelected;
     private bool snapToSelection;
@@ -19,6 +23,17 @@ public class TitleMenuSelector : MonoBehaviour
         lastSelected = null;
         snapToSelection = true;
         SelectFirst();
+    }
+
+    private void Awake()
+    {
+        for (int i = 0; i < buttons.Length; i++)
+        {
+            if (buttons[i] != null)
+            {
+                buttons[i].onClick.AddListener(ClickSound);
+            }
+        }
     }
 
     public void SelectFirst()
@@ -48,6 +63,11 @@ public class TitleMenuSelector : MonoBehaviour
         }
 
         index = i;
+
+        if (AudioManger.inst != null)
+        {
+            AudioManger.inst.PlaySFX(hoverSfx);
+        }
     }
 
     private void LateUpdate()
@@ -68,7 +88,7 @@ public class TitleMenuSelector : MonoBehaviour
             if (index < 0) return;
         }
 
-        
+
         if (snapToSelection)
             Canvas.ForceUpdateCanvases();
 
@@ -108,7 +128,7 @@ public class TitleMenuSelector : MonoBehaviour
         Vector3 target = parent.InverseTransformPoint(worldTarget);
         Vector3 position = decoration.localPosition;
 
-        
+
         float targetY =
             target.y -
             decoration.rect.center.y * decoration.localScale.y +
@@ -144,6 +164,13 @@ public class TitleMenuSelector : MonoBehaviour
         }
     }
 
+    private void ClickSound()
+    {
+        if (AudioManger.inst != null)
+        {
+            AudioManger.inst.PlaySFX(clickSfx);
+        }
+    }
     private bool IsAvailable(Button button)
     {
         return button != null &&
