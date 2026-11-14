@@ -13,6 +13,10 @@ MonoBehaviour:
   m_Name: Basic Bow Attack
   m_EditorClassIdentifier: Assembly-CSharp::RangedAttackData
   attackName: Basic Bow Attack
+  rangeEffect: {fileID: 8300000, guid: ff70faeb337f68547a97fbd6fe30ff47, type: 3}
+  volume: 3
+  speed: 4
+  randPitch: 1
   description: 
   damage:
     BaseDamage: 8

@@ -18703,7 +18703,7 @@ MonoBehaviour:
     randomPitch: 0
   - Name: SwordAttack
     clip: {fileID: 0}
-    volume: 0
+    volume: 1
     randomPitch: 1
   - Name: SpellAttack
     clip: {fileID: 0}
@@ -18736,7 +18736,7 @@ MonoBehaviour:
   - Name: Lose
     clip: {fileID: 8300000, guid: b099627283e2212449604257c5872216, type: 3}
   transitionTime: 3
-  volume: 5
+  volume: 3
 --- !u!4 &1643089045
 Transform:
   m_ObjectHideFlags: 0
