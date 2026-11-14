@@ -91,6 +91,7 @@ public class SaveManager : MonoBehaviour
             health = player.CurrentHealth,
             mana = player.CurrentMana,
             stamina = player.CurrentStamina
+            
         };
 
         if (spawnPoint != null)
