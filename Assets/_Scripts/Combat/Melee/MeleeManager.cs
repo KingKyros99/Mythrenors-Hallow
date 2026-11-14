@@ -137,8 +137,11 @@ public class MeleeManager : MonoBehaviour
         // Resolve damage through the existing combat system.
         AttackOutcome outcome = CombatManager.ResolveAttack(attacker, validTarget, attackData.damage);
 
+        // DEBUG: Verify the actual combat outcome.
+        Debug.Log($"MELEE RESULT | " + $"Attacker: {attacker.CombatTransform.name} | " + $"Defender: {validTarget.CombatTransform.name} | " + $"Outcome: {outcome}");
+
         // Show impact feedback when the attack connects.
-        if (outcome == AttackOutcome.HIT || outcome == AttackOutcome.BLOCKED || outcome == AttackOutcome.KILLED)
+        if (outcome == AttackOutcome.HIT || outcome == AttackOutcome.KILLED)
         {
             PlayHitVfx(attacker, validTarget, attackData);
         }
