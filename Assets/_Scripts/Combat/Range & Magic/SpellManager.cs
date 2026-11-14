@@ -118,7 +118,7 @@ public class SpellManager : MonoBehaviour
 
             return false;
         }
-
+        PlayerSfx(spellData.spellEffect, spellData);
         // Begin the cooldown after spawning.
         nextCastTimes[spellData] = Time.time + Mathf.Max(0f, spellData.cooldown);
 
@@ -169,6 +169,7 @@ public class SpellManager : MonoBehaviour
             return false;
         }
 
+        PlayerSfx(spellData.spellEffect, spellData);
         // Begin cooldown after a successful cast.
         nextCastTimes[spellData] = Time.time + Mathf.Max(0f, spellData.cooldown);
 
@@ -203,4 +204,15 @@ public class SpellManager : MonoBehaviour
 
         nextCastTimes.Remove(spellData);
     }
+    private void PlayerSfx(AudioClip clip, SpellData spellData)
+    {
+        if (AudioManger.inst == null || clip == null || spellData == null)
+        {
+            return;
+        }
+        AudioManger.inst.PlaySFX(clip, spellData.volume, spellData.randPitch, spellData.speed);
+    }
+
 }
+
+

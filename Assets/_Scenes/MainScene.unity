@@ -3635,6 +3635,30 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player_Sorcerer
       objectReference: {fileID: 0}
+    - target: {fileID: 7641387063016503771, guid: 9a086d9d50f6f984facd1f600ed73b38, type: 3}
+      propertyPath: volume
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7641387063016503771, guid: 9a086d9d50f6f984facd1f600ed73b38, type: 3}
+      propertyPath: LandClip
+      value: 
+      objectReference: {fileID: 8300000, guid: c06c5c05c7abef243bd95f2025319e86, type: 3}
+    - target: {fileID: 7641387063016503771, guid: 9a086d9d50f6f984facd1f600ed73b38, type: 3}
+      propertyPath: footStep
+      value: 
+      objectReference: {fileID: 8300000, guid: ec07218b4644cd44cb006a435282b5e8, type: 3}
+    - target: {fileID: 7641387063016503771, guid: 9a086d9d50f6f984facd1f600ed73b38, type: 3}
+      propertyPath: jumpClip
+      value: 
+      objectReference: {fileID: 8300000, guid: ab88561422588984793b29e0588410f7, type: 3}
+    - target: {fileID: 7641387063016503771, guid: 9a086d9d50f6f984facd1f600ed73b38, type: 3}
+      propertyPath: walkIntervals
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7641387063016503771, guid: 9a086d9d50f6f984facd1f600ed73b38, type: 3}
+      propertyPath: sprintIntervals
+      value: 0.2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
