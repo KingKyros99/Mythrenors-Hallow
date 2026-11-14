@@ -2185,7 +2185,7 @@ Transform:
   m_GameObject: {fileID: 320547073}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -9.1814, y: 0.0001, z: 12.13353}
+  m_LocalPosition: {x: -10, y: 19, z: 12.13353}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -31021,6 +31021,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: Dungeon
       objectReference: {fileID: 0}
+    - target: {fileID: 7317280190878213896, guid: 22a4691920ee9f842937e80f05d98ed3, type: 3}
+      propertyPath: volume
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7317280190878213896, guid: 22a4691920ee9f842937e80f05d98ed3, type: 3}
+      propertyPath: elevatorId
+      value: elevator1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7317280190878213896, guid: 22a4691920ee9f842937e80f05d98ed3, type: 3}
+      propertyPath: stopEffect
+      value: 
+      objectReference: {fileID: 8300000, guid: 7c93ac24b21c94749bef8c813a6501eb, type: 3}
+    - target: {fileID: 7317280190878213896, guid: 22a4691920ee9f842937e80f05d98ed3, type: 3}
+      propertyPath: elevatorEffect
+      value: 
+      objectReference: {fileID: 8300000, guid: 7c93ac24b21c94749bef8c813a6501eb, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
