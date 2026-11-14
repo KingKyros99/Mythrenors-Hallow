@@ -68,7 +68,7 @@ public class Door : MonoBehaviour, IInteraction
     }
     public string PromptInteraction(PlayerInteractions interaction)
     {
-        return interaction.Keys.Contains(keyNeeded) ? "Unlock Boss Gate" : $"Locked ({keyNeeded} Required)";
+        return interaction.Keys.Contains(keyNeeded) ? "Unlock Door" : $"Locked ({keyNeeded} Required)";
     }
     public bool CanInteract(PlayerInteractions interaction)
     {
