@@ -48,7 +48,7 @@ public class Enemy : CharacterBase
     private int currentPatrolIndex;
     private float nextRangedAttackCheck;
 
-    public BossDoor bossDoor;
+    public Door bossDoor;
     //Combat Audio
     [SerializeField] private bool CombatMusic = true;
     private bool isAggroed;
