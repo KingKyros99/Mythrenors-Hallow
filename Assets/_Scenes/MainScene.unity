@@ -3308,19 +3308,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 457954289085365809, guid: c7f8b6ead57ae6a4c92d59b9cfbb1ac5, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.9918144
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 457954289085365809, guid: c7f8b6ead57ae6a4c92d59b9cfbb1ac5, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 457954289085365809, guid: c7f8b6ead57ae6a4c92d59b9cfbb1ac5, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.1276881
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 457954289085365809, guid: c7f8b6ead57ae6a4c92d59b9cfbb1ac5, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 457954289085365809, guid: c7f8b6ead57ae6a4c92d59b9cfbb1ac5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -3342,6 +3342,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: TankGoblin (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 6985937960785868666, guid: c7f8b6ead57ae6a4c92d59b9cfbb1ac5, type: 3}
+      propertyPath: meleeManager
+      value: 
+      objectReference: {fileID: 1564851961}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -9273,11 +9277,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a23bc9ab45ca4e40b9a25c46a2e381e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CoreFunctions
---- !u!1 &1565036635 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 9166200667505185630, guid: c87c5b1d9ab41464392b53f41442d8f9, type: 3}
-  m_PrefabInstance: {fileID: 2085802442}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1590706139
 GameObject:
   m_ObjectHideFlags: 0
@@ -13642,17 +13641,13 @@ PrefabInstance:
     m_TransformParent: {fileID: 320547074}
     m_Modifications:
     - target: {fileID: 29828823718377569, guid: c87c5b1d9ab41464392b53f41442d8f9, type: 3}
-      propertyPath: chaseSpeed
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 29828823718377569, guid: c87c5b1d9ab41464392b53f41442d8f9, type: 3}
       propertyPath: meleeManager
       value: 
       objectReference: {fileID: 1564851961}
-    - target: {fileID: 29828823718377569, guid: c87c5b1d9ab41464392b53f41442d8f9, type: 3}
-      propertyPath: leashDistance
-      value: 15
-      objectReference: {fileID: 0}
+    - target: {fileID: 3748231385129651879, guid: c87c5b1d9ab41464392b53f41442d8f9, type: 3}
+      propertyPath: meleeManager
+      value: 
+      objectReference: {fileID: 1564851961}
     - target: {fileID: 4701428713156202941, guid: c87c5b1d9ab41464392b53f41442d8f9, type: 3}
       propertyPath: m_LocalPosition.x
       value: 8.496
@@ -13697,23 +13692,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Goblin_Leader
       objectReference: {fileID: 0}
-    - target: {fileID: 9166200667505185630, guid: c87c5b1d9ab41464392b53f41442d8f9, type: 3}
-      propertyPath: m_TagString
-      value: Boss
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 9166200667505185630, guid: c87c5b1d9ab41464392b53f41442d8f9, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2085802456}
-    - targetCorrespondingSourceObject: {fileID: 9166200667505185630, guid: c87c5b1d9ab41464392b53f41442d8f9, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2085802455}
-    - targetCorrespondingSourceObject: {fileID: 9166200667505185630, guid: c87c5b1d9ab41464392b53f41442d8f9, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2085802454}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c87c5b1d9ab41464392b53f41442d8f9, type: 3}
 --- !u!4 &2085802443 stripped
 Transform:
@@ -13725,95 +13707,12 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 842141354301041000, guid: c87c5b1d9ab41464392b53f41442d8f9, type: 3}
   m_PrefabInstance: {fileID: 2085802442}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1565036635}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f5ef732a09a8f3e4e83d610f12ac2b21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterBase
---- !u!114 &2085802454
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1565036635}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9a4c4208672761044a10cd0178acbdd8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Enemy
-  charName: 
-  maxHealth: 100
-  maxMana: 70
-  maxStamina: 50
-  staminaRecoveryRate: 15
-  staminaRecoveryDelay: 1
-  attack: 2
-  defense: 2
-  critChance: 2
-  critMult: 1.1
-  dodgeChance: 2
-  mStatusResistance: 0
-  mCritResistance: 0
-  leashDistance: 20
-  attackRange: 2
-  targetingData: {fileID: 11400000, guid: b23bcc3549ba11e45bc1b3ebfd07fd04, type: 2}
-  meleeManager: {fileID: 1564851961}
-  meleeAttack: {fileID: 11400000, guid: f5aa5daf00a22414d96b45847423be69, type: 2}
-  attackCheckInterval: 0.2
-  canPatrol: 0
-  patrolPoints: []
-  patrolSpeed: 2
-  chaseSpeed: 6
-  returnSpeed: 3
-  rangedAttackManager: {fileID: 0}
-  rangedAttack: {fileID: 0}
-  projectileSpawnPoint: {fileID: 0}
-  rangedAttackRange: 12
-  bossDoor: {fileID: 0}
-  CombatMusic: 1
-  currentState: 0
---- !u!114 &2085802455
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1565036635}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 63c3257d895022149a2e6af6e342a43b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyController
-  moveSpeed: 3
-  gravity: -20
-  terminalVelocity: -30
---- !u!143 &2085802456
-CharacterController:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1565036635}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Height: 0.5
-  m_Radius: 0.4606933
-  m_SlopeLimit: 45
-  m_StepOffset: 0.3
-  m_SkinWidth: 0.08
-  m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
