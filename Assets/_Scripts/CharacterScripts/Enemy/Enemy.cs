@@ -367,8 +367,8 @@ public class Enemy : CharacterBase
     protected virtual void OnAttack()
     {
         StopMoving();
-        MeleeAttackTarget();
         FaceTarget();
+        MeleeAttackTarget();
     }
 
     protected virtual void OnRangedAttack()
