@@ -13,6 +13,9 @@ public class CharacterBase : MonoBehaviour
     // Notifies other systems when health is reduced.
     public event System.Action<int> OnDamageTaken;
 
+    // Notifies animation systems when direct damage is received.
+    public event System.Action<int> OnDirectDamageTaken;
+
     protected virtual void Awake()
     {
         health = maxHealth;
@@ -31,7 +34,7 @@ public class CharacterBase : MonoBehaviour
     public int CurrentHealth => health;
     public int MaxHealth => maxHealth;
 
-    public void TakeDamage(int amount)
+    public void TakeDamage(int amount, bool isStatusDamage = false)
     {
         if (amount <= 0 || mIsDead)
         {
@@ -57,6 +60,11 @@ public class CharacterBase : MonoBehaviour
         if (actualDamage > 0)
         {
             OnDamageTaken?.Invoke(actualDamage);
+
+            if (!isStatusDamage)
+            {
+                OnDirectDamageTaken?.Invoke(actualDamage);
+            }
         }
     }
 
