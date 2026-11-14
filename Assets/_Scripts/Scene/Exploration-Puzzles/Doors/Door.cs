@@ -9,9 +9,20 @@ public class Door : MonoBehaviour, IInteraction
     [SerializeField] private string keyNeeded;
     [SerializeField] private bool keepKey = false;
 
+    [Header("Dungeon Door Open")]
+    [SerializeField] private Transform hinge;
+    [SerializeField] private float angle;
+    [SerializeField] private float speed;
+
     [SerializeField] private Collider doorCollider;
     [SerializeField] private TMP_Text objectiveBoard;
+
     private bool isDoorOpen;
+
+    private Quaternion closedRot;
+    private Quaternion openRot;
+
+
 
 
     private void Awake()
@@ -26,12 +37,26 @@ public class Door : MonoBehaviour, IInteraction
 
     void Start()
     {
+        if (hinge == null)
+        {
+            hinge = transform;
+        }
+
+        closedRot = hinge.localRotation;
+        openRot = closedRot * Quaternion.Euler(0f, 0f, angle);
+
+
         ObjectiveBoard();
         
     }
 
     private void Update()
     {
+        if (hinge != null)
+        {
+            Quaternion targetRot = isDoorOpen ? openRot : closedRot;
+            hinge.localRotation = Quaternion.Slerp(hinge.localRotation, targetRot, Time.deltaTime * speed);
+        }
 
         if (isDoorOpen)
         {
@@ -62,10 +87,7 @@ public class Door : MonoBehaviour, IInteraction
             {
                 interaction.Keys.Remove(keyNeeded);
             }
-            if (doorCollider != null)
-            {
-                doorCollider.enabled = false;
-            }
+            DoorOpen();
         }
     }
 
