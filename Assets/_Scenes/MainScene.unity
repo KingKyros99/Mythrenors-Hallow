@@ -7272,6 +7272,9 @@ MonoBehaviour:
   isLocked: 1
   keyNeeded: GregKey
   keepKey: 1
+  hinge: {fileID: 0}
+  angle: 0
+  speed: 0
   doorCollider: {fileID: 1105519620}
   objectiveBoard: {fileID: 1113653443}
 --- !u!1001 &1308512659
