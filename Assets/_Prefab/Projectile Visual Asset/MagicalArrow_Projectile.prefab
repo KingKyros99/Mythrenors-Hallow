@@ -112,8 +112,8 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 3
       minMaxState: 3
-      scalar: 0.35
-      minScalar: 0.2
+      scalar: 0.45
+      minScalar: 0.3
       maxCurve:
         serializedVersion: 2
         m_Curve: []
@@ -211,8 +211,8 @@ ParticleSystem:
     startSize:
       serializedVersion: 3
       minMaxState: 3
-      scalar: 0.15
-      minScalar: 0.08
+      scalar: 0.2
+      minScalar: 0.12
       maxCurve:
         serializedVersion: 2
         m_Curve: []
@@ -2385,6 +2385,18 @@ PrefabInstance:
     m_TransformParent: {fileID: 1173161236032507852}
     m_Modifications:
     - target: {fileID: 3730147865020604577, guid: ad1ae1938a2039e4292dd5278d0b7781, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3730147865020604577, guid: ad1ae1938a2039e4292dd5278d0b7781, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3730147865020604577, guid: ad1ae1938a2039e4292dd5278d0b7781, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3730147865020604577, guid: ad1ae1938a2039e4292dd5278d0b7781, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -2431,7 +2443,7 @@ PrefabInstance:
     - target: {fileID: 7699398815087320767, guid: ad1ae1938a2039e4292dd5278d0b7781, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 3dc8abd3422c29c479c6bb6c1935108f, type: 2}
+      objectReference: {fileID: 2100000, guid: 5acce1f2b51a9c64baa41fe711e3f321, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

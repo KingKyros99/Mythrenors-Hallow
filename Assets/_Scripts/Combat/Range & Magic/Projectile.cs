@@ -233,6 +233,12 @@ public class Projectile : MonoBehaviour
         {
             Debug.Log($"{name} hit environment: {hit.name}");
 
+            WallPuzzle puzzle = hit.GetComponentInParent<WallPuzzle>();
+            if (puzzle != null)
+            {
+                puzzle.ProjectileHit(gameObject);
+            }
+
             SpawnImpactVfx(
                 projectileData.environmentImpactVfx,
                 hit);

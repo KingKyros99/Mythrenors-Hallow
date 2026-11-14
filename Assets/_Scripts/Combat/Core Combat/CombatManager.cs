@@ -28,6 +28,12 @@ public enum AttackOutcome
 
 public static class CombatManager
 {
+    // PURPOSE:
+    // Notifies other systems when an attack is blocked.
+    // Used for defensive visual and audio feedback.
+    public static event System.Action<ICombatEntity, ICombatEntity>
+        OnAttackBlocked;
+
     //  PURPOSE:
     //  Calculates damage from one Entity to another.
     //
@@ -140,6 +146,9 @@ public static class CombatManager
 
         // Blocking reduces damage; it does not negate the attack.
         if (blocked)
+            // Notify visual & audio systems about the block.
+            OnAttackBlocked?.Invoke(attacker, defender);
+
             return AttackOutcome.BLOCKED;
 
         return AttackOutcome.HIT;
