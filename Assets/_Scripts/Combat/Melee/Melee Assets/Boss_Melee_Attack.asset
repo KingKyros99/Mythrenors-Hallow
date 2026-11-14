@@ -28,6 +28,6 @@ MonoBehaviour:
   swingVfxOffset: {x: 0.25, y: 0.75, z: 1}
   swingVfxRotationOffset: {x: 0, y: 0, z: 0}
   swingVfxLifetime: 2
-  hitVfxPrefab: {fileID: 8616406381557508272, guid: 88afdd47422b56c48a856ca4a768cabf, type: 3}
+  hitVfxPrefab: {fileID: 0}
   hitVfxRotationOffset: {x: 0, y: 0, z: 0}
   hitVfxLifetime: 2
