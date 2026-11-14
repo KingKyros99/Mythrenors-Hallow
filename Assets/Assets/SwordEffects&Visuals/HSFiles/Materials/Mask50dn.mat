@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Mask50dn
-  m_Shader: {fileID: 4800000, guid: 145bae762d8de8f4c8fb1b284128fae7, type: 3}
+  m_Shader: {fileID: 4800000, guid: da4aa907139cedc4abc85f4735a4181b, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -112,3 +112,4 @@ Material:
     - _NoisespeedXYEmissonZPowerW: {r: 0.5, g: 0, b: 8, a: 1}
     - _SpeedMainTexUVNoiseZW: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1
