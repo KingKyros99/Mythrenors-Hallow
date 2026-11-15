@@ -105,7 +105,7 @@ public class RangedAttackManager : MonoBehaviour
         {
             return false;
         }
-
+        PlayerSfx(attackData.rangeEffect, attackData);
         // Start the attack cooldown after spawning.
         nextAttackTimes[attackData] = Time.time + Mathf.Max(0f, attackData.cooldown);
 
@@ -144,7 +144,7 @@ public class RangedAttackManager : MonoBehaviour
         {
             return false;
         }
-
+        PlayerSfx(attackData.rangeEffect, attackData);
         // Begin the cooldown after successfully firing.
         nextAttackTimes[attackData] = Time.time + Mathf.Max(0f, attackData.cooldown);
 
@@ -180,4 +180,15 @@ public class RangedAttackManager : MonoBehaviour
 
         nextAttackTimes.Remove(attackData);
     }
+
+
+    private void PlayerSfx(AudioClip clip, RangedAttackData attackData)
+    {
+        if (AudioManger.inst == null || clip == null || attackData == null)
+        {
+            return;
+        }
+        AudioManger.inst.PlaySFX(clip, attackData.volume, attackData.randPitch, attackData.speed);
+    }
+
 }

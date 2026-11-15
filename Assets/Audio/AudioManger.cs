@@ -1,4 +1,3 @@
-using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -48,7 +47,7 @@ public class AudioManger : MonoBehaviour
     private AudioClip audioClip;
 
     private List<AudioSource> sfxList = new List<AudioSource>();
-    
+
 
     private void Awake()
     {
@@ -79,7 +78,7 @@ public class AudioManger : MonoBehaviour
             source.loop = false;
             source.playOnAwake = false;
             sfxList.Add(source);
-            
+
         }
 
 
@@ -222,17 +221,18 @@ public class AudioManger : MonoBehaviour
         }
     }
 
-    public void PlaySFX(AudioClip clip, float volume, bool randomPitch)
+    public void PlaySFX(AudioClip clip, float volume, bool randomPitch, float speed = 1f)
     {
         if (clip == null)
         {
             return;
         }
         AudioSource source = GetSFXSource();
-        sfxSource.pitch = randomPitch ? Random.Range(0.6f, 1.0f) : 1f;
+        source.volume = 1f;
+        source.pitch = randomPitch ? Random.Range(0.6f, 1.0f) : 1f;
         float finalVolume = Mathf.Clamp01(volume) * sfxVolume;
-        sfxSource.clip = clip;
-        sfxSource.PlayOneShot(clip, finalVolume);
+        source.pitch = randomPitch ? speed * Random.Range(0.9f, 1.1f) : speed;
+        source.PlayOneShot(clip, finalVolume);
     }
 
     private AudioSource GetSFXSource()
@@ -241,7 +241,7 @@ public class AudioManger : MonoBehaviour
         {
             if (source.isPlaying == false)
             {
-                return source; 
+                return source;
             }
         }
         return sfxList[0];

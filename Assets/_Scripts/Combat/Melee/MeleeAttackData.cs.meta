@@ -1,2 +1,20 @@
 fileFormatVersion: 2
 guid: 57afdef35d7ab4844924e27e284540c2
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - SwingEffect: {fileID: 8300000, guid: 13657ef681b231244a8e0cf2200217ca, type: 3}
+  - hitEffect: {fileID: 8300000, guid: 2490b8d75f3c3204889819519159337b, type: 3}
+  - blockEffect: {fileID: 8300000, guid: b937a8a51f20dbb4a83784130a78bcab, type: 3}
+  - missedEffect: {fileID: 8300000, guid: 1320d50efb142fb4a94d9e97a0a2c41f, type: 3}
+  - deathEffect: {fileID: 8300000, guid: f57ae971a30861c409a47201c3d5b9e0, type: 3}
+  - targetingData: {instanceID: 0}
+  - statusEffect: {instanceID: 0}
+  - swingVfxPrefab: {instanceID: 0}
+  - hitVfxPrefab: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
