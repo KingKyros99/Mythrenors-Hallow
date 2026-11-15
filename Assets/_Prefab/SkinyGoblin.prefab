@@ -336,6 +336,7 @@ GameObject:
   - component: {fileID: 211165824383390479}
   - component: {fileID: 4428287413482958629}
   - component: {fileID: 2598486098114893555}
+  - component: {fileID: 8099755102309294147}
   m_Layer: 3
   m_Name: SkinyGoblin
   m_TagString: Untagged
@@ -560,7 +561,7 @@ MonoBehaviour:
   dodgeChance: 2
   mStatusResistance: 0
   mCritResistance: 0
-  leashDistance: 15
+  leashDistance: 10
   attackRange: 2
   targetingData: {fileID: 11400000, guid: 129c46c6068755f46961a32dafb5d0e7, type: 2}
   meleeManager: {fileID: 0}
@@ -574,7 +575,7 @@ MonoBehaviour:
   rangedAttackManager: {fileID: 0}
   rangedAttack: {fileID: 11400000, guid: 420628d0876259e41ba700d30b29fb56, type: 2}
   projectileSpawnPoint: {fileID: 3548247103662697803}
-  rangedAttackRange: 12
+  rangedAttackRange: 13
   useAnimatedMelee: 0
   meleeAttackAnimator: {fileID: 0}
   useAnimatedRanged: 1
