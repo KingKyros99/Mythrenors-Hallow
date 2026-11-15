@@ -44,15 +44,17 @@ public class MovementController : MonoBehaviour
     [Header("Audio")]
     [SerializeField] private AudioClip footStep;
     [SerializeField] private AudioClip jumpClip;
-    [SerializeField] private AudioClip LandClip;
+    //[SerializeField] private AudioClip LandClip;
     [SerializeField] private float walkIntervals;
     [SerializeField] private float sprintIntervals;
     [SerializeField] private float volume;
     [SerializeField] private float jumpDelay;
+    private float airTime;
     private float stepTimer;
     private bool wasGrounded;
     private bool useJumpClip;
     private float jumpTime;
+    private bool hasJumped;
 
     private Vector3 aiMoveDirection;
     private float aiMoveSpeed = -1f;
@@ -154,11 +156,13 @@ public class MovementController : MonoBehaviour
         {
             return;
         }
-        if (!wasGrounded && isGrounded && LandClip != null)
+        if (!wasGrounded && isGrounded && jumpTime >= airTime)
         {
-            AudioManger.inst.PlaySFX(LandClip, volume, true, 0.9f);
-            stepTimer = walkIntervals;
-
+            if (hasJumped || velocity.y < -6f)
+            {
+                stepTimer = walkIntervals;
+            }
+            hasJumped = false;
         }
         wasGrounded = isGrounded;
 
@@ -196,20 +200,15 @@ public class MovementController : MonoBehaviour
             //keeps the player grounded while moveing even on slope's
             if (velocity.y <= 0f)
             {
-                velocity.y = -1f;
+                velocity.y = -0.5f;
             }
             jumpTime = 0;
-            useJumpClip = false;
+            
 
         }
         else
         {
             jumpTime += Time.deltaTime;
-            if (!useJumpClip && jumpTime >= jumpDelay)
-            {
-                AudioManger.inst.PlaySFX(jumpClip, volume * 3, true, 1.0f);
-                useJumpClip = true;
-            }
         }
         bool inCoyoteTime = Time.time - jumpTimer <= coyoteTime;
         if (!inCoyoteTime && jumpCount == 0)
@@ -221,7 +220,6 @@ public class MovementController : MonoBehaviour
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2 * gravity);
             jumpCount++;
-            jumpTimer = 0f;
         }
 
         velocity.y = Mathf.Max(velocity.y + gravity * Time.deltaTime, fallVelocity);
