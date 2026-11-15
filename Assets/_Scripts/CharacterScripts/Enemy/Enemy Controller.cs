@@ -75,11 +75,7 @@ public class EnemyController : MonoBehaviour
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        //Debug.Log(
-        //    $"{name} collided with: {hit.collider.name} | " +
-        //    $"Layer: {LayerMask.LayerToName(hit.collider.gameObject.layer)} | " +
-        //    $"Normal: {hit.normal}"
-        //);
+        //Debug.Log($"{name} collided with: {hit.collider.name} | " + $"Layer: {LayerMask.LayerToName(hit.collider.gameObject.layer)} | " + $"Normal: {hit.normal}");
     }
 
     public void SetMovement(Vector3 direction, float speed = -1f)

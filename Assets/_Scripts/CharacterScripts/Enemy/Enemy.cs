@@ -24,7 +24,7 @@ public class Enemy : CharacterBase
     [SerializeField] private Transform[] patrolPoints;
     [SerializeField] private float patrolSpeed = 2f;
     [SerializeField] private float chaseSpeed = 4f;
-    // [SerializeField] private float returnSpeed = 3f;
+    [SerializeField] private float returnSpeed = 3f;
 
     [Header("Ranged Combat")]
     [SerializeField] private RangedAttackManager rangedAttackManager;
@@ -63,6 +63,23 @@ public class Enemy : CharacterBase
 
     public EnemyState CurrentState => currentState;
 
+    public TargetingData Targeting => targetingData;
+    public float AttackCheckInterval => attackCheckInterval;
+    public MeleeManager MeleeManager => meleeManager;
+    public MeleeAttackData MeleeAttack => meleeAttack;
+    public RangedAttackManager RangedAttackManager => rangedAttackManager;
+    public RangedAttackData RangedAttack => rangedAttack;
+    public Transform ProjectileSpawnPoint => projectileSpawnPoint;
+
+    public float AttackRange => attackRange;
+    public float RangedAttackRange => rangedAttackRange;
+    public float LeashDistance => leashDistance;
+
+    public Vector3 HomePosition => homePosition;
+    public float PatrolSpeed => patrolSpeed;
+    public float ChaseSpeed => chaseSpeed;
+    public float ReturnSpeed => returnSpeed;
+
     protected override void Awake()
     {
         movementController = GetComponent<EnemyController>();
@@ -72,7 +89,7 @@ public class Enemy : CharacterBase
 
     private void Update()
     {
-        UpdateAI();
+        //UpdateAI();
     }
 
     private void UpdateAI()

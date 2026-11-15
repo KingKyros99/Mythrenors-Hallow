@@ -283,6 +283,8 @@ GameObject:
   - component: {fileID: 1098929425844585846}
   - component: {fileID: 1101336277431045155}
   - component: {fileID: 29828823718377569}
+  - component: {fileID: 1629523136242823568}
+  - component: {fileID: 5304162519383976757}
   - component: {fileID: 7867937430057567851}
   m_Layer: 3
   m_Name: Goblin_Leader
@@ -570,8 +572,8 @@ MonoBehaviour:
   chaseSpeed: 4
   returnSpeed: 3
   rangedAttackManager: {fileID: 0}
-  rangedAttack: {fileID: 0}
-  projectileSpawnPoint: {fileID: 0}
+  rangedAttack: {fileID: 11400000, guid: 325c7199d86468743af6e4c71f4bb026, type: 2}
+  projectileSpawnPoint: {fileID: 4701428713156202941}
   rangedAttackRange: 12
   useAnimatedMelee: 1
   meleeAttackAnimator: {fileID: 2106060407728868615}
@@ -580,6 +582,31 @@ MonoBehaviour:
   bossDoor: {fileID: 0}
   CombatMusic: 1
   currentState: 0
+--- !u!114 &1629523136242823568
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9166200667505185630}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2bb7a12703be59940a657ed8c998715b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviourTree
+--- !u!114 &5304162519383976757
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9166200667505185630}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41258e61b77955e49b2fa954c52b8f04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyAI
+  enemy: {fileID: 29828823718377569}
 --- !u!143 &7867937430057567851
 CharacterController:
   m_ObjectHideFlags: 0

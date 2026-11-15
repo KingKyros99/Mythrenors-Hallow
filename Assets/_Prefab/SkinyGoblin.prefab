@@ -334,6 +334,8 @@ GameObject:
   - component: {fileID: 2606375456179207541}
   - component: {fileID: 5740912946441706262}
   - component: {fileID: 211165824383390479}
+  - component: {fileID: 4428287413482958629}
+  - component: {fileID: 2598486098114893555}
   - component: {fileID: 8099755102309294147}
   m_Layer: 3
   m_Name: SkinyGoblin
@@ -559,7 +561,7 @@ MonoBehaviour:
   dodgeChance: 2
   mStatusResistance: 0
   mCritResistance: 0
-  leashDistance: 15
+  leashDistance: 10
   attackRange: 2
   targetingData: {fileID: 11400000, guid: 129c46c6068755f46961a32dafb5d0e7, type: 2}
   meleeManager: {fileID: 0}
@@ -573,7 +575,7 @@ MonoBehaviour:
   rangedAttackManager: {fileID: 0}
   rangedAttack: {fileID: 11400000, guid: 420628d0876259e41ba700d30b29fb56, type: 2}
   projectileSpawnPoint: {fileID: 3548247103662697803}
-  rangedAttackRange: 12
+  rangedAttackRange: 13
   useAnimatedMelee: 0
   meleeAttackAnimator: {fileID: 0}
   useAnimatedRanged: 1
@@ -609,6 +611,31 @@ MonoBehaviour:
   moveSpeed: 3
   gravity: -20
   terminalVelocity: -30
+--- !u!114 &4428287413482958629
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6914387208291634887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2bb7a12703be59940a657ed8c998715b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BehaviourTree
+--- !u!114 &2598486098114893555
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6914387208291634887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41258e61b77955e49b2fa954c52b8f04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyAI
+  enemy: {fileID: 2606375456179207541}
 --- !u!114 &8099755102309294147
 MonoBehaviour:
   m_ObjectHideFlags: 0
