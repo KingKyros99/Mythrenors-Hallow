@@ -15,6 +15,13 @@ public class MusicVolumeHook : MonoBehaviour
             return;
         }
         inst = this;
+
+        // Make this object a root GameObjects
+        if (transform.parent != null)
+        {
+            transform.SetParent(null, true);
+        }
+
         DontDestroyOnLoad(gameObject);
     }
 

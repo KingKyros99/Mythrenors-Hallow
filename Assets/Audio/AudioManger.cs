@@ -59,6 +59,11 @@ public class AudioManger : MonoBehaviour
         inst = this;
 
         //Keep this object when entering new scene
+        if (transform.parent != null)
+        {
+            transform.SetParent(null, true);
+        }
+
         DontDestroyOnLoad(gameObject);
 
         //Scene Audio Sorce SetUp
