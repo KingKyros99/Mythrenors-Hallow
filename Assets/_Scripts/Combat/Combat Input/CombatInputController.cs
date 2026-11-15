@@ -102,6 +102,10 @@ public class CombatInputController : MonoBehaviour
     [SerializeField] private DodgeMovement dodgeMovement;
     [SerializeField] private MovementController movementController;
 
+    // Sprinting
+    [SerializeField] private InputActionReference sprintInput;
+    private InputAction sprintAction;
+
     // PURPOSE:
     // Store PlayerInput's runtime actions for abilities.
     private PlayerInput playerInput;
@@ -170,6 +174,9 @@ public class CombatInputController : MonoBehaviour
 
         // Find the PlayerInput component on our character.
         playerInput = GetComponent<PlayerInput>();
+
+        // Get the player's runtime sprint action.
+        sprintAction = GetPlayerAction(sprintInput);
 
         // Find the PlayerInput runtime Guard action.
         guardAction = GetPlayerAction(guardInput);
@@ -698,11 +705,16 @@ public class CombatInputController : MonoBehaviour
     // is guarding or performing a dodge.
     private bool IsDefending()
     {
-        if (coreFunctions == null)
-        {
-            return false;
-        }
+        // Prevent attacks while blocking or dodging.
+        bool isDefending = coreFunctions != null && (coreFunctions.IsBlocking || coreFunctions.IsDodging);
 
-        return coreFunctions.IsBlocking || coreFunctions.IsDodging;
+        // Check whether the player is holding sprint.
+        bool sprintHeld = sprintAction != null && sprintAction.IsPressed();
+
+        // Check whether the player is moving.
+        bool isMoving = movementController != null && movementController.CurrentMoveDirection.sqrMagnitude > 0.01f;
+
+        // Prevent attacks while defending or sprinting.
+        return isDefending || (sprintHeld && isMoving);
     }
 }
