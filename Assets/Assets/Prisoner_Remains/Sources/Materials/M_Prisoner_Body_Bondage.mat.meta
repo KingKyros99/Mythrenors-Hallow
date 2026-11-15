@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 2b65c66241898254bbd1423679b76b17
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 318403
+  packageName: Prisoner Remains
+  packageVersion: 1.0
+  assetPath: Assets/Prisoner_Remains/Sources/Materials/M_Prisoner_Body_Bondage.mat
+  uploadId: 752047
