@@ -1856,7 +1856,23 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 299096885759591737, guid: 53e380a4e78c5ad4ca622958604c6225, type: 3}
       propertyPath: m_Time
-      value: 0.35
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 299096885759591737, guid: 53e380a4e78c5ad4ca622958604c6225, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 6e1a2808c8f2f9843acc61e71c15d555, type: 2}
+    - target: {fileID: 299096885759591737, guid: 53e380a4e78c5ad4ca622958604c6225, type: 3}
+      propertyPath: m_Parameters.colorGradient.key0.a
+      value: 0.74509805
+      objectReference: {fileID: 0}
+    - target: {fileID: 299096885759591737, guid: 53e380a4e78c5ad4ca622958604c6225, type: 3}
+      propertyPath: m_Parameters.colorGradient.key1.a
+      value: 0.49019608
+      objectReference: {fileID: 0}
+    - target: {fileID: 299096885759591737, guid: 53e380a4e78c5ad4ca622958604c6225, type: 3}
+      propertyPath: m_Parameters.colorGradient.key2.a
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 730191658928937174, guid: 53e380a4e78c5ad4ca622958604c6225, type: 3}
       propertyPath: m_LocalPosition.x
