@@ -19,25 +19,25 @@ public class InventoryTest : MonoBehaviour
             return;
         }
 
-        if (Keyboard.current.pKey.wasPressedThisFrame)
-        {
-            //Debug.Log("P DETECTED!");
+        //if (Keyboard.current.pKey.wasPressedThisFrame)
+        //{
+        //    Debug.Log("P DETECTED!");
 
-            bool added = InventoryManager.Instance.AddItem(testPotion);
+        //    bool added = InventoryManager.Instance.AddItem(testPotion);
 
-            //Debug.Log($"ADD RESULT: {added}");
-            //Debug.Log($"POTION COUNT: {GetPotionCount()}");
-        }
+        //    Debug.Log($"add result: {added}");
+        //    Debug.Log($"potion count: {GetPotionCount()}");
+        //}
 
-        if (Keyboard.current.oKey.wasPressedThisFrame)
-        {
-            //Debug.Log("O DETECTED!");
+        //if (Keyboard.current.oKey.wasPressedThisFrame)
+        //{
+        //    Debug.Log("O DETECTED!");
 
-            bool removed = InventoryManager.Instance.RemoveItem(testPotion);
+        //    bool removed = InventoryManager.Instance.RemoveItem(testPotion);
 
-            //Debug.Log($"REMOVE RESULT: {removed}");
-            //Debug.Log($"POTION COUNT: {GetPotionCount()}");
-        }
+        //    Debug.Log($"REMOVE RESULT: {removed}");
+        //    Debug.Log($"POTION COUNT: {GetPotionCount()}");
+        //}
     }
 
     private int GetPotionCount()

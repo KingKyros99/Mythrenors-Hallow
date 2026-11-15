@@ -43,7 +43,7 @@ public static class OversizedMeshColliderFinder
 
                     if (triangles > limit)
                     {
-                        Debug.LogWarning($"Large Collider: {collider.name} | " + $"Triangles: {triangles}", collider.gameObject);
+                        //Debug.LogWarning($"Large Collider: {collider.name} | " + $"Triangles: {triangles}", collider.gameObject);
 
                         found++;
                     }
@@ -51,6 +51,6 @@ public static class OversizedMeshColliderFinder
             }
         }
 
-        Debug.Log($"Large Mesh Colliders found: {found}");
+        //Debug.Log($"Large Mesh Colliders found: {found}");
     }
 }

@@ -35,7 +35,7 @@ public class PlayerController : MonoBehaviour
 
     void movement()
     {
-        Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * range, Color.red);
+        //Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * range, Color.red);
         attackTimmer += Time.deltaTime;
 
 
