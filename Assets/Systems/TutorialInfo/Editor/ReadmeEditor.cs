@@ -1,17 +1,17 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEditor;
 using System.IO;
 using UnityEngine.UIElements;
 
 [CustomEditor(typeof(Readme))]
-[InitializeOnLoad]
+// [InitializeOnLoad]
 sealed class ReadmeEditor : Editor
 {
     static readonly string k_ShowedReadmeSessionStateName = "ReadmeEditor.showedReadme";
     static readonly string k_ReadmeSourceDirectory = "Assets/TutorialInfo";
 
-    static ReadmeEditor()
-        => EditorApplication.delayCall += SelectReadmeAutomatically;
+    //static ReadmeEditor()
+    //    => EditorApplication.delayCall += SelectReadmeAutomatically;
 
     static void SelectReadmeAutomatically()
     {
@@ -81,8 +81,18 @@ sealed class ReadmeEditor : Editor
         var readme = (Readme)target;
 
         VisualElement root = new();
-        root.styleSheets.Add(readme.commonStyle);
-        root.styleSheets.Add(EditorGUIUtility.isProSkin ? readme.darkStyle : readme.lightStyle);
+
+        if (readme.commonStyle != null)
+        {
+            root.styleSheets.Add(readme.commonStyle);
+        }
+
+        var selectedStyle = EditorGUIUtility.isProSkin ? readme.darkStyle : readme.lightStyle;
+
+        if (selectedStyle != null)
+        {
+            root.styleSheets.Add(selectedStyle);
+        }
 
         VisualElement ChainWithClass(VisualElement created, string className)
         {
