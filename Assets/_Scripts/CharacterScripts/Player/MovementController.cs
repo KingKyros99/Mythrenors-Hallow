@@ -48,9 +48,11 @@ public class MovementController : MonoBehaviour
     [SerializeField] private float walkIntervals;
     [SerializeField] private float sprintIntervals;
     [SerializeField] private float volume;
+    [SerializeField] private float jumpDelay;
     private float stepTimer;
     private bool wasGrounded;
-
+    private bool useJumpClip;
+    private float jumpTime;
 
     private Vector3 aiMoveDirection;
     private float aiMoveSpeed = -1f;
@@ -196,8 +198,19 @@ public class MovementController : MonoBehaviour
             {
                 velocity.y = -1f;
             }
-        }
+            jumpTime = 0;
+            useJumpClip = false;
 
+        }
+        else
+        {
+            jumpTime += Time.deltaTime;
+            if (!useJumpClip && jumpTime >= jumpDelay)
+            {
+                AudioManger.inst.PlaySFX(jumpClip, volume * 3, true, 1.0f);
+                useJumpClip = true;
+            }
+        }
         bool inCoyoteTime = Time.time - jumpTimer <= coyoteTime;
         if (!inCoyoteTime && jumpCount == 0)
         {
@@ -209,11 +222,6 @@ public class MovementController : MonoBehaviour
             velocity.y = Mathf.Sqrt(jumpHeight * -2 * gravity);
             jumpCount++;
             jumpTimer = 0f;
-
-            if (jumpClip != null && AudioManger.inst != null)
-            {
-                AudioManger.inst.PlaySFX(jumpClip, volume * 3, true, 1.0f);
-            }
         }
 
         velocity.y = Mathf.Max(velocity.y + gravity * Time.deltaTime, fallVelocity);

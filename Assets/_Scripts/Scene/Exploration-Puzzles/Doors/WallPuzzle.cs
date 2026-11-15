@@ -4,7 +4,9 @@ public class WallPuzzle : MonoBehaviour
 {
     [Header("Puzzle Detection")]
     [SerializeField] private string fireBall = "FireBall";
-
+    [SerializeField] private AudioClip fireBallEffect;
+    [SerializeField] private float volume;
+    [SerializeField] private bool randPitch;
 
     private bool isBroken = false;
 
@@ -15,7 +17,7 @@ public class WallPuzzle : MonoBehaviour
 
     public void ProjectileHit(GameObject obj)
     {
-        if (obj != null || IsFireball(obj.gameObject))
+        if (obj != null && IsFireball(obj.gameObject))
         {
             fireballHit();
         }
@@ -40,6 +42,10 @@ public class WallPuzzle : MonoBehaviour
         if (isBroken)
         {
             return;
+        }
+        if (AudioManger.inst != null)
+        {
+            AudioManger.inst.PlaySFX(fireBallEffect, volume, randPitch, 1f);
         }
         BreakWall();
     }
