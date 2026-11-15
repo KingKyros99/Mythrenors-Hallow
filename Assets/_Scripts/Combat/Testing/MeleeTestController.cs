@@ -59,7 +59,7 @@ public class MeleeTestController : MonoBehaviour
 
         if (successful)
         {
-            Debug.Log("Melee test attack succeeded.");
+            //Debug.Log("Melee test attack succeeded.");
         }
     }
 }

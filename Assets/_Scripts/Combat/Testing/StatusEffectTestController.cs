@@ -25,7 +25,7 @@ public class StatusEffectTestController : MonoBehaviour
     {
         if (target != null && poison != null)
         {
-            Debug.Log($"Poison applied: {target.ApplyEffect(poison)}");
+            //Debug.Log($"Poison applied: {target.ApplyEffect(poison)}");
         }
     }
 
@@ -34,7 +34,7 @@ public class StatusEffectTestController : MonoBehaviour
     {
         if (target != null && regeneration != null)
         {
-            Debug.Log($"Regeneration applied: {target.ApplyEffect(regeneration)}");
+            //Debug.Log($"Regeneration applied: {target.ApplyEffect(regeneration)}");
         }
     }
 
@@ -52,7 +52,7 @@ public class StatusEffectTestController : MonoBehaviour
     {
         if (target != null && burn != null)
         {
-            Debug.Log($"Burn applied: {target.ApplyEffect(burn)}");
+            //Debug.Log($"Burn applied: {target.ApplyEffect(burn)}");
         }
     }
 
@@ -61,7 +61,7 @@ public class StatusEffectTestController : MonoBehaviour
     {
         if (target != null && bleed != null)
         {
-            Debug.Log($"Bleed applied: {target.ApplyEffect(bleed)}");
+            //Debug.Log($"Bleed applied: {target.ApplyEffect(bleed)}");
         }
     }
 
@@ -70,7 +70,7 @@ public class StatusEffectTestController : MonoBehaviour
     {
         if (target != null && stun != null)
         {
-            Debug.Log($"Stun applied: {target.ApplyEffect(stun)}");
+            //Debug.Log($"Stun applied: {target.ApplyEffect(stun)}");
         }
     }
 
@@ -79,7 +79,7 @@ public class StatusEffectTestController : MonoBehaviour
     {
         if (target != null && attackBuff != null)
         {
-            Debug.Log($"Attack Buff applied: {target.ApplyEffect(attackBuff)}");
+            //Debug.Log($"Attack Buff applied: {target.ApplyEffect(attackBuff)}");
         }
     }
 
@@ -88,7 +88,7 @@ public class StatusEffectTestController : MonoBehaviour
     {
         if (target != null && defenseBuff != null)
         {
-            Debug.Log($"Defense Buff applied: {target.ApplyEffect(defenseBuff)}");
+            //Debug.Log($"Defense Buff applied: {target.ApplyEffect(defenseBuff)}");
         }
     }
 }

@@ -57,12 +57,12 @@ public class PlayerHitReaction : MonoBehaviour
         {
             characterBase.OnDamageTaken += HandleDamageTaken;
 
-            Debug.Log("PlayerHitReaction subscribed to OnDamageTaken!");
+            //Debug.Log("PlayerHitReaction subscribed to OnDamageTaken!");
         }
 
         else
         {
-            Debug.LogWarning("PlayerHitReaction: CharacterBase is missing.");
+            //Debug.LogWarning("PlayerHitReaction: CharacterBase is missing.");
         }
     }
 
@@ -109,14 +109,14 @@ public class PlayerHitReaction : MonoBehaviour
     {
         if (playerAnimator == null)
         {
-            Debug.LogWarning("PlayerHitReaction: Animator is missing.");
+            //Debug.LogWarning("PlayerHitReaction: Animator is missing.");
 
             return;
         }
 
         playerAnimator.SetTrigger(TakeHitTrigger);
 
-        Debug.Log("Player Hit Reaction triggered!");
+        //Debug.Log("Player Hit Reaction triggered!");
     }
 
     // PURPOSE:

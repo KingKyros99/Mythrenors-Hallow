@@ -77,6 +77,7 @@ public class SaveManager : MonoBehaviour
 
     public void Save(string saveId, Transform spawnPoint = null)
     {
+
         CharacterBase player = FindPlayer();
 
         if (player == null) return;
@@ -91,7 +92,7 @@ public class SaveManager : MonoBehaviour
             health = player.CurrentHealth,
             mana = player.CurrentMana,
             stamina = player.CurrentStamina
-            
+
         };
 
         if (spawnPoint != null)
@@ -136,6 +137,10 @@ public class SaveManager : MonoBehaviour
         PlayerPrefs.SetInt(KeyHasGame, 1);
         PlayerPrefs.Save();
 
+        foreach (ElevatorMovement elevator in FindObjectsByType<ElevatorMovement>(FindObjectsInactive.Include))
+        {
+            elevator.SaveElevator();
+        }
         Saved?.Invoke();
     }
 
@@ -159,7 +164,10 @@ public class SaveManager : MonoBehaviour
 
         if (File.Exists(FilePath))
             File.Delete(FilePath);
-
+        foreach (string file in Directory.GetFiles(Application.persistentDataPath, "elevator_*.json"))
+        {
+            File.Delete(file);
+        }
         PlayerPrefs.SetInt(KeyHasGame, 0);
         PlayerPrefs.Save();
     }
@@ -189,7 +197,10 @@ public class SaveManager : MonoBehaviour
 
         if (controllerWasEnabled)
             controller.enabled = true;
-
+        foreach (ElevatorMovement elevator in FindObjectsByType<ElevatorMovement>(FindObjectsInactive.Include))
+        {
+            elevator.LoadElevator();
+        }
         pending = null;
     }
 }

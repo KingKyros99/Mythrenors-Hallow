@@ -201,11 +201,11 @@ public class PauseMenuUI : MonoBehaviour
             return true;
         }
 
-        Debug.LogError(
-            "PauseMenuUI: check Title Scene Name and include " +
-            "that scene in the active Build Profile's scene list.",
-            this
-        );
+        //Debug.LogError(
+        //    "PauseMenuUI: check Title Scene Name and include " +
+        //    "that scene in the active Build Profile's scene list.",
+        //    this
+        //);
 
         return false;
     }
@@ -265,11 +265,11 @@ public class PauseMenuUI : MonoBehaviour
 
         if (loading == null)
         {
-            Debug.LogError(
-                "PauseMenuUI: could not load the title scene. " +
-                loadingError,
-                this
-            );
+            //Debug.LogError(
+            //    "PauseMenuUI: could not load the title scene. " +
+            //    loadingError,
+            //    this
+            //);
 
             leavingToTitle = false;
             OpenSettingsOnLoad = false;
