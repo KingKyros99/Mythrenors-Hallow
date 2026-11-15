@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -126,10 +125,12 @@ public class MeleeManager : MonoBehaviour
     private void ResolveAcceptedAttack(ICombatEntity attacker, ICombatEntity validTarget, MeleeAttackData attackData)
     {
         PlaySwingVfx(attacker, attackData);
+        PlaySfx(attackData.SwingEffect, attackData);
 
         if (validTarget == null)
         {
-            Debug.Log($"{attacker.CombatTransform.name} swung but missed.");
+            PlaySfx(attackData.missedEffect, attackData);
+            //Debug.Log($"{attacker.CombatTransform.name} swung but missed.");
 
             return;
         }
@@ -137,8 +138,11 @@ public class MeleeManager : MonoBehaviour
         // Resolve damage through the existing combat system.
         AttackOutcome outcome = CombatManager.ResolveAttack(attacker, validTarget, attackData.damage);
 
+        // DEBUG: Verify the actual combat outcome.
+        //Debug.Log($"MELEE RESULT | " + $"Attacker: {attacker.CombatTransform.name} | " + $"Defender: {validTarget.CombatTransform.name} | " + $"Outcome: {outcome}");
+
         // Show impact feedback when the attack connects.
-        if (outcome == AttackOutcome.HIT || outcome == AttackOutcome.BLOCKED || outcome == AttackOutcome.KILLED)
+        if (outcome == AttackOutcome.HIT || outcome == AttackOutcome.KILLED)
         {
             PlayHitVfx(attacker, validTarget, attackData);
         }
@@ -147,38 +151,37 @@ public class MeleeManager : MonoBehaviour
         switch (outcome)
         {
             case AttackOutcome.HIT:
-
-                Debug.Log($"{attacker.CombatTransform.name} hit " + $"{validTarget.CombatTransform.name}!");
+                PlaySfx(attackData.hitEffect, attackData);
+                //Debug.Log($"{attacker.CombatTransform.name} hit " + $"{validTarget.CombatTransform.name}!");
 
                 break;
 
             case AttackOutcome.BLOCKED:
-
-                Debug.Log($"{validTarget.CombatTransform.name} blocked the attack!");
+                PlaySfx(attackData.blockEffect, attackData);
+                //Debug.Log($"{validTarget.CombatTransform.name} blocked the attack!");
 
                 break;
 
             case AttackOutcome.DODGED:
-
-                Debug.Log($"{validTarget.CombatTransform.name} dodged the attack!");
-
+                PlaySfx(attackData.missedEffect, attackData);
+                //Debug.Log($"{validTarget.CombatTransform.name} dodged the attack!");
                 break;
 
             case AttackOutcome.KILLED:
-
-                Debug.Log($"{validTarget.CombatTransform.name} was defeated!");
+                PlaySfx(attackData.deathEffect, attackData);
+                //Debug.Log($"{validTarget.CombatTransform.name} was defeated!");
 
                 break;
 
             case AttackOutcome.MISSED:
-
-                Debug.Log("Attack missed.");
+                PlaySfx(attackData.missedEffect, attackData);
+                //Debug.Log("Attack missed.");
 
                 break;
 
             case AttackOutcome.INVALID:
 
-                Debug.Log("Attack could not be resolved.");
+                //Debug.Log("Attack could not be resolved.");
 
                 break;
         }
@@ -278,7 +281,7 @@ public class MeleeManager : MonoBehaviour
             return false;
         }
 
-        pendingAnimatedAttacks.Add(attacker, new PendingAnimatedAttack{requestedTarget = target, attackData = attackData});
+        pendingAnimatedAttacks.Add(attacker, new PendingAnimatedAttack { requestedTarget = target, attackData = attackData });
 
         // Reserve the cooldown when the swing begins.
         nextAttackTimes[attackData] = Time.time + Mathf.Max(0f, attackData.cooldown);
@@ -332,7 +335,7 @@ public class MeleeManager : MonoBehaviour
     {
         if (target != null)
         {
-            if (target.IsAlive && target.CombatTransform != null && TargetingSystem.IsTargetInMeleeArc( attacker, target, attackData.targetingData))
+            if (target.IsAlive && target.CombatTransform != null && TargetingSystem.IsTargetInMeleeArc(attacker, target, attackData.targetingData))
             {
                 return target;
             }
@@ -396,4 +399,21 @@ public class MeleeManager : MonoBehaviour
 
         nextAttackTimes.Remove(attackData);
     }
+
+
+    private void PlaySfx(AudioClip clip, MeleeAttackData attackData)
+    {
+        if (AudioManger.inst == null)
+        {
+            //Debug.LogError("manager null");
+            return;
+        }
+        if (clip == null || attackData == null)
+        {
+            return;
+        }
+        //Debug.Log("SFXSuccess");
+        AudioManger.inst.PlaySFX(clip, attackData.volume, attackData.randPitch);
+    }
+
 }

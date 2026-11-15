@@ -12,6 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4abe7dcff52b344eb8d1a549e7eaccd, type: 3}
   m_Name: Basic Fireball Spell
   m_EditorClassIdentifier: Assembly-CSharp::SpellData
+  spellEffect: {fileID: 8300000, guid: 78fee43c958506d41832631c1e00e6b2, type: 3}
+  volume: 0.8
+  speed: 0.8
+  randPitch: 1
   spellName: Basic Fireball Spell
   description: 
   damage:
@@ -19,6 +23,7 @@ MonoBehaviour:
     DamageType: 1
     CanCrit: 0
     IgnoreDefense: 0
+    Unblockable: 0
   projectileData: {fileID: 11400000, guid: ebb53643a99af234b8618a27ebd66fcb, type: 2}
   targetingData: {fileID: 11400000, guid: 5befc17e8073b584faa50fd2f25c6bf3, type: 2}
   manaCost: 10

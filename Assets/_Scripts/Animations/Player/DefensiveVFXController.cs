@@ -175,7 +175,7 @@ public class DefensiveVFXController : MonoBehaviour
     {
         if (guardImpactVFX == null)
         {
-            Debug.LogWarning("Guard Impact VFX is not assigned.");
+            //Debug.LogWarning("Guard Impact VFX is not assigned.");
 
             return;
         }
@@ -184,7 +184,7 @@ public class DefensiveVFXController : MonoBehaviour
 
         guardImpactVFX.Play(true);
 
-        Debug.Log("Guard Impact VFX triggered!");
+        //Debug.Log("Guard Impact VFX triggered!");
     }
 
     // PURPOSE:

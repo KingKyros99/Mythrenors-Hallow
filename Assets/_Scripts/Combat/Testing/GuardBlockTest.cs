@@ -25,7 +25,7 @@ public class GuardBlockTest : MonoBehaviour
     {
         if (!Application.isPlaying || coreFunctions == null)
         {
-            Debug.LogWarning("Enter Play Mode and assign CoreFunctions.");
+            //Debug.LogWarning("Enter Play Mode and assign CoreFunctions.");
 
             return;
         }
@@ -48,7 +48,7 @@ public class GuardBlockTest : MonoBehaviour
         // Attempt a successful block.
         bool blocked = coreFunctions.Block(testDamage, false, out float remainingDamage);
 
-        Debug.Log($"Block Successful: {blocked}, " + $"Remaining Damage: {remainingDamage}");
+        //Debug.Log($"Block Successful: {blocked}, " + $"Remaining Damage: {remainingDamage}");
 
         yield return new WaitForSeconds(0.5f);
 

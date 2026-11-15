@@ -102,6 +102,10 @@ public class CombatInputController : MonoBehaviour
     [SerializeField] private DodgeMovement dodgeMovement;
     [SerializeField] private MovementController movementController;
 
+    // Sprinting
+    [SerializeField] private InputActionReference sprintInput;
+    private InputAction sprintAction;
+
     // PURPOSE:
     // Store PlayerInput's runtime actions for abilities.
     private PlayerInput playerInput;
@@ -122,12 +126,12 @@ public class CombatInputController : MonoBehaviour
 
         if (combatEntity == null)
         {
-            Debug.LogWarning($"{name} has no valid combat Entity assigned.");
+            //Debug.LogWarning($"{name} has no valid combat Entity assigned.");
         }
 
         if (firePoint == null)
         {
-            Debug.LogWarning($"{name}: FirePoint is missing. Ranged attacks and spells will be unavailable.", this);
+            //Debug.LogWarning($"{name}: FirePoint is missing. Ranged attacks and spells will be unavailable.", this);
         }
     }
 
@@ -170,6 +174,9 @@ public class CombatInputController : MonoBehaviour
 
         // Find the PlayerInput component on our character.
         playerInput = GetComponent<PlayerInput>();
+
+        // Get the player's runtime sprint action.
+        sprintAction = GetPlayerAction(sprintInput);
 
         // Find the PlayerInput runtime Guard action.
         guardAction = GetPlayerAction(guardInput);
@@ -452,7 +459,7 @@ public class CombatInputController : MonoBehaviour
 
             if (!castSuccessful)
             {
-                Debug.Log("Fireball casting failed.");
+                //Debug.Log("Fireball casting failed.");
             }
         }
     }
@@ -569,7 +576,7 @@ public class CombatInputController : MonoBehaviour
     {
         if (aimCamera == null)
         {
-            Debug.LogWarning("Combat aiming camera is missing.");
+            //Debug.LogWarning("Combat aiming camera is missing.");
 
             return transform.forward;
         }
@@ -617,7 +624,7 @@ public class CombatInputController : MonoBehaviour
             playerAnimator.SetBool(IsBlockingHash, coreFunctions.IsBlocking);
         }
 
-        Debug.Log($"Guarding: {coreFunctions.IsBlocking}");
+        //Debug.Log($"Guarding: {coreFunctions.IsBlocking}");
     }
 
     // PURPOSE:
@@ -637,7 +644,7 @@ public class CombatInputController : MonoBehaviour
             playerAnimator.SetBool(IsBlockingHash, false);
         }
 
-        Debug.Log("Guarding: False");
+        //Debug.Log("Guarding: False");
     }
 
     // PURPOSE:
@@ -653,7 +660,7 @@ public class CombatInputController : MonoBehaviour
         // Prevent dodging while actively guarding.
         if (coreFunctions.IsBlocking)
         {
-            Debug.Log("Cannot dodge while guarding.");
+            //Debug.Log("Cannot dodge while guarding.");
 
             return;
         }
@@ -684,12 +691,12 @@ public class CombatInputController : MonoBehaviour
                 playerAnimator.SetTrigger(DodgeTriggerHash);
             }
 
-            Debug.Log("Dodge started successfully!");
+            //Debug.Log("Dodge started successfully!");
         }
 
         else
         {
-            Debug.Log("Dodge unavailable or insufficient stamina.");
+            //Debug.Log("Dodge unavailable or insufficient stamina.");
         }
     }
 
@@ -698,11 +705,16 @@ public class CombatInputController : MonoBehaviour
     // is guarding or performing a dodge.
     private bool IsDefending()
     {
-        if (coreFunctions == null)
-        {
-            return false;
-        }
+        // Prevent attacks while blocking or dodging.
+        bool isDefending = coreFunctions != null && (coreFunctions.IsBlocking || coreFunctions.IsDodging);
 
-        return coreFunctions.IsBlocking || coreFunctions.IsDodging;
+        // Check whether the player is holding sprint.
+        bool sprintHeld = sprintAction != null && sprintAction.IsPressed();
+
+        // Check whether the player is moving.
+        bool isMoving = movementController != null && movementController.CurrentMoveDirection.sqrMagnitude > 0.01f;
+
+        // Prevent attacks while defending or sprinting.
+        return isDefending || (sprintHeld && isMoving);
     }
 }

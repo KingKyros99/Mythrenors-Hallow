@@ -102,7 +102,7 @@ public class SettingsMenuUI : MonoBehaviour
 
     [Header("MenuAudio")]
     private string clickSfx = "UIClick";
-    private string hoverSfx = "MenuHover";
+    // private string hoverSfx = "MenuHover";
     private string BackSfx = "UIReturn";
     private readonly List<Vector2Int> resolutions =
         new List<Vector2Int>();
@@ -225,10 +225,10 @@ public class SettingsMenuUI : MonoBehaviour
 
         if (root == null)
         {
-            Debug.LogError(
-                "SettingsMenuUI: assign the Root field.",
-                this
-            );
+            //Debug.LogError(
+            //    "SettingsMenuUI: assign the Root field.",
+            //    this
+            //);
             return;
         }
 

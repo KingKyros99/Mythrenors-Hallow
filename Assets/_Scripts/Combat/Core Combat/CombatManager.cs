@@ -118,7 +118,7 @@ public static class CombatManager
         // Dodge completely avoids damage during invulnerability frames.
         if (coreFunctions != null && coreFunctions.IsInvulnerable)
         {
-            Debug.Log($"{defender.CombatTransform.name} dodged the attack!");
+            //Debug.Log($"{defender.CombatTransform.name} dodged the attack!");
             return AttackOutcome.DODGED;
         }
 
@@ -132,24 +132,33 @@ public static class CombatManager
 
         // check whether block reduction applies to this attack.
         if (coreFunctions != null)
+        {
+            bool wasGuarding = coreFunctions.IsBlocking;
+
             blocked = coreFunctions.Block(damage, damageData.Unblockable, out damage);
-       
+
+            //Debug.Log($"BLOCK DEBUG | " + $"IsBlocking: {wasGuarding} | " + $"Block Result: {blocked}");
+        }
         defender.ReceiveDamage(damage);
 
         // Temporary Console output for testing.
         // Later, UI or VFX can display damage.
-        Debug.Log($"{attacker.CombatTransform.name} dealt {damage} " + $"{damageData.DamageType} damage to " + $"{defender.CombatTransform.name}" + (blocked ? " (Blocked)" : ""));
+        //Debug.Log($"{attacker.CombatTransform.name} dealt {damage} " + $"{damageData.DamageType} damage to " + $"{defender.CombatTransform.name}" + (blocked ? " (Blocked)" : ""));
 
         // Determine whether the defender died.
         if (!defender.IsAlive)
+        {
             return AttackOutcome.KILLED;
+        }
 
         // Blocking reduces damage; it does not negate the attack.
         if (blocked)
+        {
             // Notify visual & audio systems about the block.
             OnAttackBlocked?.Invoke(attacker, defender);
 
             return AttackOutcome.BLOCKED;
+        }
 
         return AttackOutcome.HIT;
     }
