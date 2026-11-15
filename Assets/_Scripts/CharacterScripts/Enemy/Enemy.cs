@@ -24,7 +24,7 @@ public class Enemy : CharacterBase
     [SerializeField] private Transform[] patrolPoints;
     [SerializeField] private float patrolSpeed = 2f;
     [SerializeField] private float chaseSpeed = 4f;
-    // [SerializeField] private float returnSpeed = 3f;
+    [SerializeField] private float returnSpeed = 3f;
 
     [Header("Ranged Combat")]
     [SerializeField] private RangedAttackManager rangedAttackManager;
