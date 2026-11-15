@@ -21,7 +21,7 @@ public class EnemyAI : MonoBehaviour
 
         if (enemy == null)
         {
-            Debug.LogError($"{name}: Enemy component missing!", this);
+            //Debug.LogError($"{name}: Enemy component missing!", this);
             enabled = false;
             return;
         }
@@ -34,7 +34,7 @@ public class EnemyAI : MonoBehaviour
     {
         if (rootNode == null)
         {
-            Debug.LogError($"{name}: Cannot initialize an empty Behaviour Tree!", this);
+            //Debug.LogError($"{name}: Cannot initialize an empty Behaviour Tree!", this);
             return;
         }
 
@@ -65,7 +65,7 @@ public class EnemyAI : MonoBehaviour
 
         ctx.Target = target.CombatTransform;
 
-        Debug.Log($"{name}: Behaviour Tree acquired {ctx.Target.name}");
+        //Debug.Log($"{name}: Behaviour Tree acquired {ctx.Target.name}");
 
         return NodeState.SUCCESS;
     }

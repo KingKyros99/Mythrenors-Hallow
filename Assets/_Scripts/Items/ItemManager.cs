@@ -23,7 +23,7 @@ public class ItemManager : MonoBehaviour
 
         if (character == null)
         {
-            Debug.LogWarning("No CharacterBase found on " + target.name);
+            //Debug.LogWarning("No CharacterBase found on " + target.name);
             return false;
         }
 
@@ -50,13 +50,13 @@ public class ItemManager : MonoBehaviour
 
                     if (statusManager == null)
                     {
-                        Debug.LogWarning("No StatusEffectManager found on " + target.name);
+                        //Debug.LogWarning("No StatusEffectManager found on " + target.name);
                         return false;
                     }
 
                     if (item.statusEffect == null)
                     {
-                        Debug.LogWarning("No status effect assigned to " + item.itemName);
+                        //Debug.LogWarning("No status effect assigned to " + item.itemName);
                         return false;
                     }
 
@@ -70,18 +70,18 @@ public class ItemManager : MonoBehaviour
 
                     if (statusManager == null)
                     {
-                        Debug.LogWarning("No StatusEffectManager found on " + target.name);
+                        //Debug.LogWarning("No StatusEffectManager found on " + target.name);
                         return false;
                     }
 
                     statusManager.ClearEffects();
 
-                    Debug.Log(item.itemName + " cleansed all effects from " + target.name);
+                    //Debug.Log(item.itemName + " cleansed all effects from " + target.name);
                     return true;
                 }
 
             default:
-                Debug.LogWarning("Unsupported consumable type: " + item.itemType);
+                //Debug.LogWarning("Unsupported consumable type: " + item.itemType);
                 return false;
         }
     }

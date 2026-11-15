@@ -9,7 +9,7 @@ public class ItemProvider : MonoBehaviour
     {
         if (availableItems == null || availableItems.Length == 0)
         {
-            Debug.LogWarning("No items assigned to ItemProvider.");
+            //Debug.LogWarning("No items assigned to ItemProvider.");
             return null;
         }
 
@@ -22,7 +22,7 @@ public class ItemProvider : MonoBehaviour
     {
         if (availableItems == null || availableItems.Length == 0)
         {
-            Debug.LogWarning("No items assigned to ItemProvider.");
+            //Debug.LogWarning("No items assigned to ItemProvider.");
             return null;
         }
 
@@ -39,7 +39,7 @@ public class ItemProvider : MonoBehaviour
 
         if (validCount == 0)
         {
-            Debug.LogWarning("ItemProvider contains no valid items.");
+            //Debug.LogWarning("ItemProvider contains no valid items.");
             return null;
         }
 

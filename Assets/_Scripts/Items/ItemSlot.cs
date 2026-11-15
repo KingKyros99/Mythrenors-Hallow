@@ -37,10 +37,10 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler
         {
             quantityText.text = item.quantity.ToString();
             quantityText.enabled = true;
-            Debug.Log($"DISPLAYING QUANTITY: {quantityText.text}");
+            //Debug.Log($"DISPLAYING QUANTITY: {quantityText.text}");
         }
 
-        Debug.Log($"SLOT SETUP: {item.itemData.itemName} x{item.quantity}");
+        //Debug.Log($"SLOT SETUP: {item.itemData.itemName} x{item.quantity}");
     }
 
     public void Clear()

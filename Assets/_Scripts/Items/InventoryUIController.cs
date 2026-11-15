@@ -51,7 +51,7 @@ public class InventoryUIController : MonoBehaviour
 
     private void RefreshInventory()
     {
-        Debug.Log($"REFRESH FIRED - Inventory entries: {InventoryManager.Instance.Items.Count}");
+        //Debug.Log($"REFRESH FIRED - Inventory entries: {InventoryManager.Instance.Items.Count}");
 
         if (InventoryManager.Instance == null || itemGrid == null || itemSlotPrefab == null)
             return;
@@ -65,7 +65,7 @@ public class InventoryUIController : MonoBehaviour
         {
             ItemSlot slot = Instantiate(itemSlotPrefab, itemGrid);
             slot.Setup(item);
-            Debug.Log($"CREATED SLOT: {item.itemData.itemName} x{item.quantity}");
+            //Debug.Log($"CREATED SLOT: {item.itemData.itemName} x{item.quantity}");
             slots.Add(slot);
         }
     }
