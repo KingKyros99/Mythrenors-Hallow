@@ -63,7 +63,7 @@ public class MockCombatEntity : MonoBehaviour, ICombatEntity
 
         currentHealth = Mathf.Max(0f, currentHealth - amount);
 
-        Debug.Log($"{name} HP: {currentHealth}/{maxHealth}");
+        //Debug.Log($"{name} HP: {currentHealth}/{maxHealth}");
     }
 
     // PURPOSE:

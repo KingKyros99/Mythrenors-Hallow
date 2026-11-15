@@ -21,7 +21,7 @@ public class SwordAttackAnimationRelay : MonoBehaviour
     // Called by the sword thrust Animation Event.
     public void ResolveSwordHitFrame()
     {
-        Debug.Log("Sword thrust hit frame reached!");
+        //Debug.Log("Sword thrust hit frame reached!");
 
         if (combatInput != null)
         {
@@ -30,7 +30,7 @@ public class SwordAttackAnimationRelay : MonoBehaviour
 
         else
         {
-            Debug.LogWarning("CombatInputController not found.");
+            //Debug.LogWarning("CombatInputController not found.");
         }
     }
 }

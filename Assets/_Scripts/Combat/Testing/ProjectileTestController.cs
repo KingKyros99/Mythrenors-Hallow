@@ -61,7 +61,7 @@ public class ProjectileTestController : MonoBehaviour
 
         if (successful)
         {
-            Debug.Log("Test projectile spawned.");
+            //Debug.Log("Test projectile spawned.");
         }
     }
 }

@@ -114,7 +114,7 @@ public class SelfStatusAbilityManager : MonoBehaviour
         // This happens before any mana is consumed.
         if (GetRemainingUses(ability) <= 0)
         {
-            Debug.Log($"{name}: No remaining uses for {ability.abilityName}.");
+            //Debug.Log($"{name}: No remaining uses for {ability.abilityName}.");
 
             return false;
         }
@@ -171,7 +171,7 @@ public class SelfStatusAbilityManager : MonoBehaviour
         // Start cooldown only after successful activation.
         nextUseTimes[ability] = Time.time + Mathf.Max(0f, ability.cooldown);
 
-        Debug.Log($"{name} activated {ability.abilityName}.");
+        //Debug.Log($"{name} activated {ability.abilityName}.");
 
         return true;
     }

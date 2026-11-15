@@ -26,7 +26,7 @@ public class DungeonMap : MonoBehaviour, IInteraction
 
     public void Interact(PlayerInteractions interaction)
     {
-        Debug.Log("Interacted");
+        //Debug.Log("Interacted");
         player = interaction;
         player.IsInteracting = true;
         isInspecting = true;
@@ -44,7 +44,7 @@ public class DungeonMap : MonoBehaviour, IInteraction
 
     public void CloseMap()
     {
-        Debug.Log("ClosedMap");
+        //Debug.Log("ClosedMap");
         isInspecting = false;
         if (MapPanel != null)
         {
