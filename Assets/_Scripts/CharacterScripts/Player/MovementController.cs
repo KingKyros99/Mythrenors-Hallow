@@ -41,10 +41,23 @@ public class MovementController : MonoBehaviour
     [Header("AI Movement")]
     [SerializeField] private bool aiControlled = false;
 
+    [Header("Audio")]
+    [SerializeField] private AudioClip footStep;
+    [SerializeField] private AudioClip jumpClip;
+    [SerializeField] private AudioClip LandClip;
+    [SerializeField] private float walkIntervals;
+    [SerializeField] private float sprintIntervals;
+    [SerializeField] private float volume;
+    [SerializeField] private float jumpDelay;
+    private float stepTimer;
+    private bool wasGrounded;
+    private bool useJumpClip;
+    private float jumpTime;
+
     private Vector3 aiMoveDirection;
     private float aiMoveSpeed = -1f;
 
-    //Bools
+    
 
     //Check if the character is sprinting
     public bool isSprinting { get; private set; }
@@ -93,6 +106,7 @@ public class MovementController : MonoBehaviour
     {
         jump();
         movement();
+        FootSteps();
     }
     void movement()
     {
@@ -134,6 +148,40 @@ public class MovementController : MonoBehaviour
         controller.Move(velocity * Time.deltaTime);
     }
 
+    private void FootSteps()
+    {
+        if (AudioManger.inst == null)
+        {
+            return;
+        }
+        if (!wasGrounded && isGrounded && LandClip != null)
+        {
+            AudioManger.inst.PlaySFX(LandClip, volume, true, 0.9f);
+            stepTimer = walkIntervals;
+
+        }
+        wasGrounded = isGrounded;
+
+        float groundedSpeed = new Vector3(velocity.x, 0f, velocity.z).magnitude;
+        if (!isGrounded || footStep == null || groundedSpeed < 0.2f)
+        {
+            stepTimer -= 0.8f;
+            return;
+        }
+
+
+        stepTimer -= Time.deltaTime;
+        if (stepTimer <= 0f)
+        {
+            float speed = isSprinting ? 1.4f : 1.0f;
+            AudioManger.inst.PlaySFX(footStep, volume, true, speed);
+            stepTimer = isSprinting ? sprintIntervals : walkIntervals;
+        }
+
+
+    }
+
+
     //vertical jump and gravity
     void jump()
     {
@@ -150,8 +198,19 @@ public class MovementController : MonoBehaviour
             {
                 velocity.y = -1f;
             }
-        }
+            jumpTime = 0;
+            useJumpClip = false;
 
+        }
+        else
+        {
+            jumpTime += Time.deltaTime;
+            if (!useJumpClip && jumpTime >= jumpDelay)
+            {
+                AudioManger.inst.PlaySFX(jumpClip, volume * 3, true, 1.0f);
+                useJumpClip = true;
+            }
+        }
         bool inCoyoteTime = Time.time - jumpTimer <= coyoteTime;
         if (!inCoyoteTime && jumpCount == 0)
         {
@@ -163,8 +222,6 @@ public class MovementController : MonoBehaviour
             velocity.y = Mathf.Sqrt(jumpHeight * -2 * gravity);
             jumpCount++;
             jumpTimer = 0f;
-
-
         }
 
         velocity.y = Mathf.Max(velocity.y + gravity * Time.deltaTime, fallVelocity);

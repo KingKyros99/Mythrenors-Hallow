@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 2e23e45c56c7f8e41af534766ed49956
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 318403
+  packageName: Prisoner Remains
+  packageVersion: 1.0
+  assetPath: Assets/Prisoner_Remains/Sources/Materials/M_Corpse_4_5_Cloth.mat
+  uploadId: 752047

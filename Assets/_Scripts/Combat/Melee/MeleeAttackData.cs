@@ -16,6 +16,17 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "NewMeleeAttack", menuName = "Mythrenors Hallow/Combat/Melee Attack")]
 public class MeleeAttackData : ScriptableObject
 {
+    [Header("SoundEffects")]
+    [SerializeField] public AudioClip SwingEffect;
+    [SerializeField] public AudioClip hitEffect;
+    [SerializeField] public AudioClip blockEffect;
+    [SerializeField] public AudioClip missedEffect;
+    [SerializeField] public AudioClip deathEffect;
+    [SerializeField] public float volume = 1;
+    [SerializeField] public bool randPitch;
+
+
+
     // Attack Information
     public string attackName = "New Melee Attack";
 

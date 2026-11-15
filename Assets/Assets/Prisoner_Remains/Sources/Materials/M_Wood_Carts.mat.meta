@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 93f870b3c4b19b445b97e2501b436b72
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 318403
+  packageName: Prisoner Remains
+  packageVersion: 1.0
+  assetPath: Assets/Prisoner_Remains/Sources/Materials/M_Wood_Carts.mat
+  uploadId: 752047

@@ -20,6 +20,12 @@ public class RangedAttackData : ScriptableObject
     // Attack Information
     public string attackName = "New Ranged Attack";
 
+    [Header("Audio")]
+    [SerializeField] public AudioClip rangeEffect;
+    [SerializeField] public float volume = 1f;
+    [SerializeField] public float speed = 1f;
+    [SerializeField] public bool randPitch = true;
+
     [TextArea]
     public string description;
 

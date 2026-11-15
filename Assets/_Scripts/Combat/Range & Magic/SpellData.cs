@@ -18,6 +18,12 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "NewSpell", menuName = "Mythrenors Hallow/Combat/Spell")]
 public class SpellData : ScriptableObject
 {
+    [Header("Audio")]
+    [SerializeField] public AudioClip spellEffect;
+    [SerializeField] public float volume = 1f;
+    [SerializeField] public float speed = 1f;
+    [SerializeField] public bool randPitch = true;
+
     // Spell Information
     public string spellName = "New Spell";
 
