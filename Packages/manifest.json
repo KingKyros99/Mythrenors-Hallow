@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.unity.animation.rigging": "6.6.0",
     "com.unity.cinemachine": "6.6.0",
     "com.unity.collab-proxy": "2.13.6",
     "com.unity.ide.rider": "3.0.40",
@@ -8,6 +9,7 @@
     "com.unity.probuilder": "6.1.4",
     "com.unity.render-pipelines.high-definition": "17.6.0",
     "com.unity.ugui": "2.6.0",
+    "com.unity.xr.management": "4.7.0",
     "com.unity.modules.accessibility": "1.0.0",
     "com.unity.modules.adaptiveperformance": "1.0.0",
     "com.unity.modules.ai": "1.0.0",

@@ -231,7 +231,13 @@ public class Projectile : MonoBehaviour
         // Handle an environmental impact.
         if (target == null)
         {
-            Debug.Log($"{name} hit environment: {hit.name}");
+            //Debug.Log($"{name} hit environment: {hit.name}");
+
+            WallPuzzle puzzle = hit.GetComponentInParent<WallPuzzle>();
+            if (puzzle != null)
+            {
+                puzzle.ProjectileHit(gameObject);
+            }
 
             SpawnImpactVfx(
                 projectileData.environmentImpactVfx,

@@ -24,7 +24,7 @@ public class Enemy : CharacterBase
     [SerializeField] private Transform[] patrolPoints;
     [SerializeField] private float patrolSpeed = 2f;
     [SerializeField] private float chaseSpeed = 4f;
-    [SerializeField] private float returnSpeed = 3f;
+    // [SerializeField] private float returnSpeed = 3f;
 
     [Header("Ranged Combat")]
     [SerializeField] private RangedAttackManager rangedAttackManager;
@@ -32,12 +32,23 @@ public class Enemy : CharacterBase
     [SerializeField] private Transform projectileSpawnPoint;
     [SerializeField] private float rangedAttackRange = 12f;
 
+    // Optional Animated Melee
+    [SerializeField] private bool useAnimatedMelee = false;
+    [SerializeField] private Animator meleeAttackAnimator;
+
+    // Animated Ranged Combat
+    [SerializeField] private bool useAnimatedRanged = false;
+    [SerializeField] private Animator rangedAnimator;
+
+    private bool rangedShotPending;
+
+
 
     private Vector3 homePosition;
     private int currentPatrolIndex;
     private float nextRangedAttackCheck;
 
-    public BossDoor bossDoor;
+    public Door bossDoor;
     //Combat Audio
     [SerializeField] private bool CombatMusic = true;
     private bool isAggroed;
@@ -66,7 +77,7 @@ public class Enemy : CharacterBase
 
     private void UpdateAI()
     {
-        Debug.Log($"{name} | Alive: {combatEntity?.IsAlive} | State: {currentState}");
+        //Debug.Log($"{name} | Alive: {combatEntity?.IsAlive} | State: {currentState}");
 
         if (combatEntity == null || !combatEntity.IsAlive)
         {
@@ -177,13 +188,13 @@ public class Enemy : CharacterBase
     {
         if (combatEntity == null)
         {
-            Debug.LogError($"{name}: CombatEntity is NULL!");
+            //Debug.LogError($"{name}: CombatEntity is NULL!");
             return;
         }
 
         if (targetingData == null)
         {
-            Debug.LogError($"{name}: TargetingData is NULL!");
+            //Debug.LogError($"{name}: TargetingData is NULL!");
             return;
         }
 
@@ -191,13 +202,13 @@ public class Enemy : CharacterBase
 
         if (nearestEnemy == null)
         {
-            Debug.LogWarning($"{name}: No valid target found!");
+            //Debug.LogWarning($"{name}: No valid target found!");
             return;
         }
 
         target = nearestEnemy.CombatTransform;
 
-        Debug.Log($"{name}: Target acquired: {target.name}");
+        //Debug.Log($"{name}: Target acquired: {target.name}");
     }
 
     private bool IsTargetValid()
@@ -220,12 +231,12 @@ public class Enemy : CharacterBase
 
         float distance = direction.magnitude;
 
-        Debug.Log(
-            $"{name} | Distance: {distance:F2} | " +
-            $"Direction: {direction.normalized} | " +
-            $"Enemy Position: {transform.position} | " +
-            $"Player Position: {target.position}"
-        );
+        //Debug.Log(
+        //    $"{name} | Distance: {distance:F2} | " +
+        //    $"Direction: {direction.normalized} | " +
+        //    $"Enemy Position: {transform.position} | " +
+        //    $"Player Position: {target.position}"
+        //);
 
         if (direction.sqrMagnitude > 0.01f)
             movementController.SetMovement(direction.normalized, chaseSpeed);
@@ -266,7 +277,28 @@ public class Enemy : CharacterBase
         if (targetEntity == null)
             return;
 
-        meleeManager.TryAttack(combatEntity, targetEntity, meleeAttack);
+        if (useAnimatedMelee && meleeAttackAnimator != null)
+        {
+            // Wait until the Animator is ready for another swing.
+            AnimatorStateInfo state = meleeAttackAnimator.GetCurrentAnimatorStateInfo(0);
+
+            if (!state.IsName("Locomotion") || meleeAttackAnimator.IsInTransition(0))
+            {
+                return;
+            }
+
+            // Reserve the attack without applying damage yet.
+            if (meleeManager.TryBeginAnimatedAttack( combatEntity, targetEntity, meleeAttack))
+            {
+                meleeAttackAnimator.SetTrigger("Attack");
+            }
+        }
+
+        else
+        {
+            // Preserve the original behavior for other enemies.
+            meleeManager.TryAttack(combatEntity, targetEntity, meleeAttack);
+        }
     }
 
     private void RangedAttackTarget()
@@ -335,15 +367,80 @@ public class Enemy : CharacterBase
     protected virtual void OnAttack()
     {
         StopMoving();
-        MeleeAttackTarget();
         FaceTarget();
+        MeleeAttackTarget();
     }
 
     protected virtual void OnRangedAttack()
     {
         StopMoving();
         FaceTarget();
+
+        if (useAnimatedRanged)
+        {
+            TryStartAnimatedRangedAttack();
+        }
+
+        else
+        {
+            // Keep the original firing behavior.
+            RangedAttackTarget();
+        }
+    }
+
+    // PURPOSE:
+    // Starts the shooting animation without immediately firing.
+    private void TryStartAnimatedRangedAttack()
+    {
+        if (rangedShotPending || rangedAnimator == null || !rangedAnimator.isActiveAndEnabled || target == null || combatEntity == null ||
+            rangedAttackManager == null || rangedAttack == null || projectileSpawnPoint == null)
+        {
+            return;
+        }
+
+        if (Time.time < nextRangedAttackCheck || !rangedAttackManager.CanAttack(combatEntity, rangedAttack))
+        {
+            return;
+        }
+
+        CombatEntityAdapter targetEntity = target.GetComponent<CombatEntityAdapter>();
+
+        if (targetEntity == null || !TargetingSystem.IsValidTarget(combatEntity, targetEntity, rangedAttack.targetingData))
+        {
+            return;
+        }
+
+        // Only start a new shot from Locomotion.
+        if (rangedAnimator.IsInTransition(0) || !rangedAnimator.GetCurrentAnimatorStateInfo(0).IsName("Locomotion"))
+        {
+            return;
+        }
+
+        rangedShotPending = true;
+
+        rangedAnimator.SetTrigger("Shoot");
+    }
+
+    // PURPOSE:
+    // Called when the shooting animation reaches its firing frame.
+    public void FireAnimatedRangedShot()
+    {
+        if (!rangedShotPending)
+        {
+            return;
+        }
+
+        rangedShotPending = false;
+
+        // Reuse the existing firing and cooldown system.
         RangedAttackTarget();
+    }
+
+    // PURPOSE:
+    // Cancels a shot if its animation is interrupted.
+    public void CancelAnimatedRangedShot()
+    {
+        rangedShotPending = false;
     }
 
     protected virtual void OnReturn()

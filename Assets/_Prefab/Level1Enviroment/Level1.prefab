@@ -271,7 +271,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d0050b75fdc9b2745a7df3349d43ce30, type: 2}
+  - {fileID: 2100000, guid: a4e65d329209c474192c740c741bef7c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1214,7 +1214,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d0050b75fdc9b2745a7df3349d43ce30, type: 2}
+  - {fileID: 2100000, guid: a4e65d329209c474192c740c741bef7c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1391,7 +1391,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d0050b75fdc9b2745a7df3349d43ce30, type: 2}
+  - {fileID: 2100000, guid: a4e65d329209c474192c740c741bef7c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -454140,7 +454140,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d0050b75fdc9b2745a7df3349d43ce30, type: 2}
+  - {fileID: 2100000, guid: a4e65d329209c474192c740c741bef7c, type: 2}
   - {fileID: 2100000, guid: e602232ff26228b4291bce7ee2122630, type: 2}
   - {fileID: 2100000, guid: 8af729dcbde8fed4cbfd69efc1a35fbd, type: 2}
   m_StaticBatchInfo:
@@ -455074,7 +455074,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d0050b75fdc9b2745a7df3349d43ce30, type: 2}
+  - {fileID: 2100000, guid: a4e65d329209c474192c740c741bef7c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -455189,7 +455189,7 @@ MeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 8af729dcbde8fed4cbfd69efc1a35fbd, type: 2}
-  - {fileID: 2100000, guid: d0050b75fdc9b2745a7df3349d43ce30, type: 2}
+  - {fileID: 2100000, guid: a4e65d329209c474192c740c741bef7c, type: 2}
   - {fileID: 2100000, guid: e602232ff26228b4291bce7ee2122630, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -1028369,7 +1028369,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d0050b75fdc9b2745a7df3349d43ce30, type: 2}
+  - {fileID: 2100000, guid: a4e65d329209c474192c740c741bef7c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1028513,7 +1028513,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d0050b75fdc9b2745a7df3349d43ce30, type: 2}
+  - {fileID: 2100000, guid: a4e65d329209c474192c740c741bef7c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1031549,10 +1031549,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c41c0ab5f9351434fadab2c151cc8968, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BossDoor
-  minionCount:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  isLocked: 0
+  keyNeeded: 
+  keepKey: 0
+  hinge: {fileID: 0}
+  angle: 0
+  speed: 0
   doorCollider: {fileID: 3975932504670433279}
   objectiveBoard: {fileID: 2623984260700519086}
 --- !u!65 &3975932504670433279

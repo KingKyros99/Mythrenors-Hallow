@@ -21,6 +21,6 @@ MonoBehaviour:
   collisionLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  combatImpactVfx: {fileID: 8616406381557508272, guid: 344a423eadbd75a4489eb2446485e896, type: 3}
+  combatImpactVfx: {fileID: 4020284549516503499, guid: d69ec121e2f897f4c837a4eb3e841db0, type: 3}
   environmentImpactVfx: {fileID: 8616406381557508272, guid: 602edb71a1a40a54793844866f7bd530, type: 3}
   impactVfxLifetime: 3

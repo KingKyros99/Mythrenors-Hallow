@@ -27,34 +27,34 @@ public class HealingTestController : MonoBehaviour
     {
         if (target == null || characterBase == null)
         {
-            Debug.LogWarning("Healing test references are missing.");
+            //Debug.LogWarning("Healing test references are missing.");
             return;
         }
 
         if (!target.IsAlive)
         {
-            Debug.LogWarning("Healing test requires a living Entity.");
+            //Debug.LogWarning("Healing test requires a living Entity.");
             return;
         }
 
         // Damage the character first.
         target.ReceiveDamage(damageAmount);
 
-        Debug.Log($"Health Before Healing: {characterBase.CurrentHealth}/{characterBase.MaxHealth}");
+        //Debug.Log($"Health Before Healing: {characterBase.CurrentHealth}/{characterBase.MaxHealth}");
 
         // Request healing through CombatManager.
         CombatManager.TryHeal(target, healingAmount);
 
-        Debug.Log($"Health After Healing: {characterBase.CurrentHealth}/{characterBase.MaxHealth}");
+        //Debug.Log($"Health After Healing: {characterBase.CurrentHealth}/{characterBase.MaxHealth}");
 
         // Verify that healing did not exceed maximum.
         if (characterBase.CurrentHealth == characterBase.MaxHealth)
         {
-            Debug.Log("PASS: Healing stopped at maximum health.");
+            //Debug.Log("PASS: Healing stopped at maximum health.");
         }
         else
         {
-            Debug.LogWarning("CHECK: Healing did not reach maximum health.");
+            //Debug.LogWarning("CHECK: Healing did not reach maximum health.");
         }
     }
 }
