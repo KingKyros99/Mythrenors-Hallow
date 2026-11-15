@@ -77,7 +77,7 @@ public class Enemy : CharacterBase
 
     private void UpdateAI()
     {
-        Debug.Log($"{name} | Alive: {combatEntity?.IsAlive} | State: {currentState}");
+        //Debug.Log($"{name} | Alive: {combatEntity?.IsAlive} | State: {currentState}");
 
         if (combatEntity == null || !combatEntity.IsAlive)
         {
@@ -188,13 +188,13 @@ public class Enemy : CharacterBase
     {
         if (combatEntity == null)
         {
-            Debug.LogError($"{name}: CombatEntity is NULL!");
+            //Debug.LogError($"{name}: CombatEntity is NULL!");
             return;
         }
 
         if (targetingData == null)
         {
-            Debug.LogError($"{name}: TargetingData is NULL!");
+            //Debug.LogError($"{name}: TargetingData is NULL!");
             return;
         }
 
@@ -202,13 +202,13 @@ public class Enemy : CharacterBase
 
         if (nearestEnemy == null)
         {
-            Debug.LogWarning($"{name}: No valid target found!");
+            //Debug.LogWarning($"{name}: No valid target found!");
             return;
         }
 
         target = nearestEnemy.CombatTransform;
 
-        Debug.Log($"{name}: Target acquired: {target.name}");
+        //Debug.Log($"{name}: Target acquired: {target.name}");
     }
 
     private bool IsTargetValid()
@@ -231,12 +231,12 @@ public class Enemy : CharacterBase
 
         float distance = direction.magnitude;
 
-        Debug.Log(
-            $"{name} | Distance: {distance:F2} | " +
-            $"Direction: {direction.normalized} | " +
-            $"Enemy Position: {transform.position} | " +
-            $"Player Position: {target.position}"
-        );
+        //Debug.Log(
+        //    $"{name} | Distance: {distance:F2} | " +
+        //    $"Direction: {direction.normalized} | " +
+        //    $"Enemy Position: {transform.position} | " +
+        //    $"Player Position: {target.position}"
+        //);
 
         if (direction.sqrMagnitude > 0.01f)
             movementController.SetMovement(direction.normalized, chaseSpeed);

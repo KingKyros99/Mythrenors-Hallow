@@ -114,7 +114,7 @@ public class SpellManager : MonoBehaviour
             // CharacterBase remains responsible for mana.
             caster.RefundMana(spellData.manaCost);
 
-            Debug.LogWarning($"{caster.CombatTransform.name} failed to cast {spellData.spellName}. Mana refunded.");
+            //Debug.LogWarning($"{caster.CombatTransform.name} failed to cast {spellData.spellName}. Mana refunded.");
 
             return false;
         }
@@ -164,7 +164,7 @@ public class SpellManager : MonoBehaviour
             // Refund mana if projectile creation fails.
             caster.RefundMana(spellData.manaCost);
 
-            Debug.LogWarning($"{caster.CombatTransform.name} failed to cast " + $"{spellData.spellName}. Mana refunded.");
+            //Debug.LogWarning($"{caster.CombatTransform.name} failed to cast " + $"{spellData.spellName}. Mana refunded.");
 
             return false;
         }

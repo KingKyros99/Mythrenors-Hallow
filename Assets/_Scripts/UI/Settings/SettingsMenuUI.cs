@@ -225,10 +225,10 @@ public class SettingsMenuUI : MonoBehaviour
 
         if (root == null)
         {
-            Debug.LogError(
-                "SettingsMenuUI: assign the Root field.",
-                this
-            );
+            //Debug.LogError(
+            //    "SettingsMenuUI: assign the Root field.",
+            //    this
+            //);
             return;
         }
 

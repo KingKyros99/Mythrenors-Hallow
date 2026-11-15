@@ -24,7 +24,7 @@ public class ExplicitTargetTestController : MonoBehaviour
     {
         if (attacker == null || selectedTarget == null || meleeManager == null || attackData == null)
         {
-            Debug.LogWarning("Explicit target test references are missing.");
+            //Debug.LogWarning("Explicit target test references are missing.");
 
             return;
         }
@@ -33,12 +33,12 @@ public class ExplicitTargetTestController : MonoBehaviour
 
         if (successful)
         {
-            Debug.Log($"PASS: Explicit attack executed against {selectedTarget.name}.");
+            //Debug.Log($"PASS: Explicit attack executed against {selectedTarget.name}.");
         }
 
         else
         {
-            Debug.LogWarning("CHECK: Explicit attack was rejected.");
+            //Debug.LogWarning("CHECK: Explicit attack was rejected.");
         }
     }
 }

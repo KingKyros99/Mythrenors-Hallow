@@ -125,7 +125,7 @@ public class CombatEntityAdapter : MonoBehaviour, ICombatEntity
         }
 
         // Temporary combat testing feedback.
-        Debug.Log($"{name} Health: {characterBase.CurrentHealth}/{characterBase.MaxHealth}");
+        //Debug.Log($"{name} Health: {characterBase.CurrentHealth}/{characterBase.MaxHealth}");
     }
 
     // PURPOSE:
@@ -161,7 +161,7 @@ public class CombatEntityAdapter : MonoBehaviour, ICombatEntity
 
         bool successful = characterBase.SpendMana(manaCost);
 
-        Debug.Log($"{name} Mana: {characterBase.CurrentMana}/{characterBase.MaxMana} | Cost: {manaCost} | Success: {successful}");
+        //Debug.Log($"{name} Mana: {characterBase.CurrentMana}/{characterBase.MaxMana} | Cost: {manaCost} | Success: {successful}");
 
         return successful;
     }

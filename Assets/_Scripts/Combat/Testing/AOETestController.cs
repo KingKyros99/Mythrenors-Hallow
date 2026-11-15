@@ -21,7 +21,7 @@ public class AOETestController : MonoBehaviour
     {
         if (caster == null || centerTarget == null || targetingData == null)
         {
-            Debug.LogWarning("AOE test references are missing.");
+            //Debug.LogWarning("AOE test references are missing.");
             return;
         }
 
@@ -30,11 +30,11 @@ public class AOETestController : MonoBehaviour
         List<ICombatEntity> targets =
             TargetingSystem.FindEnemiesInRadius(caster, center, targetingData);
 
-        Debug.Log($"AOE detected {targets.Count} enemies.");
+        //Debug.Log($"AOE detected {targets.Count} enemies.");
 
         foreach (ICombatEntity target in targets)
         {
-            Debug.Log($"AOE Target: {target.CombatTransform.name}");
+            //Debug.Log($"AOE Target: {target.CombatTransform.name}");
         }
     }
 }

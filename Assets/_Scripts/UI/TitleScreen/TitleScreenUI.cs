@@ -315,11 +315,11 @@ public class TitleScreenUI : MonoBehaviour
             return true;
         }
 
-        Debug.LogError(
-            "TitleScreenUI: assign Gameplay Scene Name and include " +
-            "that scene in the active Build Profile's scene list.",
-            this
-        );
+        //Debug.LogError(
+        //    "TitleScreenUI: assign Gameplay Scene Name and include " +
+        //    "that scene in the active Build Profile's scene list.",
+        //    this
+        //);
 
         return false;
     }
@@ -398,10 +398,10 @@ public class TitleScreenUI : MonoBehaviour
 
         if (loading == null)
         {
-            Debug.LogError(
-                "TitleScreenUI: scene loading failed. " + loadingError,
-                this
-            );
+            //Debug.LogError(
+            //    "TitleScreenUI: scene loading failed. " + loadingError,
+            //    this
+            //);
 
             RestoreMenuAfterLoadingFailure();
             yield break;

@@ -130,7 +130,7 @@ public class MeleeManager : MonoBehaviour
         if (validTarget == null)
         {
             PlaySfx(attackData.missedEffect, attackData);
-            Debug.Log($"{attacker.CombatTransform.name} swung but missed.");
+            //Debug.Log($"{attacker.CombatTransform.name} swung but missed.");
 
             return;
         }
@@ -139,7 +139,7 @@ public class MeleeManager : MonoBehaviour
         AttackOutcome outcome = CombatManager.ResolveAttack(attacker, validTarget, attackData.damage);
 
         // DEBUG: Verify the actual combat outcome.
-        Debug.Log($"MELEE RESULT | " + $"Attacker: {attacker.CombatTransform.name} | " + $"Defender: {validTarget.CombatTransform.name} | " + $"Outcome: {outcome}");
+        //Debug.Log($"MELEE RESULT | " + $"Attacker: {attacker.CombatTransform.name} | " + $"Defender: {validTarget.CombatTransform.name} | " + $"Outcome: {outcome}");
 
         // Show impact feedback when the attack connects.
         if (outcome == AttackOutcome.HIT || outcome == AttackOutcome.KILLED)
@@ -152,36 +152,36 @@ public class MeleeManager : MonoBehaviour
         {
             case AttackOutcome.HIT:
                 PlaySfx(attackData.hitEffect, attackData);
-                Debug.Log($"{attacker.CombatTransform.name} hit " + $"{validTarget.CombatTransform.name}!");
+                //Debug.Log($"{attacker.CombatTransform.name} hit " + $"{validTarget.CombatTransform.name}!");
 
                 break;
 
             case AttackOutcome.BLOCKED:
                 PlaySfx(attackData.blockEffect, attackData);
-                Debug.Log($"{validTarget.CombatTransform.name} blocked the attack!");
+                //Debug.Log($"{validTarget.CombatTransform.name} blocked the attack!");
 
                 break;
 
             case AttackOutcome.DODGED:
                 PlaySfx(attackData.missedEffect, attackData);
-                Debug.Log($"{validTarget.CombatTransform.name} dodged the attack!");
+                //Debug.Log($"{validTarget.CombatTransform.name} dodged the attack!");
                 break;
 
             case AttackOutcome.KILLED:
                 PlaySfx(attackData.deathEffect, attackData);
-                Debug.Log($"{validTarget.CombatTransform.name} was defeated!");
+                //Debug.Log($"{validTarget.CombatTransform.name} was defeated!");
 
                 break;
 
             case AttackOutcome.MISSED:
                 PlaySfx(attackData.missedEffect, attackData);
-                Debug.Log("Attack missed.");
+                //Debug.Log("Attack missed.");
 
                 break;
 
             case AttackOutcome.INVALID:
 
-                Debug.Log("Attack could not be resolved.");
+                //Debug.Log("Attack could not be resolved.");
 
                 break;
         }
@@ -405,14 +405,14 @@ public class MeleeManager : MonoBehaviour
     {
         if (AudioManger.inst == null)
         {
-            Debug.LogError("manager null");
+            //Debug.LogError("manager null");
             return;
         }
         if (clip == null || attackData == null)
         {
             return;
         }
-        Debug.Log("SFXSuccess");
+        //Debug.Log("SFXSuccess");
         AudioManger.inst.PlaySFX(clip, attackData.volume, attackData.randPitch);
     }
 

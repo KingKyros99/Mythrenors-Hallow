@@ -190,7 +190,7 @@ public class CharacterBase : MonoBehaviour
 
 
         Destroy(gameObject);
-        Debug.Log($"{name} has died.");
+        //Debug.Log($"{name} has died.");
 
 
     }
