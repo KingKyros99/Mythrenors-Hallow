@@ -89,7 +89,7 @@ public class Enemy : CharacterBase
 
     private void Update()
     {
-        //UpdateAI();
+        UpdateAI();
     }
 
     private void UpdateAI()
