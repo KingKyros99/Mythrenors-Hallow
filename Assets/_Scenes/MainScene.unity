@@ -866,8 +866,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.0000004, y: 0.38454953, z: 0.23859648}
-  m_Center: {x: -0.0000000018685862, y: 0.1591335, z: 0.11929808}
+  m_Size: {x: 1.0000004, y: 0.38454953, z: 0.33846295}
+  m_Center: {x: -0.0000000027384166, y: 0.15913348, z: 0.16923131}
 --- !u!1 &119011791
 GameObject:
   m_ObjectHideFlags: 0
@@ -42921,6 +42921,18 @@ PrefabInstance:
       propertyPath: meleeManager
       value: 
       objectReference: {fileID: 1564851961}
+    - target: {fileID: 29828823718377569, guid: c87c5b1d9ab41464392b53f41442d8f9, type: 3}
+      propertyPath: rangedAttack
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 29828823718377569, guid: c87c5b1d9ab41464392b53f41442d8f9, type: 3}
+      propertyPath: rangedAttackManager
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 29828823718377569, guid: c87c5b1d9ab41464392b53f41442d8f9, type: 3}
+      propertyPath: projectileSpawnPoint
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 3748231385129651879, guid: c87c5b1d9ab41464392b53f41442d8f9, type: 3}
       propertyPath: meleeManager
       value: 
