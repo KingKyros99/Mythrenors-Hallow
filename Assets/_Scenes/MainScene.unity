@@ -5667,6 +5667,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player_Sorcerer
       objectReference: {fileID: 0}
+    - target: {fileID: 7125614672101170819, guid: 9a086d9d50f6f984facd1f600ed73b38, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7641387063016503771, guid: 9a086d9d50f6f984facd1f600ed73b38, type: 3}
       propertyPath: volume
       value: 1
@@ -9177,7 +9181,7 @@ PrefabInstance:
     - target: {fileID: 402273794881404040, guid: 4f11f1c7ec2f4d0468b7c7907685e1f3, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: a4466e731efaa4f44b03031d0ef98d5b, type: 2}
+      objectReference: {fileID: 2100000, guid: a4e65d329209c474192c740c741bef7c, type: 2}
     - target: {fileID: 432181760932504581, guid: 4f11f1c7ec2f4d0468b7c7907685e1f3, type: 3}
       propertyPath: m_Mesh
       value: 
@@ -9185,18 +9189,22 @@ PrefabInstance:
     - target: {fileID: 471148483092798310, guid: 4f11f1c7ec2f4d0468b7c7907685e1f3, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: ded7da8a93fa5784d9f4febedf6a864c, type: 2}
+      objectReference: {fileID: 2100000, guid: a4e65d329209c474192c740c741bef7c, type: 2}
     - target: {fileID: 879485853688358138, guid: 4f11f1c7ec2f4d0468b7c7907685e1f3, type: 3}
       propertyPath: m_Name
       value: Level1 (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 1252875337423423378, guid: 4f11f1c7ec2f4d0468b7c7907685e1f3, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: a4e65d329209c474192c740c741bef7c, type: 2}
     - target: {fileID: 1298272950810878675, guid: 4f11f1c7ec2f4d0468b7c7907685e1f3, type: 3}
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 1545994770}
     - target: {fileID: 1298272950810878675, guid: 4f11f1c7ec2f4d0468b7c7907685e1f3, type: 3}
       propertyPath: m_VersionIndex
-      value: 3584
+      value: 3590
       objectReference: {fileID: 0}
     - target: {fileID: 1582036120230134347, guid: 4f11f1c7ec2f4d0468b7c7907685e1f3, type: 3}
       propertyPath: m_Mesh
@@ -9209,7 +9217,7 @@ PrefabInstance:
     - target: {fileID: 2292222439265772477, guid: 4f11f1c7ec2f4d0468b7c7907685e1f3, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: ded7da8a93fa5784d9f4febedf6a864c, type: 2}
+      objectReference: {fileID: 2100000, guid: a4e65d329209c474192c740c741bef7c, type: 2}
     - target: {fileID: 2600773467942794938, guid: 4f11f1c7ec2f4d0468b7c7907685e1f3, type: 3}
       propertyPath: m_Mesh
       value: 
@@ -9224,7 +9232,7 @@ PrefabInstance:
       objectReference: {fileID: 533984549}
     - target: {fileID: 2756200787788373365, guid: 4f11f1c7ec2f4d0468b7c7907685e1f3, type: 3}
       propertyPath: m_VersionIndex
-      value: 579
+      value: 585
       objectReference: {fileID: 0}
     - target: {fileID: 3129270820352196781, guid: 4f11f1c7ec2f4d0468b7c7907685e1f3, type: 3}
       propertyPath: m_Mesh
@@ -9284,7 +9292,7 @@ PrefabInstance:
       objectReference: {fileID: 481247303}
     - target: {fileID: 3846916170366124892, guid: 4f11f1c7ec2f4d0468b7c7907685e1f3, type: 3}
       propertyPath: m_VersionIndex
-      value: 10378
+      value: 10384
       objectReference: {fileID: 0}
     - target: {fileID: 3846916170366124892, guid: 4f11f1c7ec2f4d0468b7c7907685e1f3, type: 3}
       propertyPath: m_Faces.Array.size
@@ -26854,6 +26862,10 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 1457695391}
+    - target: {fileID: 4871066246081600885, guid: 4f11f1c7ec2f4d0468b7c7907685e1f3, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: a4e65d329209c474192c740c741bef7c, type: 2}
     - target: {fileID: 4889383041219891779, guid: 4f11f1c7ec2f4d0468b7c7907685e1f3, type: 3}
       propertyPath: m_Mesh
       value: 
@@ -26868,7 +26880,7 @@ PrefabInstance:
       objectReference: {fileID: 194550011}
     - target: {fileID: 5374570390430246002, guid: 4f11f1c7ec2f4d0468b7c7907685e1f3, type: 3}
       propertyPath: m_VersionIndex
-      value: 3380
+      value: 3386
       objectReference: {fileID: 0}
     - target: {fileID: 5775152491561468557, guid: 4f11f1c7ec2f4d0468b7c7907685e1f3, type: 3}
       propertyPath: m_Enabled
@@ -26912,7 +26924,7 @@ PrefabInstance:
       objectReference: {fileID: 483779621}
     - target: {fileID: 6546802949910471157, guid: 4f11f1c7ec2f4d0468b7c7907685e1f3, type: 3}
       propertyPath: m_VersionIndex
-      value: 90
+      value: 96
       objectReference: {fileID: 0}
     - target: {fileID: 6735544379842505088, guid: 4f11f1c7ec2f4d0468b7c7907685e1f3, type: 3}
       propertyPath: m_Mesh
@@ -26920,7 +26932,7 @@ PrefabInstance:
       objectReference: {fileID: 619083658}
     - target: {fileID: 6735544379842505088, guid: 4f11f1c7ec2f4d0468b7c7907685e1f3, type: 3}
       propertyPath: m_VersionIndex
-      value: 1776
+      value: 1782
       objectReference: {fileID: 0}
     - target: {fileID: 7556658172157929504, guid: 4f11f1c7ec2f4d0468b7c7907685e1f3, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -26940,7 +26952,7 @@ PrefabInstance:
       objectReference: {fileID: 1457695391}
     - target: {fileID: 7713331962504706725, guid: 4f11f1c7ec2f4d0468b7c7907685e1f3, type: 3}
       propertyPath: m_VersionIndex
-      value: 1404
+      value: 1410
       objectReference: {fileID: 0}
     - target: {fileID: 7713331962504706725, guid: 4f11f1c7ec2f4d0468b7c7907685e1f3, type: 3}
       propertyPath: m_SelectedEdges.Array.size
@@ -28048,7 +28060,7 @@ PrefabInstance:
       objectReference: {fileID: 963494021}
     - target: {fileID: 8767298095529813627, guid: 4f11f1c7ec2f4d0468b7c7907685e1f3, type: 3}
       propertyPath: m_VersionIndex
-      value: 2190
+      value: 2196
       objectReference: {fileID: 0}
     - target: {fileID: 8767298095529813627, guid: 4f11f1c7ec2f4d0468b7c7907685e1f3, type: 3}
       propertyPath: m_SelectedEdges.Array.size
