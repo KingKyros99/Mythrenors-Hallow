@@ -12,6 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57afdef35d7ab4844924e27e284540c2, type: 3}
   m_Name: Enemy_Melee_Attack
   m_EditorClassIdentifier: Assembly-CSharp::MeleeAttackData
+  SwingEffect: {fileID: 8300000, guid: 13657ef681b231244a8e0cf2200217ca, type: 3}
+  hitEffect: {fileID: 8300000, guid: 2490b8d75f3c3204889819519159337b, type: 3}
+  blockEffect: {fileID: 8300000, guid: b937a8a51f20dbb4a83784130a78bcab, type: 3}
+  missedEffect: {fileID: 8300000, guid: 1320d50efb142fb4a94d9e97a0a2c41f, type: 3}
+  deathEffect: {fileID: 8300000, guid: f57ae971a30861c409a47201c3d5b9e0, type: 3}
+  volume: 4
+  randPitch: 1
   attackName: Enemy_Melee_Attack
   description: 
   damage:
@@ -21,13 +28,13 @@ MonoBehaviour:
     IgnoreDefense: 0
     Unblockable: 0
   targetingData: {fileID: 11400000, guid: 2006c0d9173f17647b972c4b15eb132d, type: 2}
-  cooldown: 0.8
+  cooldown: 1.2
   requiresTarget: 0
   statusEffect: {fileID: 0}
   swingVfxPrefab: {fileID: 1872147318604286, guid: 03a4017fdb251414c8cf54ac05770d31, type: 3}
   swingVfxOffset: {x: 0.25, y: 0.75, z: 1}
   swingVfxRotationOffset: {x: 0, y: 0, z: 0}
   swingVfxLifetime: 2
-  hitVfxPrefab: {fileID: 8616406381557508272, guid: 88afdd47422b56c48a856ca4a768cabf, type: 3}
+  hitVfxPrefab: {fileID: 4020284549516503499, guid: d69ec121e2f897f4c837a4eb3e841db0, type: 3}
   hitVfxRotationOffset: {x: 0, y: 0, z: 0}
   hitVfxLifetime: 2

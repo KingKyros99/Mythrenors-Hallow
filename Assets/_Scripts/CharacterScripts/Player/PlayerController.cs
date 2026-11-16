@@ -35,7 +35,7 @@ public class PlayerController : MonoBehaviour
 
     void movement()
     {
-        Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * range, Color.red);
+        //Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * range, Color.red);
         attackTimmer += Time.deltaTime;
 
 
@@ -74,7 +74,7 @@ public class PlayerController : MonoBehaviour
         RaycastHit hit;
         if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, range))
         {
-            Debug.Log(hit.collider.name);
+            //Debug.Log(hit.collider.name);
             Damage Dmg = hit.collider.GetComponent<Damage>();
             if (Dmg != null)
             {

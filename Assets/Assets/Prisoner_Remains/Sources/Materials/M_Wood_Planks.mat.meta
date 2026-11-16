@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: fa3aa8f6e6c557745a1c40380d7221e6
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 318403
+  packageName: Prisoner Remains
+  packageVersion: 1.0
+  assetPath: Assets/Prisoner_Remains/Sources/Materials/M_Wood_Planks.mat
+  uploadId: 752047

@@ -1,5 +1,6 @@
-using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 
@@ -7,9 +8,20 @@ using UnityEngine.SceneManagement;
 public class AudioManger : MonoBehaviour
 {
     public static AudioManger inst { get; private set; }
-    [System.Serializable] public struct sceneAudio { 
-        public string Name; 
-        public AudioClip clip; 
+    [System.Serializable]
+    public struct sceneAudio
+    {
+        public string Name;
+        public AudioClip clip;
+    }
+
+    [System.Serializable]
+    public struct sfxAudio
+    {
+        public string Name;
+        public AudioClip clip;
+        public float volume;
+        public bool randomPitch;
     }
 
 
@@ -19,14 +31,23 @@ public class AudioManger : MonoBehaviour
     private int aggro;
     private bool inCombat;
 
+
+    //Sound Effect
+    [SerializeField] private sfxAudio[] sfxTracks;
+    [SerializeField] private float sfxVolume;
     //Track List
-    [SerializeField] private sceneAudio[] Tracks;
+    [SerializeField] private sceneAudio[] sceneTracks;
     //Fade In/Out,Volume
     [SerializeField] private float transitionTime;
     [SerializeField] private float volume;
     //What plays the audio
-    private AudioSource source;
+
+    private AudioSource sfxSource;
+    private AudioSource musicSource;
     private AudioClip audioClip;
+
+    private List<AudioSource> sfxList = new List<AudioSource>();
+
 
     private void Awake()
     {
@@ -38,11 +59,33 @@ public class AudioManger : MonoBehaviour
         inst = this;
 
         //Keep this object when entering new scene
+        if (transform.parent != null)
+        {
+            transform.SetParent(null, true);
+        }
+
         DontDestroyOnLoad(gameObject);
-        //Audio Sorce SetUp
-        source = GetComponent<AudioSource>();
-        source.loop = true;
-        source.playOnAwake = false;
+
+        //Scene Audio Sorce SetUp
+        musicSource = GetComponent<AudioSource>();
+        musicSource.loop = true;
+        musicSource.playOnAwake = false;
+
+        //Sound Effect Source
+        sfxSource = gameObject.AddComponent<AudioSource>();
+        sfxSource.loop = false;
+        sfxSource.playOnAwake = false;
+
+        //Build SoundEffects
+        for (int i = 0; i < sfxTracks.Length; i++)
+        {
+            AudioSource source = gameObject.AddComponent<AudioSource>();
+            source.loop = false;
+            source.playOnAwake = false;
+            sfxList.Add(source);
+
+        }
+
 
         SceneManager.sceneLoaded += SceneLoaded;
         SceneAudio(SceneManager.GetActiveScene().name);
@@ -64,7 +107,7 @@ public class AudioManger : MonoBehaviour
     //Find and Play correct track
     void SceneAudio(string scene)
     {
-        foreach (var track in Tracks)
+        foreach (var track in sceneTracks)
         {
 
             if (track.Name != scene)
@@ -72,8 +115,10 @@ public class AudioManger : MonoBehaviour
                 continue;
             }
 
+            audioClip = track.clip;
+
             //Dont restart already playing track
-            if (source.clip == track.clip && source.isPlaying)
+            if (musicSource.clip == track.clip && musicSource.isPlaying)
             {
                 return;
             }
@@ -90,7 +135,7 @@ public class AudioManger : MonoBehaviour
         {
             return;
         }
-        if (source.clip == clip && source.isPlaying)
+        if (musicSource.clip == clip && musicSource.isPlaying)
         {
             return;
         }
@@ -106,26 +151,26 @@ public class AudioManger : MonoBehaviour
         float time = Mathf.Max(transitionTime, 0.1f);
 
         //Fade out
-        float startVolume = source.volume;
+        float startVolume = musicSource.volume;
         for (float i = 0f; i < time; i += Time.unscaledDeltaTime)
         {
-            source.volume = Mathf.Lerp(startVolume, 0f, i / time);
+            musicSource.volume = Mathf.Lerp(startVolume, 0f, i / time);
             yield return null;
         }
-        source.volume = 0f;
+        musicSource.volume = 0f;
 
         //start new track
-        source.clip = nextClip;
-        source.Play();
+        musicSource.clip = nextClip;
+        musicSource.Play();
 
 
         //Fade in
         for (float i = 0f; i < time; i += Time.unscaledDeltaTime)
         {
-            source.volume = Mathf.Lerp(0f, volume, i / time);
+            musicSource.volume = Mathf.Lerp(0f, volume, i / time);
             yield return null;
         }
-        source.volume = volume;
+        musicSource.volume = volume;
     }
 
 
@@ -144,7 +189,7 @@ public class AudioManger : MonoBehaviour
     public void CombatEnded()
     {
         aggro = Mathf.Max(0, aggro - 1);
-        if (aggro > 0 || !inCombat) 
+        if (aggro > 0 || !inCombat)
         {
             return;
         }
@@ -160,4 +205,52 @@ public class AudioManger : MonoBehaviour
         }
         PlayTrack(clip);
     }
+
+    //Sound Effects
+    public void PlaySFX(string Name)
+    {
+        foreach (var sfx in sfxTracks)
+        {
+            if (sfx.Name != Name)
+            {
+                continue;
+            }
+            if (sfx.clip == null || sfx.clip.length == 0)
+            {
+                return;
+            }
+            sfxSource.pitch = sfx.randomPitch ? Random.Range(0.6f, 1.0f) : 1f;
+            float finalVolume = (sfx.volume > 0f ? sfx.volume : 1f) * sfxVolume;
+            sfxSource.PlayOneShot(sfx.clip, finalVolume);
+            return;
+        }
+    }
+
+    public void PlaySFX(AudioClip clip, float volume, bool randomPitch, float speed = 1f)
+    {
+        if (clip == null)
+        {
+            return;
+        }
+        AudioSource source = GetSFXSource();
+        source.volume = 1f;
+        source.pitch = randomPitch ? Random.Range(0.6f, 1.0f) : 1f;
+        float finalVolume = Mathf.Clamp01(volume) * sfxVolume;
+        source.pitch = randomPitch ? speed * Random.Range(0.9f, 1.1f) : speed;
+        source.PlayOneShot(clip, finalVolume);
+    }
+
+    private AudioSource GetSFXSource()
+    {
+        foreach (var source in sfxList)
+        {
+            if (source.isPlaying == false)
+            {
+                return source;
+            }
+        }
+        return sfxList[0];
+    }
+
+
 }

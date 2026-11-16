@@ -21,6 +21,13 @@ public class StatusEffectManager : MonoBehaviour
 
     private ICombatEntity combatEntity;
 
+    public bool IsApplyingStatusDamage
+    {
+        get;
+
+        private set;
+    }
+
     // PURPOSE:
     // Connects active status effects to their
     // visual effects on the Entity.
@@ -57,7 +64,7 @@ public class StatusEffectManager : MonoBehaviour
 
         if (combatEntity == null)
         {
-            Debug.LogWarning($"{name}: No valid combat Entity assigned.", this);
+            //Debug.LogWarning($"{name}: No valid combat Entity assigned.", this);
         }
     }
 
@@ -114,7 +121,7 @@ public class StatusEffectManager : MonoBehaviour
             // when its duration expires.
             if (effect.remainingDuration <= 0f)
             {
-                Debug.Log($"{name}: {effect.data.effectName} expired.");
+                //Debug.Log($"{name}: {effect.data.effectName} expired.");
 
                 if (vfxController != null)
                 {
@@ -188,7 +195,7 @@ public class StatusEffectManager : MonoBehaviour
             vfxController.PlayEffect(data);
         }
 
-        Debug.Log($"{name}: {data.effectName} applied.");
+        //Debug.Log($"{name}: {data.effectName} applied.");
 
         return true;
     }
@@ -206,13 +213,27 @@ public class StatusEffectManager : MonoBehaviour
 
         switch (effect.data.effectType)
         {
+
             case StatusEffectType.Poison:
 
             case StatusEffectType.Burn:
 
             case StatusEffectType.Bleed:
 
-                combatEntity.ReceiveDamage(amount);
+                // Mark this damage as coming from a status effect.
+                IsApplyingStatusDamage = true;
+
+                try
+                {
+                    // Preserve the existing combat damage pipeline.
+                    combatEntity.ReceiveDamage(amount);
+                }
+
+                finally
+                {
+                    // Reset the flag even if damage processing fails.
+                    IsApplyingStatusDamage = false;
+                }
 
                 break;
 
@@ -223,7 +244,7 @@ public class StatusEffectManager : MonoBehaviour
                 break;
         }
 
-        Debug.Log($"{name}: {effect.data.effectName} ticked for {amount}.");
+        //Debug.Log($"{name}: {effect.data.effectName} ticked for {amount}.");
     }
 
     // PURPOSE:

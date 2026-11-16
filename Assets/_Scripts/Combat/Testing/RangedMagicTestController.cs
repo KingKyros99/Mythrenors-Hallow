@@ -65,7 +65,7 @@ public class RangedMagicTestController : MonoBehaviour
 
             if (successful)
             {
-                Debug.Log("Spell test cast successfully.");
+                //Debug.Log("Spell test cast successfully.");
             }
         }
         else
@@ -79,7 +79,7 @@ public class RangedMagicTestController : MonoBehaviour
 
             if (successful)
             {
-                Debug.Log("Ranged weapon test fired successfully.");
+                //Debug.Log("Ranged weapon test fired successfully.");
             }
         }
     }

@@ -12,6 +12,8 @@ public class OptionSelector : MonoBehaviour
     [SerializeField] private TMP_Text valueLabel;
     [SerializeField] private bool wrapAround = false;
 
+    private string clickSfx = "UIClick";
+
     public UnityEvent<int> onValueChanged = new UnityEvent<int>();
 
     private readonly List<string> options = new List<string>();
@@ -46,6 +48,12 @@ public class OptionSelector : MonoBehaviour
         if (next == Index) return;
         Index = next;
         Refresh();
+
+        if (AudioManger.inst != null)
+        {
+            AudioManger.inst.PlaySFX(clickSfx);
+        }
+
         onValueChanged.Invoke(Index);
     }
 

@@ -29,21 +29,19 @@ public class BossGateSwing : MonoBehaviour
     private float timer;
     private bool opening;
 
-    void Start()
+    private void Start()
     {
         if (!leftGate || !rightGate || !doorCollider)
         {
-            Debug.LogError("BossGateSwing: Missing references!");
             enabled = false;
             return;
         }
 
-        Renderer leftR = leftGate.GetComponent<Renderer>();
-        Renderer rightR = rightGate.GetComponent<Renderer>();
+        Renderer leftRenderer = leftGate.GetComponent<Renderer>();
+        Renderer rightRenderer = rightGate.GetComponent<Renderer>();
 
-        if (!leftR || !rightR)
+        if (!leftRenderer || !rightRenderer)
         {
-            Debug.LogError("BossGateSwing: Missing door renderers!");
             enabled = false;
             return;
         }
@@ -53,71 +51,83 @@ public class BossGateSwing : MonoBehaviour
         leftStartRot = leftGate.rotation;
         rightStartRot = rightGate.rotation;
 
-        // Gate frame's horizontal direction.
         Vector3 horizontal = Vector3.ProjectOnPlane(
-            transform.right, Vector3.up
+            transform.right,
+            Vector3.up
         ).normalized;
 
         if (horizontal.sqrMagnitude < 0.001f)
             horizontal = Vector3.right;
 
-        // Determine which door is physically on each side.
-        Vector3 leftCenter = leftR.bounds.center;
-        Vector3 rightCenter = rightR.bounds.center;
+        Vector3 leftCenter = leftRenderer.bounds.center;
+        Vector3 rightCenter = rightRenderer.bounds.center;
 
         if (Vector3.Dot(leftCenter - rightCenter, horizontal) > 0f)
             horizontal = -horizontal;
 
         swingAxis = Vector3.up;
 
-        leftPivot = GetOuterEdge(leftR.bounds, horizontal, false)
-                    + horizontal * leftPivotOffset;
+        leftPivot =
+            GetOuterEdge(leftRenderer.bounds, horizontal, false) +
+            horizontal * leftPivotOffset;
 
-        rightPivot = GetOuterEdge(rightR.bounds, horizontal, true)
-                     + horizontal * rightPivotOffset;
-
-        Debug.Log("BossGateSwing: Gate pivots initialized.");
+        rightPivot =
+            GetOuterEdge(rightRenderer.bounds, horizontal, true) +
+            horizontal * rightPivotOffset;
     }
 
-    Vector3 GetOuterEdge(Bounds b, Vector3 axis, bool right)
+    private Vector3 GetOuterEdge(
+        Bounds bounds,
+        Vector3 axis,
+        bool right)
     {
         float extent =
-            Mathf.Abs(axis.x) * b.extents.x +
-            Mathf.Abs(axis.y) * b.extents.y +
-            Mathf.Abs(axis.z) * b.extents.z;
+            Mathf.Abs(axis.x) * bounds.extents.x +
+            Mathf.Abs(axis.y) * bounds.extents.y +
+            Mathf.Abs(axis.z) * bounds.extents.z;
 
-        return b.center + axis * extent * (right ? 1f : -1f);
+        return bounds.center + axis * extent * (right ? 1f : -1f);
     }
 
-    void Update()
+    private void Update()
     {
         if (!opening && !doorCollider.enabled)
         {
             opening = true;
             timer = 0f;
-            Debug.Log("BossGateSwing: Opening!");
         }
 
         if (!opening) return;
 
         timer += Time.deltaTime;
 
-        float t = Mathf.SmoothStep(
-            0f, 1f,
+        float progress = Mathf.SmoothStep(
+            0f,
+            1f,
             Mathf.Clamp01(timer / Mathf.Max(openTime, 0.01f))
         );
 
         float direction = reverseDirection ? -1f : 1f;
-        float angle = openAngle * t * direction;
+        float angle = openAngle * progress * direction;
 
-        Swing(leftGate, leftPivot, leftStartPos,
-              leftStartRot, angle);
+        Swing(
+            leftGate,
+            leftPivot,
+            leftStartPos,
+            leftStartRot,
+            angle
+        );
 
-        Swing(rightGate, rightPivot, rightStartPos,
-              rightStartRot, -angle);
+        Swing(
+            rightGate,
+            rightPivot,
+            rightStartPos,
+            rightStartRot,
+            -angle
+        );
     }
 
-    void Swing(
+    private void Swing(
         Transform door,
         Vector3 pivot,
         Vector3 startPosition,

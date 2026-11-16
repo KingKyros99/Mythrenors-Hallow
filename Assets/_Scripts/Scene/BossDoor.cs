@@ -12,66 +12,65 @@ public class BossDoor : MonoBehaviour
 
     void Start()
     {
-        foreach (Enemy e in minionCount)
-        {
-            if (e != null)
-            {
-                e.bossDoor = this;
-            }
-        }
-        //checks the boss doors open condion and displays it on the objective obj
-        ObjectiveBoard();
-        CheckObjective();
+        //foreach (Enemy e in minionCount)
+        //{
+        //    if (e != null)
+        //    {
+        //        e.bossDoor = this;
+        //    }
+        //}
+        ////checks the boss doors open condion and displays it on the objective obj
+        //ObjectiveBoard();
+        //CheckObjective();
     }
 
     private void Update()
     {
 
-        if (isDoorOpen)
+        if (!isDoorOpen)
         {
-            return;
+            DoorOpen();
         }
         //removes the enemys if they are destroyed
         minionCount.RemoveAll(e => e == null);
         //checks the boss doors open condion and displays it on the objective obj
-        ObjectiveBoard();
-        CheckObjective();
+       
     }
 
-    public void addEnemy(Enemy enemy)
-    {
-        minionCount.Add(enemy);
-        enemy.bossDoor = this;
-    }
-    public void RemoveEnemy(Enemy enemy)
-    {
-        minionCount.RemoveAll(e => e == null || e == enemy);
-        ObjectiveBoard();
-        CheckObjective();
-    }
+    //public void addEnemy(Enemy enemy)
+    //{
+    //    minionCount.Add(enemy);
+    //    enemy.bossDoor = this;
+    //}
+    //public void RemoveEnemy(Enemy enemy)
+    //{
+    //    minionCount.RemoveAll(e => e == null || e == enemy);
+    //    ObjectiveBoard();
+    //    CheckObjective();
+    //}
 
-    void ObjectiveBoard()
-    {
-        if (objectiveBoard == null)
-        {
-            return;
-        }
-        string text = $"Enemies Remaining: {minionCount.Count}";
-        objectiveBoard.text = text;
-    }
+    //void ObjectiveBoard()
+    //{
+    //    if (objectiveBoard == null)
+    //    {
+    //        return;
+    //    }
+    //    string text = $"Enemies Remaining: {minionCount.Count}";
+    //    objectiveBoard.text = text;
+    //}
 
 
-    void CheckObjective()
-    {
-        if (minionCount.Count == 0 && !isDoorOpen) 
-        {
-            DoorOpen();
-        }
-        else
-        {
-            return;
-        }
-    }
+    //void CheckObjective()
+    //{
+    //    if (minionCount.Count == 0 && !isDoorOpen) 
+    //    {
+    //        DoorOpen();
+    //    }
+    //    else
+    //    {
+    //        return;
+    //    }
+    //}
   
     
     void DoorOpen()

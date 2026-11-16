@@ -13,16 +13,20 @@ MonoBehaviour:
   m_Name: Boss_Bow_Attack
   m_EditorClassIdentifier: Assembly-CSharp::RangedAttackData
   attackName: Boss Bow Attack
+  rangeEffect: {fileID: 0}
+  volume: 3
+  speed: 1
+  randPitch: 1
   description: 
   damage:
-    BaseDamage: 8
+    BaseDamage: 10
     DamageType: 0
     CanCrit: 1
     IgnoreDefense: 0
     Unblockable: 0
   projectileData: {fileID: 11400000, guid: 1216fae902ecf4d41ae7ac0357d5f7cc, type: 2}
   targetingData: {fileID: 11400000, guid: 129c46c6068755f46961a32dafb5d0e7, type: 2}
-  cooldown: 1.5
+  cooldown: 2.8
   usesAmmo: 0
   ammoCost: 0
   statusEffect: {fileID: 11400000, guid: 0edc8407bd32ac54d9494d5718ee3426, type: 2}
