@@ -572,8 +572,8 @@ MonoBehaviour:
   chaseSpeed: 4
   returnSpeed: 3
   rangedAttackManager: {fileID: 0}
-  rangedAttack: {fileID: 11400000, guid: 325c7199d86468743af6e4c71f4bb026, type: 2}
-  projectileSpawnPoint: {fileID: 4701428713156202941}
+  rangedAttack: {fileID: 0}
+  projectileSpawnPoint: {fileID: 0}
   rangedAttackRange: 12
   useAnimatedMelee: 1
   meleeAttackAnimator: {fileID: 2106060407728868615}

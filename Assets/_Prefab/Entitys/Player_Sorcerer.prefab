@@ -819,6 +819,7 @@ MonoBehaviour:
   dodgeInput: {fileID: 4233016663096029250, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
   dodgeMovement: {fileID: 3314376354705158196}
   movementController: {fileID: 7641387063016503771}
+  sprintInput: {fileID: -7471211009204490832, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
 --- !u!114 &5052667502017468757
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1015,6 +1016,12 @@ MonoBehaviour:
   jumpCount: 1
   jumpCountMax: 1
   aiControlled: 0
+  footStep: {fileID: 8300000, guid: ec07218b4644cd44cb006a435282b5e8, type: 3}
+  jumpClip: {fileID: 8300000, guid: ab88561422588984793b29e0588410f7, type: 3}
+  walkIntervals: 0.6
+  sprintIntervals: 0.3
+  volume: 1
+  jumpDelay: 1.5
 --- !u!114 &3314376354705158196
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1267,7 +1274,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7779094090839401366}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1276,7 +1283,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 200, y: 50}
+  m_SizeDelta: {x: 516.0026, y: 104.035}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4165406633698239999
 CanvasRenderer:
@@ -1310,15 +1317,15 @@ MonoBehaviour:
 
 '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: aca1841b2507d584ca973c2b372cae27, type: 2}
+  m_sharedMaterial: {fileID: 3020225749185276557, guid: aca1841b2507d584ca973c2b372cae27, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -1341,8 +1348,8 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
-  m_HorizontalAlignment: 1
+  m_fontStyle: 3
+  m_HorizontalAlignment: 2
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -1374,7 +1381,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 0, y: 0, z: -0.000015221114, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0

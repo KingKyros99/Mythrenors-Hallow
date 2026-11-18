@@ -566,7 +566,7 @@ MonoBehaviour:
   targetingData: {fileID: 11400000, guid: 129c46c6068755f46961a32dafb5d0e7, type: 2}
   meleeManager: {fileID: 0}
   meleeAttack: {fileID: 0}
-  attackCheckInterval: 0.5
+  attackCheckInterval: 0.2
   canPatrol: 0
   patrolPoints: []
   patrolSpeed: 2

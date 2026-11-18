@@ -493,11 +493,11 @@ MonoBehaviour:
   mStatusResistance: 0
   mCritResistance: 0
   leashDistance: 15
-  attackRange: 2
+  attackRange: 1.3
   targetingData: {fileID: 11400000, guid: b23bcc3549ba11e45bc1b3ebfd07fd04, type: 2}
   meleeManager: {fileID: 0}
-  meleeAttack: {fileID: 11400000, guid: 4068cd48883ffca44adec2d21c468dd5, type: 2}
-  attackCheckInterval: 0.8
+  meleeAttack: {fileID: 11400000, guid: 1b985044cbb78b8489b68b6e0579b1a6, type: 2}
+  attackCheckInterval: 0.2
   canPatrol: 0
   patrolPoints: []
   patrolSpeed: 2
