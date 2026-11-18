@@ -25,9 +25,11 @@ public class TitleScreenUI : MonoBehaviour
 
     [Header("Continue greyed-out look")]
     [SerializeField] private TMP_Text continueLabel;
+
     [SerializeField]
     private Color normalTextColor =
         new Color32(0xE8, 0xE1, 0xD0, 0xFF);
+
     [SerializeField]
     private Color disabledTextColor =
         new Color32(0xE8, 0xE1, 0xD0, 0x55);
@@ -98,18 +100,26 @@ public class TitleScreenUI : MonoBehaviour
 
     private void Start()
     {
-        SetContinueAvailable(PlayerPrefs.GetInt(KeyHasGame, 0) == 1);
+        bool hasSave =
+            SaveManager.Instance != null &&
+            SaveManager.Instance.HasSave();
+
+        SetContinueAvailable(hasSave);
         SelectFirstButton();
     }
 
     private void Update()
     {
-        if (!creditsOpen || busy) return;
+        if (!creditsOpen || busy)
+            return;
 
         Keyboard keyboard = Keyboard.current;
 
-        if (keyboard != null && keyboard.escapeKey.wasPressedThisFrame)
+        if (keyboard != null &&
+            keyboard.escapeKey.wasPressedThisFrame)
+        {
             CloseCredits();
+        }
     }
 
     private void OnDestroy()
@@ -150,7 +160,8 @@ public class TitleScreenUI : MonoBehaviour
 
     private void OnContinue()
     {
-        if (MenuBlocked || !continueAvailable) return;
+        if (MenuBlocked || !continueAvailable)
+            return;
 
         if (onContinue.GetPersistentEventCount() > 0)
         {
@@ -158,14 +169,25 @@ public class TitleScreenUI : MonoBehaviour
             return;
         }
 
+        if (SaveManager.Instance == null ||
+            !SaveManager.Instance.PrepareContinue())
+        {
+            SetContinueAvailable(false);
+            SelectFirstButton();
+            return;
+        }
+
         busy = true;
+
         onContinue.Invoke();
+
         StartCoroutine(FadeAndLoad());
     }
 
     private void OnNewGame()
     {
-        if (MenuBlocked) return;
+        if (MenuBlocked)
+            return;
 
         PlayClick();
 
@@ -175,6 +197,7 @@ public class TitleScreenUI : MonoBehaviour
                 "Start a new game? Your current progress will be lost.",
                 StartNewGame
             );
+
             return;
         }
 
@@ -183,21 +206,23 @@ public class TitleScreenUI : MonoBehaviour
 
     private void StartNewGame()
     {
-        if (busy) return;
-        if (!CanLoadGameplayScene()) return;
+        if (busy)
+            return;
+
+        if (!CanLoadGameplayScene())
+            return;
 
         busy = true;
 
-        PlayerPrefs.SetInt(KeyHasGame, 1);
-        PlayerPrefs.Save();
-
         onNewGame.Invoke();
+
         StartCoroutine(FadeAndLoad());
     }
 
     private void OnSettings()
     {
-        if (MenuBlocked || settingsMenu == null) return;
+        if (MenuBlocked || settingsMenu == null)
+            return;
 
         PlayClick();
 
@@ -207,7 +232,8 @@ public class TitleScreenUI : MonoBehaviour
         {
             SetMainMenuVisible(true);
 
-            if (EventSystem.current != null && settingsButton != null)
+            if (EventSystem.current != null &&
+                settingsButton != null)
             {
                 EventSystem.current.SetSelectedGameObject(
                     settingsButton.gameObject
@@ -218,7 +244,8 @@ public class TitleScreenUI : MonoBehaviour
 
     public void OpenCredits()
     {
-        if (MenuBlocked || creditsPanel == null) return;
+        if (MenuBlocked || creditsPanel == null)
+            return;
 
         creditsOpen = true;
 
@@ -231,7 +258,8 @@ public class TitleScreenUI : MonoBehaviour
         creditsPanel.transform.SetAsLastSibling();
         creditsPanel.SetActive(true);
 
-        if (EventSystem.current != null && creditsBackButton != null)
+        if (EventSystem.current != null &&
+            creditsBackButton != null)
         {
             EventSystem.current.SetSelectedGameObject(
                 creditsBackButton.gameObject
@@ -241,7 +269,8 @@ public class TitleScreenUI : MonoBehaviour
 
     public void CloseCredits()
     {
-        if (!creditsOpen || busy) return;
+        if (!creditsOpen || busy)
+            return;
 
         creditsOpen = false;
 
@@ -271,7 +300,8 @@ public class TitleScreenUI : MonoBehaviour
 
     private void OnQuit()
     {
-        if (MenuBlocked) return;
+        if (MenuBlocked)
+            return;
 
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
@@ -282,23 +312,30 @@ public class TitleScreenUI : MonoBehaviour
 
     private void SelectFirstButton()
     {
-        if (EventSystem.current == null) return;
+        if (EventSystem.current == null)
+            return;
 
-        Button first = continueAvailable ? continueButton : newGameButton;
+        Button first = continueAvailable
+            ? continueButton
+            : newGameButton;
 
         if (first == null || !first.interactable)
             first = quitButton;
 
-        if (first != null && first.isActiveAndEnabled &&
+        if (first != null &&
+            first.isActiveAndEnabled &&
             first.IsInteractable())
         {
-            EventSystem.current.SetSelectedGameObject(first.gameObject);
+            EventSystem.current.SetSelectedGameObject(
+                first.gameObject
+            );
         }
     }
 
     private void SetMainMenuVisible(bool visible)
     {
-        if (hideWhileSettingsOpen == null) return;
+        if (hideWhileSettingsOpen == null)
+            return;
 
         foreach (GameObject go in hideWhileSettingsOpen)
         {
@@ -309,32 +346,27 @@ public class TitleScreenUI : MonoBehaviour
 
     private bool CanLoadGameplayScene()
     {
-        if (!string.IsNullOrWhiteSpace(gameplaySceneName) &&
-            Application.CanStreamedLevelBeLoaded(gameplaySceneName))
-        {
-            return true;
-        }
-
-        //Debug.LogError(
-        //    "TitleScreenUI: assign Gameplay Scene Name and include " +
-        //    "that scene in the active Build Profile's scene list.",
-        //    this
-        //);
-
-        return false;
+        return
+            !string.IsNullOrWhiteSpace(gameplaySceneName) &&
+            Application.CanStreamedLevelBeLoaded(gameplaySceneName);
     }
 
     public void LoadGameplayWithLoadingScreen()
     {
-        if (busy) return;
+        if (busy)
+            return;
 
         busy = true;
+
         StartCoroutine(FadeAndLoad());
     }
+
     private void PlayClick()
     {
-        AudioManger.inst.PlaySFX(clickSfx);
+        if (AudioManger.inst != null)
+            AudioManger.inst.PlaySFX(clickSfx);
     }
+
     private IEnumerator FadeAndLoad()
     {
         if (!CanLoadGameplayScene())
@@ -375,7 +407,10 @@ public class TitleScreenUI : MonoBehaviour
             while (elapsed < fadeTime)
             {
                 elapsed += Time.unscaledDeltaTime;
-                fadeToBlack.alpha = Mathf.Clamp01(elapsed / fadeTime);
+
+                fadeToBlack.alpha =
+                    Mathf.Clamp01(elapsed / fadeTime);
+
                 yield return null;
             }
 
@@ -385,24 +420,19 @@ public class TitleScreenUI : MonoBehaviour
         float startedAt = Time.realtimeSinceStartup;
 
         AsyncOperation loading = null;
-        string loadingError = null;
 
         try
         {
-            loading = SceneManager.LoadSceneAsync(gameplaySceneName);
+            loading =
+                SceneManager.LoadSceneAsync(gameplaySceneName);
         }
-        catch (System.Exception exception)
+        catch (System.Exception)
         {
-            loadingError = exception.Message;
+            loading = null;
         }
 
         if (loading == null)
         {
-            //Debug.LogError(
-            //    "TitleScreenUI: scene loading failed. " + loadingError,
-            //    this
-            //);
-
             RestoreMenuAfterLoadingFailure();
             yield break;
         }
@@ -420,6 +450,7 @@ public class TitleScreenUI : MonoBehaviour
         }
 
         Time.timeScale = 1f;
+
         loading.allowSceneActivation = true;
 
         while (!loading.isDone)
@@ -438,6 +469,7 @@ public class TitleScreenUI : MonoBehaviour
         }
 
         busy = false;
+
         SelectFirstButton();
     }
 }

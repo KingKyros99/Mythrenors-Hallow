@@ -122,8 +122,8 @@ TextureImporter:
   assetBundleVariant: 
 AssetOrigin:
   serializedVersion: 1
-  productId: 239742
-  packageName: Free Fire VFX - HDRP
-  packageVersion: 1.0.2026
-  assetPath: Assets/Vefects/Free Fire HDRP/Textures/T_VFX_Noise_03.tga
-  uploadId: 981736
+  productId: 266226
+  packageName: Free Fire VFX - URP
+  packageVersion: 1.0.2023.1
+  assetPath: Assets/Models/VFX/Free Fire HDRP/Textures/T_VFX_Noise_03.tga
+  uploadId: 732705

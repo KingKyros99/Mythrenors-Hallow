@@ -6,14 +6,33 @@ public class KeyPickup : MonoBehaviour, IInteraction
     [SerializeField] private string keyID;
     [SerializeField] private string Name;
 
-    public string PromptInteraction(PlayerInteractions interactions) => $"Grab Item {Name}";
-    public bool CanInteract(PlayerInteractions interactions) => !interactions.IsInteracting;
+    [Header("Optional Autosave")]
+    [SerializeField] private bool autosaveOnPickup;
+    [SerializeField] private string checkpointId = "AfterPuzzle";
+    [SerializeField] private Transform spawnPoint;
+
+    public string PromptInteraction(PlayerInteractions interactions)
+    {
+        return $"Grab Item {Name}";
+    }
+
+    public bool CanInteract(PlayerInteractions interactions)
+    {
+        return !interactions.IsInteracting;
+    }
 
     public void Interact(PlayerInteractions interaction)
     {
-        if (interaction.Keys.Contains(keyID) == false)
+        if (!interaction.Keys.Contains(keyID))
         {
             interaction.Keys.Add(keyID);
+        }
+
+        if (autosaveOnPickup &&
+            SaveManager.Instance != null &&
+            spawnPoint != null)
+        {
+            SaveManager.Instance.Save(checkpointId, spawnPoint);
         }
 
         Destroy(gameObject);
