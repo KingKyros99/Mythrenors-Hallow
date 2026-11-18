@@ -4,39 +4,86 @@ public class BonfireInteraction : MonoBehaviour, IInteraction
 {
     [SerializeField] private string BonfireId;
     [SerializeField] private Transform savePoint;
-
-
-
     [SerializeField] private GameObject bonfireRestScreen;
 
-    PlayerInteractions player;
-    public string PromptInteraction(PlayerInteractions interaction) => "Rest And Save?";
-    public bool CanInteract(PlayerInteractions interaction) => !interaction.IsInteracting;
+    private PlayerInteractions player;
+    private bool isResting;
+
+    private float previousTimeScale;
+    private CursorLockMode previousCursorLock;
+    private bool previousCursorVisible;
+
+    public string PromptInteraction(PlayerInteractions interaction)
+    {
+        return "Rest And Save?";
+    }
+
+    public bool CanInteract(PlayerInteractions interaction)
+    {
+        return !isResting && !interaction.IsInteracting;
+    }
 
     public void Interact(PlayerInteractions interaction)
     {
+        if (!CanInteract(interaction) || bonfireRestScreen == null)
+            return;
+
+        previousTimeScale = Time.timeScale;
+        previousCursorLock = Cursor.lockState;
+        previousCursorVisible = Cursor.visible;
+
         player = interaction;
         player.IsInteracting = true;
-        //Player Rest
+        isResting = true;
+
         PlayerRest(interaction);
-        //Save System
+
         if (SaveManager.Instance != null)
         {
-            Transform savePosition = savePoint != null ? savePoint : transform;
+            Transform savePosition =
+                savePoint != null ? savePoint : transform;
+
             SaveManager.Instance.Save(BonfireId, savePosition);
         }
 
         bonfireRestScreen.SetActive(true);
-        //Unlock Cursor
+
+        Time.timeScale = 0f;
+
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
 
     public void ExitBonfire()
     {
-        bonfireRestScreen.SetActive(false);
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        if (!isResting)
+            return;
+
+        FinishRest();
+
+        if (bonfireRestScreen != null)
+            bonfireRestScreen.SetActive(false);
+    }
+
+    private void OnDisable()
+    {
+        if (!isResting)
+            return;
+
+        FinishRest();
+
+        if (bonfireRestScreen != null)
+            bonfireRestScreen.SetActive(false);
+    }
+
+    private void FinishRest()
+    {
+        isResting = false;
+
+        Time.timeScale = previousTimeScale;
+
+        Cursor.lockState = previousCursorLock;
+        Cursor.visible = previousCursorVisible;
 
         if (player != null)
         {
@@ -45,16 +92,16 @@ public class BonfireInteraction : MonoBehaviour, IInteraction
         }
     }
 
-
     private void PlayerRest(PlayerInteractions interaction)
     {
-        CharacterBase player = interaction.GetComponent<CharacterBase>();
-        if (player != null)
-        {
-            player.Heal(player.MaxHealth);
-            player.RestoreMana(player.MaxMana);
-            player.RestoreStamina(player.MaxStamina);
-        }
-    }
+        CharacterBase character =
+            interaction.GetComponent<CharacterBase>();
 
+        if (character == null)
+            return;
+
+        character.Heal(character.MaxHealth);
+        character.RestoreMana(character.MaxMana);
+        character.RestoreStamina(character.MaxStamina);
+    }
 }

@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-
 [RequireComponent(typeof(AudioSource))]
 public class AudioManger : MonoBehaviour
 {
     public static AudioManger inst { get; private set; }
+
     [System.Serializable]
     public struct sceneAudio
     {
@@ -24,30 +24,28 @@ public class AudioManger : MonoBehaviour
         public bool randomPitch;
     }
 
-
-    //combat var
     [SerializeField] private AudioClip combatTrack;
     [SerializeField] private float ExitFade;
+
     private int aggro;
     private bool inCombat;
 
-
-    //Sound Effect
     [SerializeField] private sfxAudio[] sfxTracks;
     [SerializeField] private float sfxVolume;
-    //Track List
+
     [SerializeField] private sceneAudio[] sceneTracks;
-    //Fade In/Out,Volume
+
     [SerializeField] private float transitionTime;
     [SerializeField] private float volume;
-    //What plays the audio
 
     private AudioSource sfxSource;
     private AudioSource musicSource;
     private AudioClip audioClip;
 
-    private List<AudioSource> sfxList = new List<AudioSource>();
+    private float settingsSfxLevel = 1f;
 
+    private readonly List<AudioSource> sfxList =
+        new List<AudioSource>();
 
     private void Awake()
     {
@@ -56,143 +54,156 @@ public class AudioManger : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+
         inst = this;
 
-        //Keep this object when entering new scene
         if (transform.parent != null)
-        {
             transform.SetParent(null, true);
-        }
 
         DontDestroyOnLoad(gameObject);
 
-        //Scene Audio Sorce SetUp
         musicSource = GetComponent<AudioSource>();
         musicSource.loop = true;
         musicSource.playOnAwake = false;
 
-        //Sound Effect Source
-        sfxSource = gameObject.AddComponent<AudioSource>();
-        sfxSource.loop = false;
-        sfxSource.playOnAwake = false;
+        sfxSource = CreateSFXSource();
 
-        //Build SoundEffects
-        for (int i = 0; i < sfxTracks.Length; i++)
+        int sourceCount = sfxTracks != null
+            ? Mathf.Max(1, sfxTracks.Length)
+            : 1;
+
+        for (int i = 0; i < sourceCount; i++)
         {
-            AudioSource source = gameObject.AddComponent<AudioSource>();
-            source.loop = false;
-            source.playOnAwake = false;
-            sfxList.Add(source);
-
+            sfxList.Add(CreateSFXSource());
         }
 
+        SetSfxLevel(GameSettings.SfxLevel);
 
         SceneManager.sceneLoaded += SceneLoaded;
-        SceneAudio(SceneManager.GetActiveScene().name);
 
+        SceneAudio(SceneManager.GetActiveScene().name);
     }
 
+    private AudioSource CreateSFXSource()
+    {
+        AudioSource source = gameObject.AddComponent<AudioSource>();
+
+        source.loop = false;
+        source.playOnAwake = false;
+        source.volume = settingsSfxLevel;
+
+        return source;
+    }
 
     private void OnDestroy()
     {
         SceneManager.sceneLoaded -= SceneLoaded;
+
         if (inst == this)
-        {
             inst = null;
+    }
+
+    public void SetSfxLevel(float level)
+    {
+        settingsSfxLevel = Mathf.Clamp01(level);
+
+        if (sfxSource != null)
+            sfxSource.volume = settingsSfxLevel;
+
+        foreach (AudioSource source in sfxList)
+        {
+            if (source != null)
+                source.volume = settingsSfxLevel;
         }
     }
-    //called once a scene loads
-    void SceneLoaded(Scene scene, LoadSceneMode mode) => SceneAudio(scene.name);
 
-    //Find and Play correct track
-    void SceneAudio(string scene)
+    private void SceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        foreach (var track in sceneTracks)
-        {
+        SceneAudio(scene.name);
+    }
 
+    private void SceneAudio(string scene)
+    {
+        if (sceneTracks == null)
+            return;
+
+        foreach (sceneAudio track in sceneTracks)
+        {
             if (track.Name != scene)
-            {
                 continue;
-            }
 
             audioClip = track.clip;
 
-            //Dont restart already playing track
-            if (musicSource.clip == track.clip && musicSource.isPlaying)
+            if (musicSource.clip == track.clip &&
+                musicSource.isPlaying)
             {
                 return;
             }
-            //fade to next track
+
             StopAllCoroutines();
             StartCoroutine(FadeInOut(track.clip));
             return;
         }
     }
 
-    void PlayTrack(AudioClip clip)
+    private void PlayTrack(AudioClip clip)
     {
         if (clip == null)
-        {
             return;
-        }
+
         if (musicSource.clip == clip && musicSource.isPlaying)
-        {
             return;
-        }
+
         StopAllCoroutines();
         StartCoroutine(FadeInOut(clip));
     }
 
-
-
-    //Fade out/in method
-    IEnumerator FadeInOut(AudioClip nextClip)
+    private IEnumerator FadeInOut(AudioClip nextClip)
     {
         float time = Mathf.Max(transitionTime, 0.1f);
-
-        //Fade out
         float startVolume = musicSource.volume;
+
         for (float i = 0f; i < time; i += Time.unscaledDeltaTime)
         {
-            musicSource.volume = Mathf.Lerp(startVolume, 0f, i / time);
+            musicSource.volume =
+                Mathf.Lerp(startVolume, 0f, i / time);
+
             yield return null;
         }
-        musicSource.volume = 0f;
 
-        //start new track
+        musicSource.volume = 0f;
         musicSource.clip = nextClip;
         musicSource.Play();
 
-
-        //Fade in
         for (float i = 0f; i < time; i += Time.unscaledDeltaTime)
         {
-            musicSource.volume = Mathf.Lerp(0f, volume, i / time);
+            musicSource.volume =
+                Mathf.Lerp(0f, volume, i / time);
+
             yield return null;
         }
+
         musicSource.volume = volume;
     }
-
-
-
 
     public void CombatStarted()
     {
         aggro++;
+
         if (inCombat || combatTrack == null)
-        {
             return;
-        }
+
         inCombat = true;
         PlayCombatMusic(combatTrack);
     }
+
     public void CombatEnded()
     {
         aggro = Mathf.Max(0, aggro - 1);
+
         if (aggro > 0 || !inCombat)
-        {
             return;
-        }
+
         inCombat = false;
         PlayTrack(audioClip);
     }
@@ -200,57 +211,69 @@ public class AudioManger : MonoBehaviour
     public void PlayCombatMusic(AudioClip clip)
     {
         if (clip == null)
-        {
             return;
-        }
+
         PlayTrack(clip);
     }
 
-    //Sound Effects
     public void PlaySFX(string Name)
     {
-        foreach (var sfx in sfxTracks)
+        if (sfxTracks == null || sfxSource == null)
+            return;
+
+        foreach (sfxAudio sfx in sfxTracks)
         {
             if (sfx.Name != Name)
-            {
                 continue;
-            }
+
             if (sfx.clip == null || sfx.clip.length == 0)
-            {
                 return;
-            }
-            sfxSource.pitch = sfx.randomPitch ? Random.Range(0.6f, 1.0f) : 1f;
-            float finalVolume = (sfx.volume > 0f ? sfx.volume : 1f) * sfxVolume;
+
+            sfxSource.pitch = sfx.randomPitch
+                ? Random.Range(0.6f, 1.0f)
+                : 1f;
+
+            float finalVolume =
+                (sfx.volume > 0f ? sfx.volume : 1f) *
+                sfxVolume;
+
             sfxSource.PlayOneShot(sfx.clip, finalVolume);
             return;
         }
     }
 
-    public void PlaySFX(AudioClip clip, float volume, bool randomPitch, float speed = 1f)
+    public void PlaySFX(
+        AudioClip clip,
+        float volume,
+        bool randomPitch,
+        float speed = 1f)
     {
         if (clip == null)
-        {
             return;
-        }
+
         AudioSource source = GetSFXSource();
-        source.volume = 1f;
-        source.pitch = randomPitch ? Random.Range(0.6f, 1.0f) : 1f;
-        float finalVolume = Mathf.Clamp01(volume) * sfxVolume;
-        source.pitch = randomPitch ? speed * Random.Range(0.9f, 1.1f) : speed;
+
+        source.pitch = randomPitch
+            ? speed * Random.Range(0.9f, 1.1f)
+            : speed;
+
+        float finalVolume =
+            Mathf.Clamp01(volume) * sfxVolume;
+
         source.PlayOneShot(clip, finalVolume);
     }
 
     private AudioSource GetSFXSource()
     {
-        foreach (var source in sfxList)
+        foreach (AudioSource source in sfxList)
         {
-            if (source.isPlaying == false)
-            {
+            if (source != null && !source.isPlaying)
                 return source;
-            }
         }
-        return sfxList[0];
+
+        AudioSource additionalSource = CreateSFXSource();
+        sfxList.Add(additionalSource);
+
+        return additionalSource;
     }
-
-
 }
