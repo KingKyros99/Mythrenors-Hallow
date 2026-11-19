@@ -13,6 +13,10 @@ MonoBehaviour:
   m_Name: Enemy_Bow_Attack
   m_EditorClassIdentifier: Assembly-CSharp::RangedAttackData
   attackName: Basic Bow Attack
+  rangeEffect: {fileID: 0}
+  volume: 1
+  speed: 1
+  randPitch: 1
   description: 
   damage:
     BaseDamage: 8
@@ -22,7 +26,7 @@ MonoBehaviour:
     Unblockable: 0
   projectileData: {fileID: 11400000, guid: 1216fae902ecf4d41ae7ac0357d5f7cc, type: 2}
   targetingData: {fileID: 11400000, guid: 129c46c6068755f46961a32dafb5d0e7, type: 2}
-  cooldown: 1.8
+  cooldown: 2.1
   usesAmmo: 0
   ammoCost: 0
   statusEffect: {fileID: 0}

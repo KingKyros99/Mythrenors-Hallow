@@ -42,7 +42,12 @@ public class Enemy : CharacterBase
 
     private bool rangedShotPending;
 
+    // Animated Ranged Hit Recovery
+    [SerializeField] private float rangedHitRecoveryDelay = 0.3f;
 
+    private bool waitingForRangedHitRecovery;
+    private float rangedHitRecoveryUntil;
+    private StatusEffectManager statusEffectManager;
 
     private Vector3 homePosition;
     private int currentPatrolIndex;
@@ -85,11 +90,49 @@ public class Enemy : CharacterBase
         movementController = GetComponent<EnemyController>();
         combatEntity = GetComponent<CombatEntityAdapter>();
         homePosition = transform.position;
+        statusEffectManager = GetComponent<StatusEffectManager>();
     }
 
     private void Update()
     {
+        UpdateRangedHitRecovery();
+
         UpdateAI();
+    }
+
+    private void UpdateRangedHitRecovery()
+    {
+        if (!waitingForRangedHitRecovery)
+        {
+            return;
+        }
+
+        if (rangedAnimator == null || !rangedAnimator.isActiveAndEnabled)
+        {
+            if (Time.time >= rangedHitRecoveryUntil)
+            {
+                waitingForRangedHitRecovery = false;
+            }
+
+            return;
+        }
+
+        AnimatorStateInfo state = rangedAnimator.GetCurrentAnimatorStateInfo(0);
+
+        // Keep the recovery timer waiting while
+        // the character is still reacting or transitioning.
+        if (rangedAnimator.IsInTransition(0) || !state.IsName("Locomotion"))
+        {
+            rangedHitRecoveryUntil = Time.time + rangedHitRecoveryDelay;
+
+            return;
+        }
+
+        // Only allow another shot after the recovery pause.
+        if (Time.time >= rangedHitRecoveryUntil)
+        {
+            waitingForRangedHitRecovery = false;
+        }
     }
 
     private void UpdateAI()
@@ -409,7 +452,7 @@ public class Enemy : CharacterBase
     // Starts the shooting animation without immediately firing.
     private void TryStartAnimatedRangedAttack()
     {
-        if (rangedShotPending || rangedAnimator == null || !rangedAnimator.isActiveAndEnabled || target == null || combatEntity == null ||
+        if (waitingForRangedHitRecovery || rangedShotPending || rangedAnimator == null || !rangedAnimator.isActiveAndEnabled || target == null || combatEntity == null ||
             rangedAttackManager == null || rangedAttack == null || projectileSpawnPoint == null)
         {
             return;
@@ -515,8 +558,41 @@ public class Enemy : CharacterBase
             AudioManger.inst.CombatEnded();
         }
     }
+    private void OnEnable()
+    {
+        OnDirectDamageTaken += HandleRangedDamageInterrupt;
+    }
+    private void HandleRangedDamageInterrupt(int damage)
+    {
+        if (damage <= 0 || !useAnimatedRanged)
+        {
+            return;
+        }
+
+        // Ignore damage-over-time ticks.
+        if (statusEffectManager != null && statusEffectManager.IsApplyingStatusDamage)
+        {
+            return;
+        }
+
+        // Cancel the unfinished shot.
+        CancelAnimatedRangedShot();
+
+        // Begin waiting for the hit reaction to finish.
+        waitingForRangedHitRecovery = true;
+
+        rangedHitRecoveryUntil = Time.time + rangedHitRecoveryDelay;
+
+        if (rangedAnimator != null)
+        {
+            rangedAnimator.ResetTrigger("Shoot");
+        }
+    }
+
     private void OnDisable()
     {
+        OnDirectDamageTaken -= HandleRangedDamageInterrupt;
+
         if (!isAggroed)
         {
             return;
