@@ -200,7 +200,7 @@ public class MovementController : MonoBehaviour
             //keeps the player grounded while moveing even on slope's
             if (velocity.y <= 0f)
             {
-                velocity.y = -0.5f;
+                velocity.y = -2f;
             }
             jumpTime = 0;
             
