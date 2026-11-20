@@ -36,7 +36,9 @@ public class PlayerCamera : MonoBehaviour
 
     [SerializeField] float minDist;
 
-    [SerializeField] float camSpeed;    
+    [SerializeField] float camSpeed;
+   
+    [SerializeField] float currShoulder;
 
     [SerializeField] float currDist;
 
@@ -45,13 +47,14 @@ public class PlayerCamera : MonoBehaviour
 
     private InputAction lookAct;
 
-    [SerializeField] LayerMask collisionLayer = -0;
+    [SerializeField] LayerMask collisionLayer = 0;
 
 
     private void Awake()
     {
         cam = GetComponent<Camera>();
         currDist = distance;
+        currShoulder = Mathf.Abs(shoulderDist);
 
         lookAct = new InputAction("Look", InputActionType.Value, "<Mouse>/delta");
 
@@ -107,11 +110,19 @@ public class PlayerCamera : MonoBehaviour
         Quaternion completeRot = Quaternion.Euler(verticalRot, horizontalRot, 0f);
         Quaternion horizontalRotation = Quaternion.Euler(0f, horizontalRot, 0f);
 
-        Vector3 playerPos = player.position;
-        Vector3 playerPivot = playerPos + (horizontalRotation * playerOffset);
+        Vector3 playerPivot = player.position + (horizontalRotation * playerOffset);
 
-        Vector3 rightOffset = horizontalRotation * Vector3.right * shoulderDist;
-        Vector3 finalPivot = playerPivot + rightOffset;
+        Vector3 rightOffset = horizontalRotation * Vector3.right * Mathf.Sign(shoulderDist);
+        Vector3 finalPivot = playerPivot;
+
+        if (Physics.SphereCast(playerPivot, collisionZone, rightOffset.normalized, out RaycastHit shoulderHit, rightOffset.magnitude, collisionLayer, QueryTriggerInteraction.Ignore)) 
+        {
+            finalPivot = playerPivot + rightOffset.normalized * Mathf.Max(0f,shoulderHit.distance - collisionZone);
+        }
+        else
+        {
+            finalPivot = playerPivot + rightOffset;
+        }
 
         Vector3 targetPos = finalPivot + (completeRot * Vector3.back * distance);
         Vector3 camDirection = (targetPos - finalPivot).normalized;
@@ -120,21 +131,31 @@ public class PlayerCamera : MonoBehaviour
         float targetDistance = distance;
 
         //check in a spere to determine if the camera is already in or on wall
-        if (Physics.CheckSphere(finalPivot, collisionZone, collisionLayer))
+        if (Physics.SphereCast(finalPivot, collisionZone, camDirection, out RaycastHit hit, distance, collisionLayer, QueryTriggerInteraction.Ignore))
         {
-            targetDistance = minDist;
+            targetDistance = Mathf.Max(0f, hit.distance - 0.2f);
         }
-        if (Physics.SphereCast(finalPivot, collisionZone, camDirection, out RaycastHit hit, distance, collisionLayer))
+        
+
+        if (targetDistance < currDist)
         {
-            targetDistance = Mathf.Clamp(hit.distance - 0.2f, minDist, distance);
+            currDist = targetDistance;
         }
-        currDist = Mathf.MoveTowards(currDist, targetDistance, camSpeed * Time.deltaTime);
+        else
+        {
+            currDist = Mathf.MoveTowards(currDist, targetDistance, camSpeed * Time.deltaTime);
+
+        }
 
         //final camPos and rotation
-        Vector3 finalCamPos = finalPivot + (camDirection * currDist);
+        Vector3 finalCamPos = finalPivot + camDirection * currDist;
         transform.position = finalCamPos;
         transform.rotation = completeRot;
-        
+
+
+        Debug.DrawLine(playerPivot, finalPivot, Color.green);
+        Debug.DrawLine(finalPivot, transform.position, Color.red);
+
     }
 
 }
