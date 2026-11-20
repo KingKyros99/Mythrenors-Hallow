@@ -110,22 +110,30 @@ public class PlayerCamera : MonoBehaviour
         Quaternion completeRot = Quaternion.Euler(verticalRot, horizontalRot, 0f);
         Quaternion horizontalRotation = Quaternion.Euler(0f, horizontalRot, 0f);
 
+        bool backFace = Physics.queriesHitBackfaces;
+        Physics.queriesHitBackfaces = true; 
+
         Vector3 playerPivot = player.position + (horizontalRotation * playerOffset);
 
-        Vector3 rightOffset = horizontalRotation * Vector3.right * Mathf.Sign(shoulderDist);
+        float rightOffset = Mathf.Abs(shoulderDist);
         Vector3 finalPivot = playerPivot;
-
-        if (Physics.SphereCast(playerPivot, collisionZone, rightOffset.normalized, out RaycastHit shoulderHit, rightOffset.magnitude, collisionLayer, QueryTriggerInteraction.Ignore)) 
+        if (rightOffset > 0.01f)
         {
-            finalPivot = playerPivot + rightOffset.normalized * Mathf.Max(0f,shoulderHit.distance - collisionZone);
+            Vector3 shoulderDir = horizontalRotation * (Vector3.right * Mathf.Sign(shoulderDist));
+            Vector3 origin = playerPivot - shoulderDir * 0.1f;
+            if (Physics.SphereCast(origin, collisionZone, shoulderDir, out RaycastHit shoulderHit, rightOffset + 0.1f, collisionLayer, QueryTriggerInteraction.Ignore))
+            {
+                finalPivot = origin + shoulderDir * Mathf.Max(0f, shoulderHit.distance);
+            }
+            else
+            {
+                finalPivot = playerPivot + shoulderDir * rightOffset;
+            }
         }
-        else
-        {
-            finalPivot = playerPivot + rightOffset;
-        }
+        
 
         Vector3 targetPos = finalPivot + (completeRot * Vector3.back * distance);
-        Vector3 camDirection = (targetPos - finalPivot).normalized;
+        Vector3 camDirection = completeRot * Vector3.back;
 
         //Colision
         float targetDistance = distance;
@@ -133,9 +141,13 @@ public class PlayerCamera : MonoBehaviour
         //check in a spere to determine if the camera is already in or on wall
         if (Physics.SphereCast(finalPivot, collisionZone, camDirection, out RaycastHit hit, distance, collisionLayer, QueryTriggerInteraction.Ignore))
         {
-            targetDistance = Mathf.Max(0f, hit.distance - 0.2f);
+            targetDistance = Mathf.Max(0f, hit.distance);
         }
-        
+        else if (Physics.Raycast(finalPivot, camDirection, out RaycastHit rayHit, distance + collisionZone, collisionLayer, QueryTriggerInteraction.Ignore))
+        {
+            targetDistance = Mathf.Max(0f, rayHit.distance - collisionZone);
+        }
+        Physics.queriesHitBackfaces = backFace;
 
         if (targetDistance < currDist)
         {
