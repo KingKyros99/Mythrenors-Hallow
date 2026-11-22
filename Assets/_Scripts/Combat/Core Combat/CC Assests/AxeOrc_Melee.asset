@@ -19,8 +19,8 @@ MonoBehaviour:
   targetLayers:
     serializedVersion: 2
     m_Bits: 64
-  requireLineOfSight: 0
+  requireLineOfSight: 1
   obstructionLayers:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 769
   allowSelfTarget: 0
