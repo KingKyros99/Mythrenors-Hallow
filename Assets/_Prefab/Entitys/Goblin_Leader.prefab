@@ -579,9 +579,11 @@ MonoBehaviour:
   meleeAttackAnimator: {fileID: 2106060407728868615}
   useAnimatedRanged: 0
   rangedAnimator: {fileID: 0}
+  rangedHitRecoveryDelay: 0.3
   bossDoor: {fileID: 0}
   CombatMusic: 1
   currentState: 0
+  returnPathRefresh: 0.5
 --- !u!114 &1629523136242823568
 MonoBehaviour:
   m_ObjectHideFlags: 0

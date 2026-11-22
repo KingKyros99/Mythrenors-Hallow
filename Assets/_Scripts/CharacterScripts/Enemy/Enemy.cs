@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 public enum EnemyState
 {
@@ -31,6 +32,10 @@ public class Enemy : CharacterBase
     [SerializeField] private RangedAttackData rangedAttack;
     [SerializeField] private Transform projectileSpawnPoint;
     [SerializeField] private float rangedAttackRange = 12f;
+
+    // Ranged Line of Sight
+    [SerializeField] private bool useRangedLineOfSight = false;
+    [SerializeField] private LayerMask rangedObstacleLayers;
 
     // Optional Animated Melee
     [SerializeField] private bool useAnimatedMelee = false;
@@ -80,6 +85,22 @@ public class Enemy : CharacterBase
     public float RangedAttackRange => rangedAttackRange;
     public float LeashDistance => leashDistance;
 
+    // Return Navigation
+    [SerializeField] private float returnPathRefresh = 0.5f;
+
+    private NavMeshPath returnPath;
+    private Vector3[] returnCorners;
+    private int returnCornerIndex;
+    private float nextReturnPathUpdate;
+
+    // Chase Navigation
+    [SerializeField] private float chasePathRefresh = 0.4f;
+
+    private NavMeshPath chasePath;
+    private Vector3[] chaseCorners;
+    private int chaseCornerIndex;
+    private float nextChasePathUpdate;
+
     public Vector3 HomePosition => homePosition;
     public float PatrolSpeed => patrolSpeed;
     public float ChaseSpeed => chaseSpeed;
@@ -91,6 +112,8 @@ public class Enemy : CharacterBase
         combatEntity = GetComponent<CombatEntityAdapter>();
         homePosition = transform.position;
         statusEffectManager = GetComponent<StatusEffectManager>();
+        returnPath = new NavMeshPath();
+        chasePath = new NavMeshPath();
     }
 
     private void Update()
@@ -206,7 +229,7 @@ public class Enemy : CharacterBase
         {
             ChangeState(EnemyState.Attacking);
         }
-        else if (rangedAttack != null && distance <= rangedAttackRange)
+        else if (rangedAttack != null && distance <= rangedAttackRange && HasRangedLineOfSight())
         {
             ChangeState(EnemyState.RangedAttacking);
         }
@@ -281,28 +304,57 @@ public class Enemy : CharacterBase
         return targetEntity != null && targetEntity.IsAlive;
     }
 
-    private void ChaseTarget()
+private void ChaseTarget()
     {
         if (target == null || movementController == null)
+        {
             return;
+        }
 
-        Vector3 direction = target.position - transform.position;
-        direction.y = 0f;
+        if (chasePath == null) chasePath = new NavMeshPath();
 
-        float distance = direction.magnitude;
+        // Update the route because the player is moving.
+        if (chaseCorners == null || Time.time >= nextChasePathUpdate)
+        {
+            nextChasePathUpdate = Time.time + chasePathRefresh;
 
-        //Debug.Log(
-        //    $"{name} | Distance: {distance:F2} | " +
-        //    $"Direction: {direction.normalized} | " +
-        //    $"Enemy Position: {transform.position} | " +
-        //    $"Player Position: {target.position}"
-        //);
+            bool foundStart = NavMesh.SamplePosition(transform.position, out NavMeshHit start, 1.5f, NavMesh.AllAreas);
 
-        if (direction.sqrMagnitude > 0.01f)
-            movementController.SetMovement(direction.normalized, chaseSpeed);
+            bool foundTarget = NavMesh.SamplePosition(target.position, out NavMeshHit destination, 1.5f, NavMesh.AllAreas);
+
+            if (!foundStart || !foundTarget || !NavMesh.CalculatePath(start.position, destination.position,
+                NavMesh.AllAreas, chasePath) || chasePath.status != NavMeshPathStatus.PathComplete)
+            {
+                chaseCorners = null;
+
+                StopMoving();
+
+                return;
+            }
+
+            chaseCorners = chasePath.corners;
+
+            chaseCornerIndex = chaseCorners.Length > 1 ? 1 : 0;
+        }
+
+        while (chaseCornerIndex < chaseCorners.Length)
+        {
+            Vector3 direction = chaseCorners[chaseCornerIndex] - transform.position;
+
+            direction.y = 0f;
+
+            if (direction.sqrMagnitude > 0.04f)
+            {
+                movementController.SetMovement(direction.normalized, chaseSpeed);
+                return;
+            }
+
+            chaseCornerIndex++;
+        }
+
+        StopMoving();
     }
-
-    private void StopMoving()
+private void StopMoving()
     {
         if (movementController != null)
             movementController.StopMovement();
@@ -320,6 +372,27 @@ public class Enemy : CharacterBase
             return;
 
         transform.rotation = Quaternion.LookRotation(direction);
+    }
+
+    private bool HasRangedLineOfSight()
+    {
+        if (target == null)
+        {
+            return false;
+        }
+
+        if (!useRangedLineOfSight)
+        {
+            return true;
+        }
+
+        Vector3 start = transform.position + Vector3.up * 0.75f;
+
+        Vector3 end = target.position + Vector3.up * 0.9f;
+
+        bool blocked = Physics.Linecast(start, end, rangedObstacleLayers, QueryTriggerInteraction.Ignore);
+
+        return !blocked;
     }
 
     private void MeleeAttackTarget()
@@ -492,7 +565,12 @@ public class Enemy : CharacterBase
 
         rangedShotPending = false;
 
-        // Reuse the existing firing and cooldown system.
+        // Do not fire if a wall blocks the player.
+        if (!HasRangedLineOfSight())
+        {
+            return;
+        }
+
         RangedAttackTarget();
     }
 
@@ -505,26 +583,87 @@ public class Enemy : CharacterBase
 
     protected virtual void OnReturn()
     {
-        Vector3 direction = homePosition - transform.position;
-        direction.y = 0f;
-
-        if (direction.sqrMagnitude < 0.25f)
+        if (movementController == null)
         {
-            StopMoving();
-            ChangeState(EnemyState.Idle);
             return;
         }
 
-        direction.Normalize();
-        transform.forward = direction;
+        Vector3 directionHome = homePosition - transform.position;
 
-        if (movementController != null)
-            movementController.SetMovement(direction);
+        directionHome.y = 0f;
+
+        // Check if the enemy reached its starting position.
+        if (directionHome.sqrMagnitude < 0.25f)
+        {
+            StopMoving();
+
+            ChangeState(EnemyState.Idle);
+
+            return;
+        }
+
+        // Calculate a route around walls.
+        if (returnCorners == null)
+        {
+            nextReturnPathUpdate = Time.time + returnPathRefresh;
+
+            bool foundStart = NavMesh.SamplePosition(transform.position, out NavMeshHit startHit, 1.5f, NavMesh.AllAreas);
+
+            bool foundHome = NavMesh.SamplePosition(homePosition, out NavMeshHit homeHit, 1.5f, NavMesh.AllAreas);
+
+            if (!foundStart || !foundHome || !NavMesh.CalculatePath( startHit.position, homeHit.position, NavMesh.AllAreas, returnPath) ||
+                returnPath.status != NavMeshPathStatus.PathComplete)
+            {
+                returnCorners = null;
+
+                StopMoving();
+
+                return;
+            }
+
+            returnCorners = returnPath.corners;
+
+            returnCornerIndex = returnCorners.Length > 1 ? 1 : 0;
+        }
+
+        if (returnCorners == null)
+        {
+            StopMoving();
+
+            return;
+        }
+
+        // Follow each corner of the calculated path.
+        while (returnCornerIndex < returnCorners.Length)
+        {
+            Vector3 direction = returnCorners[returnCornerIndex] - transform.position;
+
+            direction.y = 0f;
+
+            // Stay close to the waypoint before turning.
+            if (direction.sqrMagnitude > 0.0225f)
+            {
+                movementController.SetMovement(direction.normalized, returnSpeed);
+
+                return;
+            }
+
+            returnCornerIndex++;
+        }
+
+        StopMoving();
     }
 
     protected virtual void OnEnterState(EnemyState state)
     {
-        // Handle state initialization.
+        if (state == EnemyState.Returning)
+        {
+            nextReturnPathUpdate = 0f;
+
+            returnCornerIndex = 0;
+
+            returnCorners = null;
+        }
     }
 
     protected virtual void OnExitState(EnemyState state)

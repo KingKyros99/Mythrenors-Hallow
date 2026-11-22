@@ -371,6 +371,70 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8010330924663568398, guid: 3023620f59c491f48b0253aace8b1877, type: 3}
   m_PrefabInstance: {fileID: 36593531}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &44931588
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 44931590}
+  - component: {fileID: 44931589}
+  m_Layer: 0
+  m_Name: LevelNavigation
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &44931589
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 44931588}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshSurface
+  m_SerializedVersion: 0
+  m_AgentTypeID: 0
+  m_CollectObjects: 0
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 951
+  m_UseGeometry: 1
+  m_DefaultArea: 0
+  m_GenerateLinks: 0
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.16666667
+  m_MinRegionArea: 2
+  m_NavMeshData: {fileID: 23800000, guid: 74f642f9dfdd71a4ebc3a4bd0b0ace69, type: 2}
+  m_BuildHeightMesh: 0
+--- !u!4 &44931590
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 44931588}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 11.95506, y: 26.64709, z: 64.32717}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &66813929 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8010330924663568398, guid: 3023620f59c491f48b0253aace8b1877, type: 3}
@@ -43452,18 +43516,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5439914043149174034, guid: c87c5b1d9ab41464392b53f41442d8f9, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6054190190982111975, guid: c87c5b1d9ab41464392b53f41442d8f9, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7867937430057567851, guid: c87c5b1d9ab41464392b53f41442d8f9, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 9166200667505185630, guid: c87c5b1d9ab41464392b53f41442d8f9, type: 3}
       propertyPath: m_Name
       value: Goblin_Leader
@@ -44113,12 +44165,13 @@ SceneRoots:
   - {fileID: 83465615}
   - {fileID: 770255671}
   - {fileID: 1010415629}
+  - {fileID: 2023779393}
+  - {fileID: 44931590}
   - {fileID: 1167931756}
   - {fileID: 1079409442}
   - {fileID: 91674105}
   - {fileID: 103485434}
   - {fileID: 1910505035}
-  - {fileID: 2023779393}
   - {fileID: 918075586}
   - {fileID: 1258554901}
   - {fileID: 1574525649}

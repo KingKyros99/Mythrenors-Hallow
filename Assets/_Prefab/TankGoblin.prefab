@@ -511,6 +511,7 @@ MonoBehaviour:
   meleeAttackAnimator: {fileID: 5694340578992340541}
   useAnimatedRanged: 0
   rangedAnimator: {fileID: 0}
+  rangedHitRecoveryDelay: 0.3
   bossDoor: {fileID: 0}
   CombatMusic: 1
   currentState: 0
@@ -582,7 +583,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4288350191424779310}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2bb7a12703be59940a657ed8c998715b, type: 3}
   m_Name: 
@@ -594,7 +595,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4288350191424779310}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 41258e61b77955e49b2fa954c52b8f04, type: 3}
   m_Name: 

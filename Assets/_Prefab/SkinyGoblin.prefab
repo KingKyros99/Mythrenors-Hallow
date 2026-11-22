@@ -561,9 +561,9 @@ MonoBehaviour:
   dodgeChance: 2
   mStatusResistance: 0
   mCritResistance: 0
-  leashDistance: 10
+  leashDistance: 16
   attackRange: 2
-  targetingData: {fileID: 11400000, guid: 129c46c6068755f46961a32dafb5d0e7, type: 2}
+  targetingData: {fileID: 11400000, guid: 112b5452437a4d54d86aaa9116d08a26, type: 2}
   meleeManager: {fileID: 0}
   meleeAttack: {fileID: 0}
   attackCheckInterval: 0.2
@@ -571,18 +571,25 @@ MonoBehaviour:
   patrolPoints: []
   patrolSpeed: 2
   chaseSpeed: 2
-  returnSpeed: 6
+  returnSpeed: 3
   rangedAttackManager: {fileID: 0}
   rangedAttack: {fileID: 11400000, guid: 420628d0876259e41ba700d30b29fb56, type: 2}
   projectileSpawnPoint: {fileID: 3548247103662697803}
-  rangedAttackRange: 13
+  rangedAttackRange: 12
+  useRangedLineOfSight: 1
+  rangedObstacleLayers:
+    serializedVersion: 2
+    m_Bits: 257
   useAnimatedMelee: 0
   meleeAttackAnimator: {fileID: 0}
   useAnimatedRanged: 1
   rangedAnimator: {fileID: 5865002404773907270}
+  rangedHitRecoveryDelay: 0.3
   bossDoor: {fileID: 0}
   CombatMusic: 1
   currentState: 0
+  returnPathRefresh: 0.5
+  chasePathRefresh: 0.4
 --- !u!114 &5740912946441706262
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -618,7 +625,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6914387208291634887}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2bb7a12703be59940a657ed8c998715b, type: 3}
   m_Name: 
@@ -630,7 +637,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6914387208291634887}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 41258e61b77955e49b2fa954c52b8f04, type: 3}
   m_Name: 
